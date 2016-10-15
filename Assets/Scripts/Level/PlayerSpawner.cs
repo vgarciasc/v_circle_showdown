@@ -10,10 +10,18 @@ public class PlayerSpawner : MonoBehaviour {
 
     void Start() {
         playerSpawnLocationManager = HushPuppy.findGameObject("Player Spawn Location Manager");
-        PlayerDatabase playerData = HushPuppy.findGameObject("Player Data").GetComponent<PlayerDatabase>();
 
-        if (playerSpawnLocationManager.transform.childCount < playerData.pprefs.Count)
-            Debug.Log("Not enough spawn points!");
+        GameObject playerDataObject = HushPuppy.findGameObject("Player Data");
+
+        if (playerDataObject == null) {
+            startDefaultGame(); return;
+        }
+
+        PlayerDatabase playerData = playerDataObject.GetComponent<PlayerDatabase>();
+
+        if (playerSpawnLocationManager.transform.childCount < playerData.pprefs.Count) {
+            Debug.Log("Not enough spawn points!"); return;
+        }
 
         for (int i = 0; i < playerData.pprefs.Count; i++)
             spawnPlayer(playerData.pprefs[i],
@@ -24,5 +32,11 @@ public class PlayerSpawner : MonoBehaviour {
         Player aux = Instantiate(playerPrefab).GetComponent<Player>();
         aux.setPlayer(data.playerID, data.joystick, data.color);
         aux.transform.position = location.position;
+        aux.name = "Player " + (data.playerID + 1);
+    }
+
+    void startDefaultGame() {
+        PlayerData aux = new PlayerData("_J0", 0, 0, Color.white);
+        spawnPlayer(aux, playerSpawnLocationManager.transform.GetChild(0));
     }
 }

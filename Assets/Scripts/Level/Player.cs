@@ -15,11 +15,16 @@ public class Player : MonoBehaviour {
 
     [Header("Prefabs and References")]
     [SerializeField]
-    GameObject playerUI_prefab;
-    GameObject playerUI_layout;
+    GameObject playerStatus_prefab;
+    [SerializeField]
+    GameObject playerMarker_prefab;
+
+    GameObject playerStatus_container;
+
     Rigidbody2D rb;
     Animator anim;
-    PlayerUI playerUI;
+    PlayerUIStatus playerStatus;
+    PlayerUIMarker playerMarker;
     GameController gcontroller;
 
     /*Reset variables*/
@@ -54,7 +59,6 @@ public class Player : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         originalColor = GetComponent<SpriteRenderer>().color;
         anim = GetComponent<Animator>();
-        playerUI_layout = HushPuppy.findGameObject("Player UI Layout");
         gcontroller = HushPuppy.findGameObject("GameController").GetComponent<GameController>();
 
         /*Default values*/
@@ -79,13 +83,26 @@ public class Player : MonoBehaviour {
     void Update () {
         handleInput();
         manageTackle();
+        updateMarker();
     }
 
     #region UI Elements
     void startUI() {
-        playerUI = Instantiate(playerUI_prefab).GetComponent<PlayerUI>();
-        playerUI.transform.SetParent(playerUI_layout.transform, false);
-        playerUI.setUI(playerID + 1, GetComponent<SpriteRenderer>());
+        GameObject playerUI_container = HushPuppy.findGameObject("Player UI Container");
+
+        playerStatus = Instantiate(playerStatus_prefab).GetComponent<PlayerUIStatus>();
+        playerStatus.name = "Player " + (playerID + 1) + " Status";
+        playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
+        playerStatus.setUI(playerID + 1, GetComponent<SpriteRenderer>());
+
+        playerMarker = Instantiate(playerMarker_prefab).GetComponent<PlayerUIMarker>();
+        playerMarker.name = "Player " + (playerID + 1) + " Marker";
+        playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
+        playerMarker.setMarker(this.originalColor);
+    }
+
+    void updateMarker() {
+        playerMarker.setPosition(this.transform.position);
     }
     #endregion
 
@@ -96,9 +113,9 @@ public class Player : MonoBehaviour {
         while (SceneManager.GetActiveScene().name != "GameOver") {
             if (this.GetComponent<SpriteRenderer>().isVisible) {
                 timeLeft = maxSecondsOutOfScreen;
-                playerUI.setTime(false); 
+                playerStatus.setTime(false); 
             } else {
-                playerUI.setTime(timeLeft--); }
+                playerStatus.setTime(timeLeft--); }
 
             if (timeLeft < 0) timeOut(); 
 
@@ -154,7 +171,7 @@ public class Player : MonoBehaviour {
 
     void killPlayer() {
         anim.SetTrigger("explode");
-        playerUI.playerKilled();
+        playerStatus.playerKilled();
     }
 
     //to be used only by animation
@@ -198,15 +215,4 @@ public class Player : MonoBehaviour {
         resetTackle();
     }
     #endregion
-
-    int choosePlayerID() {
-        int id = 0;
-        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
-            id++;
-            if (player == this.gameObject)
-                return id;
-        }
-
-        return -1;
-    }
 }

@@ -44,9 +44,11 @@ public class Player : MonoBehaviour {
         tackleWeight,
         tackleBuildup;
     float jumpForce;
-    float sizeIncrement;
-    int maxSizeIncrements,
-        currentSizeIncrements;
+    float hitSizeIncrement,
+        timeSizeIncrement,
+        maxSize,
+        minSize;
+    bool onGround;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -69,14 +71,17 @@ public class Player : MonoBehaviour {
         tackleWeight = 0.5f;
         tackleForce = 50f;
         jumpForce = 300f;
-        sizeIncrement = 0.2f;
-        maxSizeIncrements = 20;
-        currentSizeIncrements = 0;
+        hitSizeIncrement = 0.2f;
+        timeSizeIncrement = 0.05f;
+        maxSize = 15f;
+        minSize = 0.6f;
+        onGround = false;
 
         /*Init functions*/
         resetTackle();
         startUI();
         StartCoroutine(checkOutOfScreen());
+        StartCoroutine(grow());
         createJoystickInput();
     }
 
@@ -138,8 +143,8 @@ public class Player : MonoBehaviour {
 
     void handleInput() {
         float h_mov = Input.GetAxis(jsHorizontal) * speed;
-        if (Mathf.Abs(rb.velocity.x) < maxVelocity) 
-            rb.velocity += new Vector2(h_mov, 0);
+        if (Mathf.Abs(rb.velocity.x) < maxVelocity)
+            move(h_mov);
         if (Input.GetButtonDown(jsJump)) 
             jump();
         if (Input.GetButtonDown(jsFire1)) 
@@ -154,19 +159,35 @@ public class Player : MonoBehaviour {
         rb.AddForce(new Vector2(0, jumpForce));
     }
 
+    void move(float movement) {
+        rb.velocity += new Vector2(movement, 0);
+    }
+
     void OnCollisionEnter2D(Collision2D target) {
-        if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform))
-            target.gameObject.GetComponent<Player>().takeHit();
+        if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
+            //float hitStrength = velocityHitMagnitude(rb.velocity);
+            //target.gameObject.GetComponent<Player>().takeHit(hitSizeIncrement + hitStrength);
+            //giveHit(hitSizeIncrement + hitStrength);
+            float hitStrength = velocityHitMagnitude(rb.velocity);
+            target.gameObject.GetComponent<Player>().takeHit(hitStrength);
+        }
         
         if (target.gameObject.tag == "Spikes")
             killPlayer();
     }
 
-    public void takeHit() {
-        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
-        currentSizeIncrements++;
-        if (currentSizeIncrements > maxSizeIncrements)
+    public void takeHit(float transferSize) {
+        changeSize(transferSize);
+        if (this.transform.localScale.magnitude > maxSize)
             killPlayer();
+    }
+
+    void giveHit(float transferSize) {
+        this.changeSize(- transferSize);
+    }
+
+    float velocityHitMagnitude(Vector2 velocity) {
+        return velocity.magnitude / 40;
     }
 
     void killPlayer() {
@@ -188,6 +209,19 @@ public class Player : MonoBehaviour {
     #endregion
 
     #region Tackle Bell
+    IEnumerator grow() {
+        while (true) {
+            yield return new WaitForSeconds(1.0f);
+            changeSize(timeSizeIncrement);
+        }
+    }
+
+    void changeSize(float sizeIncrement) {
+        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
+        if (this.transform.localScale.x < minSize)
+            this.transform.localScale = new Vector2(minSize, minSize);
+    }
+
     void resetTackle() {
         tackleBuildup = 0f;
         this.GetComponent<SpriteRenderer>().color = originalColor;

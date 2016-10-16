@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -68,11 +66,13 @@
     <Compile Include="Assets\Scripts\Game Over\GameOver.cs" />
     <Compile Include="Assets\Scripts\HushPuppy.cs" />
     <Compile Include="Assets\Scripts\Interscene\PlayerDatabase.cs" />
+    <Compile Include="Assets\Scripts\Interscene\SpecialCamera.cs" />
     <Compile Include="Assets\Scripts\Level\GameController.cs" />
     <Compile Include="Assets\Scripts\Level\Platform.cs" />
     <Compile Include="Assets\Scripts\Level\Player.cs" />
-    <Compile Include="Assets\Scripts\Level\PlayerUIMarker.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerSpawner.cs" />
+    <Compile Include="Assets\Scripts\Level\PlayerTrappedDetector.cs" />
+    <Compile Include="Assets\Scripts\Level\PlayerUIMarker.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerUIStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

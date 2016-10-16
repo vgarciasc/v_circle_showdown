@@ -26,6 +26,7 @@ public class Player : MonoBehaviour {
     PlayerUIStatus playerStatus;
     PlayerUIMarker playerMarker;
     GameController gcontroller;
+    SpecialCamera scamera;
 
     /*Reset variables*/
     Color originalColor;
@@ -48,7 +49,7 @@ public class Player : MonoBehaviour {
         timeSizeIncrement,
         maxSize,
         minSize;
-    bool onGround;
+    int corneredDetected = 0;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -62,6 +63,7 @@ public class Player : MonoBehaviour {
         originalColor = GetComponent<SpriteRenderer>().color;
         anim = GetComponent<Animator>();
         gcontroller = HushPuppy.findGameObject("GameController").GetComponent<GameController>();
+        scamera = Camera.main.GetComponent<SpecialCamera>();
 
         /*Default values*/
         speed = 0.3f;
@@ -72,10 +74,9 @@ public class Player : MonoBehaviour {
         tackleForce = 50f;
         jumpForce = 300f;
         hitSizeIncrement = 0.2f;
-        timeSizeIncrement = 0.05f;
+        timeSizeIncrement = 0.02f;
         maxSize = 15f;
         minSize = 0.6f;
-        onGround = false;
 
         /*Init functions*/
         resetTackle();
@@ -142,6 +143,8 @@ public class Player : MonoBehaviour {
     }
 
     void handleInput() {
+        //if (Input.GetKeyDown(KeyCode.G))
+        //    Camera.main.GetComponent<SpecialCamera>().screenShake_(0.1f);
         float h_mov = Input.GetAxis(jsHorizontal) * speed;
         if (Mathf.Abs(rb.velocity.x) < maxVelocity)
             move(h_mov);
@@ -165,21 +168,24 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
-            //float hitStrength = velocityHitMagnitude(rb.velocity);
-            //target.gameObject.GetComponent<Player>().takeHit(hitSizeIncrement + hitStrength);
-            //giveHit(hitSizeIncrement + hitStrength);
             float hitStrength = velocityHitMagnitude(rb.velocity);
-            target.gameObject.GetComponent<Player>().takeHit(hitStrength);
+            shakeScreen(hitStrength);
+            target.gameObject.GetComponent<Player>().takeHit(hitSizeIncrement + hitStrength);
+            giveHit(hitSizeIncrement + hitStrength);
+            //float hitStrength = velocityHitMagnitude(rb.velocity);
+            //target.gameObject.GetComponent<Player>().takeHit(hitStrength);
         }
         
         if (target.gameObject.tag == "Spikes")
             killPlayer();
     }
 
+    void shakeScreen(float hitStrength) {
+        scamera.screenShake_(hitStrength);
+    }
+
     public void takeHit(float transferSize) {
         changeSize(transferSize);
-        if (this.transform.localScale.magnitude > maxSize)
-            killPlayer();
     }
 
     void giveHit(float transferSize) {
@@ -211,15 +217,21 @@ public class Player : MonoBehaviour {
     #region Tackle Bell
     IEnumerator grow() {
         while (true) {
-            yield return new WaitForSeconds(1.0f);
-            changeSize(timeSizeIncrement);
+            yield return new WaitForEndOfFrame();
+            changeSize(timeSizeIncrement * Time.deltaTime);
         }
     }
 
     void changeSize(float sizeIncrement) {
         this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
+        checkIfExplodingSize();
         if (this.transform.localScale.x < minSize)
             this.transform.localScale = new Vector2(minSize, minSize);
+    }
+
+    void checkIfExplodingSize() {
+        if (this.transform.localScale.magnitude > maxSize)
+            killPlayer();
     }
 
     void resetTackle() {
@@ -247,6 +259,14 @@ public class Player : MonoBehaviour {
         rb.velocity += direction;
         //rb.velocity += new Vector2(Mathf.Sign(rb.velocity.x) * 10f, 0);
         resetTackle();
+    }
+    #endregion
+
+    #region Cornered Detection
+    public void corneredDetection(bool value) {
+        corneredDetected++;
+        if (corneredDetected >= 2)
+            killPlayer();
     }
     #endregion
 }

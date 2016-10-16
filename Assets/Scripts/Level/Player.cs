@@ -18,6 +18,8 @@ public class Player : MonoBehaviour {
     GameObject playerStatus_prefab;
     [SerializeField]
     GameObject playerMarker_prefab;
+    [SerializeField]
+    ParticleSystem explosion_psystem;
 
     GameObject playerStatus_container;
 
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour {
         jsJump;
 
     /*Other*/
+    [Header("Other")]
     public int playerID = -1;
     public string joystick;
     float tackleForce,
@@ -81,6 +84,7 @@ public class Player : MonoBehaviour {
         /*Init functions*/
         resetTackle();
         startUI();
+        startPsystem();
         StartCoroutine(checkOutOfScreen());
         StartCoroutine(grow());
         createJoystickInput();
@@ -145,6 +149,9 @@ public class Player : MonoBehaviour {
     void handleInput() {
         //if (Input.GetKeyDown(KeyCode.G))
         //    Camera.main.GetComponent<SpecialCamera>().screenShake_(0.1f);
+        if (Input.GetKeyDown(KeyCode.K))
+            killPlayer();
+
         float h_mov = Input.GetAxis(jsHorizontal) * speed;
         if (Mathf.Abs(rb.velocity.x) < maxVelocity)
             move(h_mov);
@@ -175,7 +182,9 @@ public class Player : MonoBehaviour {
             //float hitStrength = velocityHitMagnitude(rb.velocity);
             //target.gameObject.GetComponent<Player>().takeHit(hitStrength);
         }
-        
+    }
+
+    void OnTriggerEnter2D(Collider2D target) {
         if (target.gameObject.tag == "Spikes")
             killPlayer();
     }
@@ -267,6 +276,20 @@ public class Player : MonoBehaviour {
         corneredDetected++;
         if (corneredDetected >= 2)
             killPlayer();
+    }
+    #endregion
+
+    #region Particle System
+    void startPsystem() {
+        Color aux = originalColor;
+        aux += new Color(0.3f, 0.3f, 0.3f);
+        explosion_psystem.startColor = aux;
+    }
+
+    void startEmission() {
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        scamera.screenShake_(2f);
+        explosion_psystem.gameObject.SetActive(true);
     }
     #endregion
 }

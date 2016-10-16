@@ -91,10 +91,9 @@ public class PlayerDatabase : MonoBehaviour {
         //                { Color.yellow, false } };
 
         baseColors = new List<Color> {
-            Color.green, Color.gray,
+            Color.green, Color.yellow,
             Color.cyan, Color.blue,
-            Color.red, Color.magenta,
-            Color.yellow };
+            Color.red, Color.magenta};
     }
 
     Color getRandomPlayerColor() {

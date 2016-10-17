@@ -63,6 +63,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="v_circle_showdown.CSharp.Plugins.csproj">
+      <Project>{5415A96C-F7CE-63BE-7694-F66A5D0EA680}</Project>
+      <Name>v_circle_showdown.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\Scripts\Game Over\GameOver.cs" />
     <Compile Include="Assets\Scripts\HushPuppy.cs" />
     <Compile Include="Assets\Scripts\Interscene\PlayerDatabase.cs" />
@@ -74,6 +80,10 @@
     <Compile Include="Assets\Scripts\Level\PlayerTrappedDetector.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerUIMarker.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerUIStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Plugins\OutlineEffect\Resources\OutlineEffect\OutlineBufferShader.shader" />
+    <None Include="Assets\Plugins\OutlineEffect\Resources\OutlineEffect\OutlineShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -3,16 +3,43 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Player : MonoBehaviour {
+    /* Custom values for testing */
     [Header("Serialized Variables")]
     [SerializeField]
-    float speed;
+    [Range(0, 1f)]
+    float speed = 0.3f;
     [SerializeField]
-    float maxVelocity;
+    float maxVelocity = 6f;
     [SerializeField]
-    float maxTackleBuildup;
+    float maxTackleBuildup = 100f;
     [SerializeField]
     float maxSecondsOutOfScreen = 3f;
+    [SerializeField]
+    [Range(0, 300f)]
+    float tackleForce = 50f;
+    [SerializeField]
+    float tackleWeight = 0.5f;
+    [SerializeField]
+    [Range(0, 900f)]
+    float jumpForce = 300f;
+    [SerializeField]
+    [Range(0, 1f)]
+    float hitSizeIncrement = 0.2f;
+    [SerializeField]
+    [Range(0, 0.2f)]
+    float timeSizeIncrement = 0.02f;
+    [SerializeField]
+    float maxSize = 15f;
+    [SerializeField]
+    float minSize = 0.6f;
+    [SerializeField]
+    [Range(1, 80f)]
+    float hitTransferRatio = 40f;
+    [SerializeField]
+    [Range(0, 60)]
+    int invincibleFrames = 20;
 
+    /*Reference to objects in scene*/
     [Header("Prefabs and References")]
     [SerializeField]
     GameObject playerStatus_prefab;
@@ -44,15 +71,8 @@ public class Player : MonoBehaviour {
     [Header("Other")]
     public int playerID = -1;
     public string joystick;
-    float tackleForce,
-        tackleWeight,
-        tackleBuildup;
-    float jumpForce;
-    float hitSizeIncrement,
-        timeSizeIncrement,
-        maxSize,
-        minSize;
-    int corneredDetected = 0;
+    float tackleBuildup;
+    bool invincible = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -69,17 +89,7 @@ public class Player : MonoBehaviour {
         scamera = Camera.main.GetComponent<SpecialCamera>();
 
         /*Default values*/
-        speed = 0.3f;
-        maxVelocity = 6f;
-        maxTackleBuildup = 100f;
         originalMass = rb.mass;
-        tackleWeight = 0.5f;
-        tackleForce = 50f;
-        jumpForce = 300f;
-        hitSizeIncrement = 0.2f;
-        timeSizeIncrement = 0.02f;
-        maxSize = 15f;
-        minSize = 0.6f;
 
         /*Init functions*/
         resetTackle();
@@ -175,10 +185,14 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
+            Player enemy = target.gameObject.GetComponent<Player>();
+            if (enemy.isInvincible()) return;
+
             float hitStrength = velocityHitMagnitude(rb.velocity);
             shakeScreen(hitStrength);
-            target.gameObject.GetComponent<Player>().takeHit(hitSizeIncrement + hitStrength);
-            giveHit(hitSizeIncrement + hitStrength);
+            this.giveHit(hitSizeIncrement + hitStrength);
+            enemy.takeHit(hitSizeIncrement + hitStrength);
+
             //float hitStrength = velocityHitMagnitude(rb.velocity);
             //target.gameObject.GetComponent<Player>().takeHit(hitStrength);
         }
@@ -189,12 +203,22 @@ public class Player : MonoBehaviour {
             killPlayer();
     }
 
+    public bool isInvincible() { return invincible; }
+
     void shakeScreen(float hitStrength) {
         scamera.screenShake_(hitStrength);
     }
 
     public void takeHit(float transferSize) {
         changeSize(transferSize);
+        StartCoroutine(temporaryInvincibility(invincibleFrames));
+    }
+
+    IEnumerator temporaryInvincibility(int frames) {
+        invincible = true;
+        for (int i = 0; i < frames; i++)
+            yield return new WaitForEndOfFrame();
+        invincible = false;
     }
 
     void giveHit(float transferSize) {
@@ -202,7 +226,7 @@ public class Player : MonoBehaviour {
     }
 
     float velocityHitMagnitude(Vector2 velocity) {
-        return velocity.magnitude / 40;
+        return (velocity.magnitude * this.transform.localScale.x) / (5f * hitTransferRatio);
     }
 
     void killPlayer() {
@@ -239,8 +263,10 @@ public class Player : MonoBehaviour {
     }
 
     void checkIfExplodingSize() {
-        if (this.transform.localScale.magnitude > maxSize)
+        if (this.transform.localScale.x > maxSize) {
+            Debug.Log("Morte por grandeza: this.transform.localScale.x = " + transform.localScale.x);
             killPlayer();
+        }
     }
 
     void resetTackle() {
@@ -272,8 +298,21 @@ public class Player : MonoBehaviour {
     #endregion
 
     #region Cornered Detection
-    public void corneredDetection(bool value) {
-        corneredDetected++;
+    //caso esse codigo gere erros no futuro, voce deve simplesmente alterar os colliders de detecçao de entalamento no prefab pra que eles
+    //sejam menores. a precisao de detecçao de entalamento é sacrificada, mas pelo menos gera menos bugs
+    //bool[] corneredDetected = new bool[2];
+    //public void corneredDetection(int detectorID, bool value) {
+    //    corneredDetected[detectorID] = value;
+    //    if (corneredDetected[0] && corneredDetected[1]) {
+    //        killPlayer();
+    //    }
+    //}
+
+    int corneredDetected = 0;
+    public void corneredDetection(int detectorID, bool value) {
+        if (value) corneredDetected++; else corneredDetected--;
+        if (corneredDetected <= 0)
+            corneredDetected = 0;
         if (corneredDetected >= 2)
             killPlayer();
     }

@@ -28,6 +28,6 @@ public class PlayerTrappedDetector : MonoBehaviour {
 
     IEnumerator waitAndSee() {
         yield return new WaitForSeconds(1.0f);
-        if (colliding) player.corneredDetection(true);
+        player.corneredDetection((int) myDirection, colliding);
     }
 }

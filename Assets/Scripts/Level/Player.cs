@@ -29,6 +29,9 @@ public class Player : MonoBehaviour {
     [Range(0, 0.2f)]
     float timeSizeIncrement = 0.02f;
     [SerializeField]
+    [Range(0.8f, 10.0f)]
+    float timeBetweenSpurts = 1.0f;
+    [SerializeField]
     float maxSize = 15f;
     [SerializeField]
     float minSize = 0.6f;
@@ -72,7 +75,10 @@ public class Player : MonoBehaviour {
     public int playerID = -1;
     public string joystick;
     float tackleBuildup;
-    bool invincible = false;
+    Vector3 lastVelocity;
+    bool invincible = false,
+        inArena = true,
+        grounded = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -100,9 +106,14 @@ public class Player : MonoBehaviour {
         createJoystickInput();
     }
 
-    void Update () {
-        handleInput();
+    void FixedUpdate() {
         manageTackle();
+        updateLastVelocity();
+        grounded = checkForGround();
+    }
+
+    void Update() {
+        handleInput();
         updateMarker();
     }
 
@@ -146,7 +157,7 @@ public class Player : MonoBehaviour {
     public void timeOut() { killPlayer(); }
     #endregion
 
-    #region Hit and Run
+    #region Input
     void createJoystickInput() {
         if (joystick.Length == 0) joystick = "_J0";
 
@@ -181,14 +192,23 @@ public class Player : MonoBehaviour {
 
     void move(float movement) {
         rb.velocity += new Vector2(movement, 0);
+        /*if (!grounded) {
+            float angle = Mathf.Abs(transform.rotation.z % 360);
+            if (angle < 90 || angle > 270)
+                transform.Rotate(new Vector3(0f, 0f, movement * -15));
+            else
+                transform.Rotate(new Vector3(0f, 0f, movement * 15));
+        }*/
     }
+    #endregion
 
+    #region Collision Treatment
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
 
-            float hitStrength = velocityHitMagnitude(rb.velocity);
+            float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
             this.giveHit(hitSizeIncrement + hitStrength);
             enemy.takeHit(hitSizeIncrement + hitStrength);
@@ -201,9 +221,18 @@ public class Player : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D target) {
         if (target.gameObject.tag == "Spikes")
             killPlayer();
+
+        if (target.gameObject.tag == "Arena")
+            inArena = true;
+    }
+
+    void OnTriggerExit2D(Collider2D target) {
+        if (target.gameObject.tag == "Arena")
+            inArena = false;
     }
 
     public bool isInvincible() { return invincible; }
+    public bool isInArena() { return inArena; }
 
     void shakeScreen(float hitStrength) {
         scamera.screenShake_(hitStrength);
@@ -222,11 +251,21 @@ public class Player : MonoBehaviour {
     }
 
     void giveHit(float transferSize) {
-        this.changeSize(- transferSize);
+        //this.changeSize(- transferSize);
     }
 
-    float velocityHitMagnitude(Vector2 velocity) {
-        return (velocity.magnitude * this.transform.localScale.x) / (5f * hitTransferRatio);
+    float velocityHitMagnitude() {
+        float aux = lastVelocity.x;
+        if (lastVelocity.y > aux) aux = lastVelocity.y;
+        if (lastVelocity.z > aux) aux = lastVelocity.z;
+
+        return aux/60;
+    }
+
+    void updateLastVelocity() {
+        lastVelocity.z = lastVelocity.y;
+        lastVelocity.y = lastVelocity.x;
+        lastVelocity.x = rb.velocity.magnitude;
     }
 
     void killPlayer() {
@@ -245,30 +284,50 @@ public class Player : MonoBehaviour {
         float angleBetweenPlayers = Mathf.Abs(Vector3.Angle(this.transform.up, transform.position - target.position) - 180f);
         return (angleBetweenPlayers < angle);
     }
+
+    public bool checkForGround() {
+        Vector2 start = new Vector2(transform.position.x, transform.position.y - 0.51f);
+
+        if (Physics2D.Raycast(start, Vector3.down, 0.2f, 1 << LayerMask.NameToLayer("Normal Wall"))) {
+            Debug.DrawRay(start, Vector2.down * 0.2f, Color.blue);
+            return true;
+        }
+
+        Debug.DrawRay(start, Vector2.down * 0.2f, Color.red);
+        return false;
+    }
     #endregion
 
-    #region Tackle Bell
+    #region Size Methods
     IEnumerator grow() {
+        /* Gradual Growth */
+        //while (true) {
+        //    yield return new WaitForEndOfFrame();
+        //    changeSize(timeSizeIncrement * Time.deltaTime);
+        //}
+
+        /*'Spurts' Growth */
         while (true) {
-            yield return new WaitForEndOfFrame();
-            changeSize(timeSizeIncrement * Time.deltaTime);
+            yield return new WaitForSeconds(timeBetweenSpurts);
+            changeSize(timeSizeIncrement);
         }
     }
 
     void changeSize(float sizeIncrement) {
         this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
-        checkIfExplodingSize();
+        checkSize();
+    }
+
+    void checkSize() {
+        if (this.transform.localScale.x > maxSize)
+            killPlayer();
         if (this.transform.localScale.x < minSize)
             this.transform.localScale = new Vector2(minSize, minSize);
     }
 
-    void checkIfExplodingSize() {
-        if (this.transform.localScale.x > maxSize) {
-            Debug.Log("Morte por grandeza: this.transform.localScale.x = " + transform.localScale.x);
-            killPlayer();
-        }
-    }
+    #endregion
 
+    #region Tackle Bell
     void resetTackle() {
         tackleBuildup = 0f;
         this.GetComponent<SpriteRenderer>().color = originalColor;
@@ -280,10 +339,16 @@ public class Player : MonoBehaviour {
             tackleBuildup = maxTackleBuildup;
 
         float perc = tackleBuildup / maxTackleBuildup;
+        perc /= 2f;
 
-        this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, 
-                                                            originalColor.g - perc,
-                                                            originalColor.b - perc);
+        if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc);
+        else if (originalColor.g >= originalColor.b && originalColor.g >= originalColor.r)
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g, originalColor.b - perc);
+        else if (originalColor.b >= originalColor.g && originalColor.b >= originalColor.r)
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b);
+        else
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc);
 
         rb.mass = originalMass + tackleWeight * perc;
     }

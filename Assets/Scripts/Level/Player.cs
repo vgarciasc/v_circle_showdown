@@ -63,17 +63,21 @@ public class Player : MonoBehaviour {
     /*Reset variables*/
     Color originalColor;
     float originalMass;
+    Vector3 originalScale;
 
     /*Joystick Input*/
     string jsHorizontal,
         jsVertical,
         jsFire1,
+        jsFire2,
+        jsFire3,
         jsJump;
 
     /*Other*/
     [Header("Other")]
     public int playerID = -1;
     public string joystick;
+    Item currentItem;
     float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
@@ -95,6 +99,7 @@ public class Player : MonoBehaviour {
 
         /*Default values*/
         originalMass = rb.mass;
+        originalScale = transform.localScale;
 
         /*Init functions*/
         resetTackle();
@@ -162,6 +167,8 @@ public class Player : MonoBehaviour {
 
         jsJump = "Jump" + joystick;
         jsFire1 = "Fire1" + joystick;
+        jsFire2 = "Fire2" + joystick;
+        jsFire3 = "Fire3" + joystick;
         jsHorizontal = "Horizontal" + joystick;
         jsVertical = "Vertical" + joystick;
     }
@@ -183,6 +190,8 @@ public class Player : MonoBehaviour {
             increaseTackleBuildup();
         if (Input.GetButtonUp(jsFire1)) 
             releaseTackle();
+        if (Input.GetButtonDown(jsFire2))
+            useItem(currentItem);
     }
 
     void jump() {
@@ -191,24 +200,10 @@ public class Player : MonoBehaviour {
 
     void move(float movement) {
         rb.velocity += new Vector2(movement, 0);
-        /*if (!grounded) {
-            float angle = Mathf.Abs(transform.rotation.z % 360);
-            if (angle < 90 || angle > 270)
-                transform.Rotate(new Vector3(0f, 0f, movement * -15));
-            else
-                transform.Rotate(new Vector3(0f, 0f, movement * 15));
-        }*/
     }
     #endregion
 
     #region Collision Treatment
-    void manageCollisionType() {
-        if (lastVelocity.x > 15f)
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        else
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
-    }
-
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
@@ -218,9 +213,6 @@ public class Player : MonoBehaviour {
             shakeScreen(hitStrength);
             this.giveHit(hitSizeIncrement + hitStrength);
             enemy.takeHit(hitSizeIncrement + hitStrength);
-
-            //float hitStrength = velocityHitMagnitude(rb.velocity);
-            //target.gameObject.GetComponent<Player>().takeHit(hitStrength);
         }
     }
 
@@ -233,6 +225,9 @@ public class Player : MonoBehaviour {
 
         if (target.gameObject.tag == "Portal")
             teleportTo(target.gameObject);
+
+        if (target.gameObject.tag == "Item")
+            getItem(target.gameObject.GetComponent<Item>());
     }
 
     void OnTriggerExit2D(Collider2D target) {
@@ -243,8 +238,13 @@ public class Player : MonoBehaviour {
     public bool isInvincible() { return invincible; }
     public bool isInArena() { return inArena; }
 
-    void shakeScreen(float hitStrength) {
-        scamera.screenShake_(hitStrength);
+    void shakeScreen(float hitStrength) { scamera.screenShake_(hitStrength); }
+
+    void manageCollisionType() {
+        if (lastVelocity.x > 15f)
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        else
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
     }
 
     public void takeHit(float transferSize) {
@@ -252,15 +252,15 @@ public class Player : MonoBehaviour {
         StartCoroutine(temporaryInvincibility(invincibleFrames));
     }
 
+    void giveHit(float transferSize) {
+        //this.changeSize(- transferSize);
+    }
+
     IEnumerator temporaryInvincibility(int frames) {
         invincible = true;
         for (int i = 0; i < frames; i++)
             yield return new WaitForEndOfFrame();
         invincible = false;
-    }
-
-    void giveHit(float transferSize) {
-        //this.changeSize(- transferSize);
     }
 
     float velocityHitMagnitude() {
@@ -417,5 +417,23 @@ public class Player : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
         inPortalCooldown = false;
     }
-    #endregion 
+    #endregion
+
+    #region Items
+    void getItem(Item item) {
+        currentItem = item;
+        playerStatus.showItem(item);
+        item.destroy();
+    }
+
+    void useItem(Item item) {
+        playerStatus.unshowItem();
+        if (item.type == Item.Type.HERBALIFE)
+            useHerbalife();
+    }
+
+    void useHerbalife() {
+        transform.localScale = originalScale;
+    }
+    #endregion
 }

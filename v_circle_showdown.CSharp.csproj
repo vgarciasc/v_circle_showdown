@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Interscene\PlayerDatabase.cs" />
     <Compile Include="Assets\Scripts\Interscene\SpecialCamera.cs" />
     <Compile Include="Assets\Scripts\Level\GameController.cs" />
+    <Compile Include="Assets\Scripts\Level\Item.cs" />
     <Compile Include="Assets\Scripts\Level\Platform.cs" />
     <Compile Include="Assets\Scripts\Level\Player.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerSpawner.cs" />

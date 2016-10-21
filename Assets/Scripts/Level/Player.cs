@@ -77,8 +77,7 @@ public class Player : MonoBehaviour {
     float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
-        inArena = true,
-        grounded = false;
+        inArena = true;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -110,7 +109,6 @@ public class Player : MonoBehaviour {
         manageCollisionType();
         manageTackle();
         updateLastVelocity();
-        checkForGround();
     }
 
     void Update() {
@@ -232,6 +230,9 @@ public class Player : MonoBehaviour {
 
         if (target.gameObject.tag == "Arena")
             inArena = true;
+
+        if (target.gameObject.tag == "Portal")
+            teleportTo(target.gameObject);
     }
 
     void OnTriggerExit2D(Collider2D target) {
@@ -279,6 +280,7 @@ public class Player : MonoBehaviour {
     void killPlayer() {
         anim.SetTrigger("explode");
         playerStatus.playerKilled();
+        playerMarker.playerKilled();
     }
 
     //to be used only by animation
@@ -291,18 +293,6 @@ public class Player : MonoBehaviour {
         float angle = 50f;
         float angleBetweenPlayers = Mathf.Abs(Vector3.Angle(this.transform.up, transform.position - target.position) - 180f);
         return (angleBetweenPlayers < angle);
-    }
-
-    void checkForGround() {
-        Vector2 start = new Vector2(transform.position.x, transform.position.y - 0.51f);
-
-        if (Physics2D.Raycast(start, Vector3.down, 0.2f, 1 << LayerMask.NameToLayer("Normal Wall"))) {
-            Debug.DrawRay(start, Vector2.down * 0.2f, Color.blue);
-            grounded = true;
-        }
-
-        Debug.DrawRay(start, Vector2.down * 0.2f, Color.red);
-        grounded = false;
     }
     #endregion
 
@@ -377,22 +367,24 @@ public class Player : MonoBehaviour {
     #region Cornered Detection
     //caso esse codigo gere erros no futuro, voce deve simplesmente alterar os colliders de detecçao de entalamento no prefab pra que eles
     //sejam menores. a precisao de detecçao de entalamento é sacrificada, mas pelo menos gera menos bugs
-    //bool[] corneredDetected = new bool[2];
-    //public void corneredDetection(int detectorID, bool value) {
-    //    corneredDetected[detectorID] = value;
-    //    if (corneredDetected[0] && corneredDetected[1]) {
-    //        killPlayer();
-    //    }
-    //}
-
-    int corneredDetected = 0;
+    bool[] corneredDetected = new bool[2];
     public void corneredDetection(int detectorID, bool value) {
-        if (value) corneredDetected++; else corneredDetected--;
-        if (corneredDetected <= 0)
-            corneredDetected = 0;
-        if (corneredDetected >= 2)
+        corneredDetected[detectorID] = value;
+        //if (playerID == 1) Debug.Log("corneredDetected[0]: " + corneredDetected[0]);
+        //if (playerID == 1) Debug.Log("corneredDetected[1]: " + corneredDetected[1]);
+        if (corneredDetected[0] && corneredDetected[1]) {
             killPlayer();
+        }
     }
+
+    //int corneredDetected = 0;
+    //public void corneredDetection(int detectorID, bool value) {
+    //    if (value) corneredDetected++; else corneredDetected--;
+    //    if (corneredDetected <= 0)
+    //        corneredDetected = 0;
+    //    if (corneredDetected >= 2)
+    //        killPlayer();
+    //}
     #endregion
 
     #region Particle System
@@ -403,9 +395,27 @@ public class Player : MonoBehaviour {
     }
 
     void startEmission() {
+        float scale = this.transform.localScale.x * 0.15f + 0.15f;
+        explosion_psystem.gameObject.transform.localScale = new Vector3(scale, scale, scale); 
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         scamera.screenShake_(2f);
         explosion_psystem.gameObject.SetActive(true);
     }
     #endregion
+
+    #region Portal
+    bool inPortalCooldown = false;
+    void teleportTo(GameObject portal) {
+        if (inPortalCooldown) return;
+        Vector3 position = portal.GetComponent<Portal>().nextPortal().transform.position;
+        this.transform.position = position;
+        StartCoroutine(portalCooldown());
+    }
+
+    IEnumerator portalCooldown() {
+        inPortalCooldown = true;
+        yield return new WaitForSeconds(1.0f);
+        inPortalCooldown = false;
+    }
+    #endregion 
 }

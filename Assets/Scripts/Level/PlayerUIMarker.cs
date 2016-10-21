@@ -14,6 +14,10 @@ public class PlayerUIMarker : MonoBehaviour {
         this.GetComponent<Image>().color = playerColor;
     }
 
+    public void playerKilled() {
+        toggleMarker(false);
+    }
+
     public void setPosition(Vector3 playerPos) {
         if (canvasRt == null)
             canvasRt = HushPuppy.findGameObject("Canvas").GetComponent<RectTransform>();

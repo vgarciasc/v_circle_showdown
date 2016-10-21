@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Level\PlayerTrappedDetector.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerUIMarker.cs" />
     <Compile Include="Assets\Scripts\Level\PlayerUIStatus.cs" />
+    <Compile Include="Assets\Scripts\Level\Portal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\OutlineEffect\Resources\OutlineEffect\OutlineBufferShader.shader" />

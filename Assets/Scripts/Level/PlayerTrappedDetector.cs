@@ -20,6 +20,13 @@ public class PlayerTrappedDetector : MonoBehaviour {
         }
     }
 
+    void OnCollisionStay2D(Collision2D target) {
+        if (target.gameObject.tag == "Floor") {
+            colliding = true;
+            StartCoroutine(waitAndSee());
+        }
+    }
+
     void OnCollisionExit2D(Collision2D target) {
         if (target.gameObject.tag == "Floor") {
             colliding = false;

@@ -107,9 +107,10 @@ public class Player : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        manageCollisionType();
         manageTackle();
         updateLastVelocity();
-        grounded = checkForGround();
+        checkForGround();
     }
 
     void Update() {
@@ -180,8 +181,8 @@ public class Player : MonoBehaviour {
             jump();
         if (Input.GetButtonDown(jsFire1)) 
             resetTackle();
-        if (Input.GetButton(jsFire1)) 
-            tackleBuildup += 1f;
+        if (Input.GetButton(jsFire1))
+            increaseTackleBuildup();
         if (Input.GetButtonUp(jsFire1)) 
             releaseTackle();
     }
@@ -203,6 +204,13 @@ public class Player : MonoBehaviour {
     #endregion
 
     #region Collision Treatment
+    void manageCollisionType() {
+        if (lastVelocity.x > 15f)
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        else
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
+    }
+
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
@@ -285,16 +293,16 @@ public class Player : MonoBehaviour {
         return (angleBetweenPlayers < angle);
     }
 
-    public bool checkForGround() {
+    void checkForGround() {
         Vector2 start = new Vector2(transform.position.x, transform.position.y - 0.51f);
 
         if (Physics2D.Raycast(start, Vector3.down, 0.2f, 1 << LayerMask.NameToLayer("Normal Wall"))) {
             Debug.DrawRay(start, Vector2.down * 0.2f, Color.blue);
-            return true;
+            grounded = true;
         }
 
         Debug.DrawRay(start, Vector2.down * 0.2f, Color.red);
-        return false;
+        grounded = false;
     }
     #endregion
 
@@ -332,6 +340,10 @@ public class Player : MonoBehaviour {
         tackleBuildup = 0f;
         this.GetComponent<SpriteRenderer>().color = originalColor;
         rb.mass = originalMass;
+    }
+
+    void increaseTackleBuildup() {
+        tackleBuildup += 1f;
     }
     
     void manageTackle() {

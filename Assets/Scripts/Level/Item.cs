@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Item : MonoBehaviour {
-    public enum Type { TRIANGLE, REVERSE, HERBALIFE, BLACK_HOLE };
+    public enum Type { NONE, TRIANGLE, REVERSE, HERBALIFE, BLACK_HOLE };
     public Type type;
 
     public void destroy() {

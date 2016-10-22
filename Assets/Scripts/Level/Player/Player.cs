@@ -50,6 +50,14 @@ public class Player : MonoBehaviour {
     GameObject playerMarker_prefab;
     [SerializeField]
     ParticleSystem explosion_psystem;
+    [SerializeField]
+    GameObject circleCollider;
+    [SerializeField]
+    GameObject triangleCollider;
+    [SerializeField]
+    Sprite circlePlayer;
+    [SerializeField]
+    Sprite trianglePlayer;
 
     GameObject playerStatus_container;
 
@@ -77,11 +85,12 @@ public class Player : MonoBehaviour {
     [Header("Other")]
     public int playerID = -1;
     public string joystick;
-    Item currentItem;
+    Item.Type currentItem;
     float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
-        inArena = true;
+        inArena = true,
+        isTriangle = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -91,8 +100,8 @@ public class Player : MonoBehaviour {
 
     void Start() {
         /*References*/
-        rb = GetComponent<Rigidbody2D>();
         originalColor = GetComponent<SpriteRenderer>().color;
+        rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         gcontroller = HushPuppy.findGameObject("GameController").GetComponent<GameController>();
         scamera = Camera.main.GetComponent<SpecialCamera>();
@@ -102,12 +111,14 @@ public class Player : MonoBehaviour {
         originalScale = transform.localScale;
 
         /*Init functions*/
-        resetTackle();
         startUI();
         startPsystem();
+        startAnimator();
+        createJoystickInput();
+        changeSprite(circlePlayer);
+        resetTackle();
         StartCoroutine(checkOutOfScreen());
         StartCoroutine(grow());
-        createJoystickInput();
     }
 
     void FixedUpdate() {
@@ -120,6 +131,12 @@ public class Player : MonoBehaviour {
         handleInput();
         updateMarker();
     }
+
+    #region Spritefest
+    void changeSprite(Sprite sprite) {
+        GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+    #endregion
 
     #region UI Elements
     void startUI() {
@@ -195,16 +212,18 @@ public class Player : MonoBehaviour {
     }
 
     void jump() {
+        if (isTriangle) return;
         rb.AddForce(new Vector2(0, jumpForce));
     }
 
     void move(float movement) {
+        if (isTriangle) return;
         rb.velocity += new Vector2(movement, 0);
     }
     #endregion
 
     #region Collision Treatment
-    void OnCollisionEnter2D(Collision2D target) {
+    public void signalColliderEnter(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
@@ -216,21 +235,24 @@ public class Player : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter2D(Collider2D target) {
-        if (target.gameObject.tag == "Spikes")
-            killPlayer();
-
-        if (target.gameObject.tag == "Arena")
-            inArena = true;
-
-        if (target.gameObject.tag == "Portal")
-            teleportTo(target.gameObject);
-
-        if (target.gameObject.tag == "Item")
-            getItem(target.gameObject.GetComponent<Item>());
+    public void signalTriggerEnter(Collider2D target) {
+        switch (target.gameObject.tag) {
+            case "Spikes":
+                killPlayer();
+                break;
+            case "Arena":
+                inArena = true;
+                break;
+            case "Portal":
+                teleportTo(target.gameObject);
+                break;
+            case "Item":
+                getItem(target.gameObject.GetComponent<Item>());
+                break;
+        }
     }
 
-    void OnTriggerExit2D(Collider2D target) {
+    public void signalTriggerExit(Collider2D target) {
         if (target.gameObject.tag == "Arena")
             inArena = false;
     }
@@ -278,21 +300,28 @@ public class Player : MonoBehaviour {
     }
 
     void killPlayer() {
+        anim.enabled = true;
         anim.SetTrigger("explode");
         playerStatus.playerKilled();
         playerMarker.playerKilled();
-    }
-
-    //to be used only by animation
-    void AnimationKillPlayer() {
-        gcontroller.checkGameOver();
-        Destroy(this.gameObject);
     }
 
     bool isLookingAtObject(Transform target) {
         float angle = 50f;
         float angleBetweenPlayers = Mathf.Abs(Vector3.Angle(this.transform.up, transform.position - target.position) - 180f);
         return (angleBetweenPlayers < angle);
+    }
+    #endregion
+
+    #region Animation
+    void startAnimator() {
+        anim.enabled = false;
+    }
+
+    //to be used only by animation
+    void AnimationKillPlayer() {
+        gcontroller.checkGameOver();
+        Destroy(this.gameObject);
     }
     #endregion
 
@@ -421,19 +450,42 @@ public class Player : MonoBehaviour {
 
     #region Items
     void getItem(Item item) {
-        currentItem = item;
+        currentItem = item.type;
         playerStatus.showItem(item);
         item.destroy();
     }
 
-    void useItem(Item item) {
+    void useItem(Item.Type itemType) {
+        if (itemType == Item.Type.NONE) return;
         playerStatus.unshowItem();
-        if (item.type == Item.Type.HERBALIFE)
-            useHerbalife();
+        currentItem = Item.Type.NONE;
+
+        switch (itemType) {
+            case Item.Type.HERBALIFE:
+                useHerbalife();
+                break;
+            case Item.Type.TRIANGLE:
+                StartCoroutine(useTrianglePotion());
+                break;
+        }
     }
 
     void useHerbalife() {
         transform.localScale = originalScale;
+    }
+
+    IEnumerator useTrianglePotion() {
+        isTriangle = true;
+        changeSprite(trianglePlayer);
+        circleCollider.SetActive(false);
+        triangleCollider.SetActive(true);
+
+        yield return new WaitForSeconds(5.0f);
+
+        isTriangle = false;
+        changeSprite(circlePlayer);
+        circleCollider.SetActive(true);
+        triangleCollider.SetActive(false);
     }
     #endregion
 }

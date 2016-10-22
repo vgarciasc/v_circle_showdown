@@ -28,11 +28,13 @@ public class PlayerSpawner : MonoBehaviour {
                         playerSpawnLocationManager.transform.GetChild(playerData.pprefs[i].playerID));
     }
 
-    void spawnPlayer(PlayerData data, Transform location) {
+    Player spawnPlayer(PlayerData data, Transform location) {
         Player aux = Instantiate(playerPrefab).GetComponent<Player>();
         aux.setPlayer(data.playerID, data.joystick, data.color);
         aux.transform.position = location.position;
-        aux.name = "Player " + (data.playerID + 1);
+        aux.name = "Player #" + (data.playerID + 1);
+
+        return aux;
     }
 
     void startDefaultGame() {

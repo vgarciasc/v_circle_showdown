@@ -8,7 +8,7 @@ public class PlayerTrappedDetector : MonoBehaviour {
     bool colliding;
 
 	void Start () {
-        player = this.transform.parent.parent.parent.parent.GetComponent<Player>();
+        player = this.transform.root.GetComponent<Player>();
         if (player == null)
             Debug.Log("Player not found by PlayerTrappedDetector.");
     }

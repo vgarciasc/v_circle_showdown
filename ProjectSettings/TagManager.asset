@@ -8,11 +8,12 @@ TagManager:
   - Player UI Container
   - Spikes
   - Player Data
-  - Player Spawn Location Manager
+  - Player Spawn Location
   - Canvas
   - Arena
   - Portal
   - Item
+  - Item Spawn Location
   layers:
   - Default
   - TransparentFX

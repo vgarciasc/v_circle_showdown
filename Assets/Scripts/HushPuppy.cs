@@ -98,6 +98,10 @@ public class HushPuppy : MonoBehaviour {
         return new Color(color.r, color.g, color.b, opacity);
     }
 
+    public static Color invertColor(Color color) {
+        return (new Color(1 - color.r, 1 - color.g, 1 - color.b, color.a));
+    }
+
     public void LoadScene(string scene) {
         SceneManager.LoadScene(scene);
     }

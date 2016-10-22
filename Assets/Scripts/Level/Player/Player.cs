@@ -41,6 +41,8 @@ public class Player : MonoBehaviour {
     [SerializeField]
     [Range(0, 60)]
     int invincibleFrames = 20;
+    [SerializeField]
+    float portalCooldown = 1.0f;
 
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
@@ -51,9 +53,9 @@ public class Player : MonoBehaviour {
     [SerializeField]
     ParticleSystem explosion_psystem;
     [SerializeField]
-    GameObject circleCollider;
+    GameObject trappedDetectors;
     [SerializeField]
-    GameObject triangleCollider;
+    GameObject triangleSpikes;
     [SerializeField]
     Sprite circlePlayer;
     [SerializeField]
@@ -67,6 +69,8 @@ public class Player : MonoBehaviour {
     PlayerUIMarker playerMarker;
     GameController gcontroller;
     SpecialCamera scamera;
+    PolygonCollider2D triangleCollider;
+    CircleCollider2D circleCollider;
 
     /*Reset variables*/
     Color originalColor;
@@ -90,7 +94,9 @@ public class Player : MonoBehaviour {
     Vector3 lastVelocity;
     bool invincible = false,
         inArena = true,
-        isTriangle = false;
+        blockInput = false,
+        isReversed = false,
+        inPortalCooldown = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -101,10 +107,12 @@ public class Player : MonoBehaviour {
     void Start() {
         /*References*/
         originalColor = GetComponent<SpriteRenderer>().color;
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponentInChildren<Rigidbody2D>();
         anim = GetComponent<Animator>();
         gcontroller = HushPuppy.findGameObject("GameController").GetComponent<GameController>();
         scamera = Camera.main.GetComponent<SpecialCamera>();
+        triangleCollider = GetComponent<PolygonCollider2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
 
         /*Default values*/
         originalMass = rb.mass;
@@ -212,30 +220,36 @@ public class Player : MonoBehaviour {
     }
 
     void jump() {
-        if (isTriangle) return;
+        if (blockInput) return;
         rb.AddForce(new Vector2(0, jumpForce));
     }
 
     void move(float movement) {
-        if (isTriangle) return;
+        if (blockInput) return;
         rb.velocity += new Vector2(movement, 0);
     }
     #endregion
 
     #region Collision Treatment
-    public void signalColliderEnter(Collision2D target) {
+    public void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
 
             float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
-            this.giveHit(hitSizeIncrement + hitStrength);
-            enemy.takeHit(hitSizeIncrement + hitStrength);
+
+            if (isReversed || enemy.isReversed) {
+                enemy.giveHit(hitSizeIncrement + hitStrength);
+                this.takeHit(hitSizeIncrement + hitStrength);
+            } else {
+                this.giveHit(hitSizeIncrement + hitStrength);
+                enemy.takeHit(hitSizeIncrement + hitStrength);
+            }
         }
     }
 
-    public void signalTriggerEnter(Collider2D target) {
+    public void OnTriggerEnter2D(Collider2D target) {
         switch (target.gameObject.tag) {
             case "Spikes":
                 killPlayer();
@@ -244,7 +258,7 @@ public class Player : MonoBehaviour {
                 inArena = true;
                 break;
             case "Portal":
-                teleportTo(target.gameObject);
+                target.GetComponent<Portal>().teleport(this.gameObject);
                 break;
             case "Item":
                 getItem(target.gameObject.GetComponent<Item>());
@@ -252,7 +266,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public void signalTriggerExit(Collider2D target) {
+    public void OnTriggerExit2D(Collider2D target) {
         if (target.gameObject.tag == "Arena")
             inArena = false;
     }
@@ -270,6 +284,11 @@ public class Player : MonoBehaviour {
     }
 
     public void takeHit(float transferSize) {
+        if (isReversed) {
+            giveHit(transferSize);
+            
+        }
+
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(invincibleFrames));
     }
@@ -301,9 +320,9 @@ public class Player : MonoBehaviour {
 
     void killPlayer() {
         anim.enabled = true;
-        anim.SetTrigger("explode");
         playerStatus.playerKilled();
         playerMarker.playerKilled();
+        anim.SetTrigger("explode");
     }
 
     bool isLookingAtObject(Transform target) {
@@ -432,24 +451,13 @@ public class Player : MonoBehaviour {
     }
     #endregion
 
-    #region Portal
-    bool inPortalCooldown = false;
-    void teleportTo(GameObject portal) {
-        if (inPortalCooldown) return;
-        Vector3 position = portal.GetComponent<Portal>().nextPortal().transform.position;
-        this.transform.position = position;
-        StartCoroutine(portalCooldown());
-    }
-
-    IEnumerator portalCooldown() {
-        inPortalCooldown = true;
-        yield return new WaitForSeconds(1.0f);
-        inPortalCooldown = false;
-    }
-    #endregion
-
     #region Items
     void getItem(Item item) {
+        if (item.type == Item.Type.BLACK_HOLE) {
+            item.activateBlackHole();
+            return;
+        }
+
         currentItem = item.type;
         playerStatus.showItem(item);
         item.destroy();
@@ -465,7 +473,12 @@ public class Player : MonoBehaviour {
                 useHerbalife();
                 break;
             case Item.Type.TRIANGLE:
-                StartCoroutine(useTrianglePotion());
+                StartCoroutine(useTrianglePotion(Item.triangleDuration));
+                break;
+            case Item.Type.BLACK_HOLE:
+                break;
+            case Item.Type.REVERSE:
+                StartCoroutine(useReverse(Item.reverseDuration));
                 break;
         }
     }
@@ -474,18 +487,33 @@ public class Player : MonoBehaviour {
         transform.localScale = originalScale;
     }
 
-    IEnumerator useTrianglePotion() {
-        isTriangle = true;
+    IEnumerator useTrianglePotion(float duration) {
+        blockInput = true;
         changeSprite(trianglePlayer);
-        circleCollider.SetActive(false);
-        triangleCollider.SetActive(true);
+        triangleSpikes.SetActive(true);
+        trappedDetectors.SetActive(false);
+        circleCollider.enabled = false;
+        triangleCollider.enabled = true;
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(duration);
 
-        isTriangle = false;
+        blockInput = false;
         changeSprite(circlePlayer);
-        circleCollider.SetActive(true);
-        triangleCollider.SetActive(false);
+        triangleSpikes.SetActive(false);
+        trappedDetectors.SetActive(true);
+        circleCollider.enabled = true;
+        triangleCollider.enabled = false;
+    }
+
+    IEnumerator useReverse(float duration) {
+        isReversed = true;
+        Color aux = originalColor;
+        originalColor = HushPuppy.invertColor(originalColor);
+
+        yield return new WaitForSeconds(duration);
+
+        originalColor = aux;
+        isReversed = false;
     }
     #endregion
 }

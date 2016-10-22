@@ -9,7 +9,7 @@ public class PlayerSpawner : MonoBehaviour {
     GameObject playerSpawnLocationManager;
 
     void Start() {
-        playerSpawnLocationManager = HushPuppy.findGameObject("Player Spawn Location Manager");
+        playerSpawnLocationManager = HushPuppy.findGameObject("Player Spawn Location");
 
         GameObject playerDataObject = HushPuppy.findGameObject("Player Data");
 

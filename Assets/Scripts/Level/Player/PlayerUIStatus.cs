@@ -33,7 +33,8 @@ public class PlayerUIStatus : MonoBehaviour {
         this.time.enabled = value; }
     #endregion
 
-    public void playerKilled() { 
+    public void playerKilled() {
+        unshowItem();
         redCross.enabled = true;
         setTime(false);
     }

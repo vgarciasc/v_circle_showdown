@@ -11,6 +11,21 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1000013048008582}
   m_IsPrefabParent: 1
+--- !u!1 &1000010425124188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000012643165038}
+  m_Layer: 8
+  m_Name: Item Spawn Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000013048008582
 GameObject:
   m_ObjectHideFlags: 0
@@ -22,6 +37,7 @@ GameObject:
   - 212: {fileID: 212000013069849202}
   - 61: {fileID: 61000011077388196}
   - 50: {fileID: 50000012213485968}
+  - 114: {fileID: 114000014216442180}
   m_Layer: 8
   m_Name: Rotating Platform
   m_TagString: Floor
@@ -36,11 +52,25 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013048008582}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.29, y: -10.79, z: 0}
+  m_LocalPosition: {x: 4.0017185, y: -0.8739042, z: 0}
   m_LocalScale: {x: 9.263882, y: -0.67362136, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 4000012643165038}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &4000012643165038
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010425124188}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 4000010822745630}
   m_RootOrder: 0
 --- !u!50 &50000012213485968
 Rigidbody2D:
@@ -73,6 +103,19 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &114000014216442180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013048008582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3949dd847cbe6514b86b4e8cae6131f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemActivatedColor: {r: 0.076124564, g: 0.64705884, b: 0.12731177, a: 1}
+  itemPosition: {fileID: 4000012643165038}
 --- !u!212 &212000013069849202
 SpriteRenderer:
   m_ObjectHideFlags: 1

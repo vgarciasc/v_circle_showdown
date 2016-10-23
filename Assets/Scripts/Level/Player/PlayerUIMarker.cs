@@ -6,10 +6,6 @@ public class PlayerUIMarker : MonoBehaviour {
     RectTransform canvasRt;
     enum Border { None, Right, Left, Top, Bottom };
 
-    void Start() {
-        canvasRt = HushPuppy.findGameObject("Canvas").GetComponent<RectTransform>();
-    }
-
     public void setMarker(Color playerColor) {
         this.GetComponent<Image>().color = playerColor;
     }
@@ -19,13 +15,16 @@ public class PlayerUIMarker : MonoBehaviour {
     }
 
     public void setPosition(Vector3 playerPos) {
-        if (canvasRt == null)
-            canvasRt = HushPuppy.findGameObject("Canvas").GetComponent<RectTransform>();
+        if (canvasRt == null) getCanvasRect();
 
         Vector2 screenPos = Camera.main.WorldToScreenPoint(playerPos);
         Vector2 viewportPos = Camera.main.WorldToViewportPoint(playerPos);
         this.transform.position = new Vector2(screenPos.x, screenPos.y);
         placeBorder(outOfScreen(viewportPos));
+    }
+
+    void getCanvasRect() {
+        canvasRt = HushPuppy.canvas.GetComponent<RectTransform>();
     }
 
     Border outOfScreen(Vector2 pos) {

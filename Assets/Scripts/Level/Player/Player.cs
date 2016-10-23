@@ -67,7 +67,6 @@ public class Player : MonoBehaviour {
     Animator anim;
     PlayerUIStatus playerStatus;
     PlayerUIMarker playerMarker;
-    GameController gcontroller;
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
@@ -109,7 +108,6 @@ public class Player : MonoBehaviour {
         originalColor = GetComponent<SpriteRenderer>().color;
         rb = GetComponentInChildren<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        gcontroller = HushPuppy.findGameObject("GameController").GetComponent<GameController>();
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
@@ -148,7 +146,7 @@ public class Player : MonoBehaviour {
 
     #region UI Elements
     void startUI() {
-        GameObject playerUI_container = HushPuppy.findGameObject("Player UI Container");
+        GameObject playerUI_container = HushPuppy.playerUIContainer;
 
         playerStatus = Instantiate(playerStatus_prefab).GetComponent<PlayerUIStatus>();
         playerStatus.name = "Player " + (playerID + 1) + " Status";
@@ -213,8 +211,10 @@ public class Player : MonoBehaviour {
             resetTackle();
         if (Input.GetButton(jsFire1))
             increaseTackleBuildup();
-        if (Input.GetButtonUp(jsFire1)) 
-            releaseTackle();
+        if (Input.GetButtonUp(jsFire1) && Input.GetButton(jsJump))
+            releaseTackle(1.5f);
+        else if (Input.GetButtonUp(jsFire1))
+            releaseTackle(1f);
         if (Input.GetButtonDown(jsFire2))
             useItem(currentItem);
     }
@@ -339,7 +339,7 @@ public class Player : MonoBehaviour {
 
     //to be used only by animation
     void AnimationKillPlayer() {
-        gcontroller.checkGameOver();
+        Hub.gameController.checkGameOver();
         Destroy(this.gameObject);
     }
     #endregion
@@ -403,9 +403,9 @@ public class Player : MonoBehaviour {
         rb.mass = originalMass + tackleWeight * perc;
     }
 
-    void releaseTackle() {
+    void releaseTackle(float power) {
         float perc = tackleBuildup / maxTackleBuildup;
-        Vector2 direction = this.transform.up * tackleForce * perc;
+        Vector2 direction = this.transform.up * tackleForce * perc * power;
         rb.velocity += direction;
         //rb.velocity += new Vector2(Mathf.Sign(rb.velocity.x) * 10f, 0);
         resetTackle();

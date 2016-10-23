@@ -18,7 +18,7 @@ public class GameOver : MonoBehaviour {
     GameObject playerPrefab;
 
     void Start () {
-        PlayerDatabase pd = HushPuppy.findGameObject("Player Data").GetComponent<PlayerDatabase>();
+        PlayerDatabase pd = HushPuppy.playerDatabase;
         if (pd.winnerID == -1) {
             playerSprite.sprite = redcross;
             victoryMessage.text = "IT'S A TIE!";

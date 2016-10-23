@@ -11,6 +11,10 @@ public class Portal : MonoBehaviour {
     
     static List<GameObject> inCooldown = new List<GameObject>();
 
+    void Update() {
+        this.transform.Rotate(new Vector3(0f, 0f, 0.5f));
+    }
+
     Portal nextPortal() {
         return possibleExits[Random.Range(0, possibleExits.Length)];
     }

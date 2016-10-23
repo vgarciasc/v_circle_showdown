@@ -3,14 +3,59 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class HushPuppy : MonoBehaviour {
-    public static GameObject findGameObject(string name) {
+static class HushPuppy {
+    public static ItemSpawner itemSpawner;
+    public static GameController gameController;
+    public static PlayerDatabase playerDatabase;
+    public static SpawnLocations itemSpawnLocations,
+        playerSpawnLocations;
+
+    public static Canvas canvas;
+
+    public static GameObject playerUIContainer;
+
+    static HushPuppy() {
+        itemSpawner = (ItemSpawner) safeFindComponent("GameController", "ItemSpawner");
+        gameController = (GameController) safeFindComponent("GameController", "GameController");
+        playerDatabase = (PlayerDatabase) safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        itemSpawnLocations = (SpawnLocations) safeFindComponent("ItemSpawnLocations", "SpawnLocations");
+        playerSpawnLocations = (SpawnLocations) safeFindComponent("PlayerSpawnLocations", "SpawnLocations");
+
+        canvas = (Canvas) safeFindComponent("Canvas", "Canvas");
+
+        playerUIContainer = safeFind("PlayerUIContainer");
+    }
+
+    static GameObject safeFind(string name) {
         GameObject go = GameObject.FindGameObjectWithTag(name);
-        if (go == null)
-            Debug.Log(name + " not found.");
+        if (go == null) {
+            Debug.Log("'" + name + "' not found.");
+            Debug.Break(); }
 
         return go;
     }
+
+    static Component safeComponent(GameObject go, string componentName) {
+        Component c = go.GetComponent(componentName);
+        if (c == null) {
+            Debug.Log("'" + componentName + "' component not found in GameObject '" + go.name + "'.");
+            Debug.Break(); }
+
+        return c;
+    }
+
+    public static Component safeFindComponent(string gameObjectName, string componentName) {
+        GameObject go = safeFind(gameObjectName);
+        if (go == null) {
+            Debug.Log("'" + gameObjectName + "' not found.");
+            Debug.Break();
+            return null; }
+        Component c = safeComponent(go, componentName);
+        return c;
+    }
+
+    //Static methods that should exist in unity
+    #region Unity Methods
 
     public static void destroyChildren(GameObject go) {
         foreach (Transform child in go.transform)
@@ -101,8 +146,5 @@ public class HushPuppy : MonoBehaviour {
     public static Color invertColor(Color color) {
         return (new Color(1 - color.r, 1 - color.g, 1 - color.b, color.a));
     }
-
-    public void LoadScene(string scene) {
-        SceneManager.LoadScene(scene);
-    }
+    #endregion
 }

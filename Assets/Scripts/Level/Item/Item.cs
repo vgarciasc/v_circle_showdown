@@ -21,6 +21,7 @@ public class Item : MonoBehaviour {
     }
 
     public void destroy() {
+        HushPuppy.itemSpawner.setItemInGame(false);
         Destroy(this.gameObject);
     }
 
@@ -31,5 +32,10 @@ public class Item : MonoBehaviour {
     public void activateBlackHole() {
         Instantiate(blackhole, this.transform.position, Quaternion.identity);
         destroy();
+    }
+
+    public void setRandomType() {
+        //you ain't gonna get (Item.Type) NONE
+        this.type = (Type) Random.Range(1, System.Enum.GetNames(typeof(Type)).Length);
     }
 }

@@ -1,15 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour {
-    GameObject itemSpawnLocations;
+    SpawnLocations itemSpawnLocations;
+    [SerializeField]
+    GameObject itemPrefab;
+
+    bool itemInGame = false;
 
 	void Start () {
-        itemSpawnLocations = HushPuppy.findGameObject("Item Spawn Location");
+        itemSpawnLocations = HushPuppy.itemSpawnLocations;
+        StartCoroutine(handleSpawns());
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    public void setItemInGame(bool value) {
+        itemInGame = value;
+    }
+
+    IEnumerator handleSpawns() {
+        while (true) {
+            yield return new WaitUntil(() => !itemInGame);
+            yield return new WaitForSeconds(5.0f);
+            if (!itemInGame)
+                activateRotatingPlatformItem(getRandomRotatingPlatform());
+        }
+    }
+
+    RotatingPlatform getRandomRotatingPlatform() {
+        GameObject[] floors = GameObject.FindGameObjectsWithTag("Floor");
+        List<RotatingPlatform> rotatingPlatforms = new List<RotatingPlatform>();
+
+        for (int i = 0; i < floors.Length; i++) {
+            RotatingPlatform aux = floors[i].GetComponent<RotatingPlatform>();
+            if (aux != null)
+                rotatingPlatforms.Add(aux);
+        }
+
+        return rotatingPlatforms[Random.Range(0, rotatingPlatforms.Count)];
+    }
+
+    void activateRotatingPlatformItem(RotatingPlatform rp) {
+        rp.switchItem(true);
+        itemInGame = true;
+    }
+
+    //spawn an item of type 'itemType'
+    public void spawnItem(Vector3 location, Item.Type itemType) {
+        GameObject aux = (GameObject) Instantiate(itemPrefab, location, Quaternion.identity);
+        Item item = aux.GetComponent<Item>();
+        item.type = itemType;
+    }
+
+    //spawn item of random type
+    public void spawnItem(Vector3 location) {
+        GameObject aux = (GameObject)Instantiate(itemPrefab, location, Quaternion.identity);
+        Item item = aux.GetComponent<Item>();
+        item.setRandomType();
+    }
 }

@@ -36,7 +36,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011800157578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.16, y: -7.68, z: 0}
+  m_LocalPosition: {x: -0.8637943, y: -6.3303957, z: 0}
   m_LocalScale: {x: 1.5468069, y: 1.5468069, z: 3.0936139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -70,11 +70,11 @@ MonoBehaviour:
   type: 2
   blackhole: {fileID: 1000011593831764, guid: 584e127e0e08b5a4a86a4cbcab9bae6f, type: 2}
   itemSprite:
-  - {fileID: 21300000, guid: 17fe32a55475c6e48a302bff5f1ac5b8, type: 3}
+  - {fileID: 0}
   - {fileID: 21300000, guid: 1d6791c2116720546ac4d1f288375c98, type: 3}
-  - {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 21300000, guid: 2c509707c75761746a839ee6f8c398f0, type: 3}
   - {fileID: 21300000, guid: eb901c5973d27154c9452a98076b67ac, type: 3}
-  - {fileID: 21300000, guid: 3dc18d90c65b61748a2f2523a90ba7f3, type: 3}
+  - {fileID: 21300000, guid: bcca134f9ec77f3449a9543bc3523a7e, type: 3}
 --- !u!212 &212000014175178286
 SpriteRenderer:
   m_ObjectHideFlags: 1

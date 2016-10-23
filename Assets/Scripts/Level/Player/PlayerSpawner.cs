@@ -6,32 +6,29 @@ public class PlayerSpawner : MonoBehaviour {
     [SerializeField]
     GameObject playerPrefab;
 
-    GameObject playerSpawnLocationManager;
+    SpawnLocations playerSpawnLocations;
 
     void Start() {
-        playerSpawnLocationManager = HushPuppy.findGameObject("Player Spawn Location");
+        playerSpawnLocations = HushPuppy.playerSpawnLocations;
 
-        GameObject playerDataObject = HushPuppy.findGameObject("Player Data");
-
-        if (playerDataObject == null) {
+        PlayerDatabase playerDatabase = HushPuppy.playerDatabase;
+        if (playerDatabase == null) {
             startDefaultGame(); return;
         }
 
-        PlayerDatabase playerData = playerDataObject.GetComponent<PlayerDatabase>();
-
-        if (playerSpawnLocationManager.transform.childCount < playerData.pprefs.Count) {
+        if (playerSpawnLocations.transform.childCount < playerDatabase.pprefs.Count) {
             Debug.Log("Not enough spawn points!"); return;
         }
 
-        for (int i = 0; i < playerData.pprefs.Count; i++)
-            spawnPlayer(playerData.pprefs[i],
-                        playerSpawnLocationManager.transform.GetChild(playerData.pprefs[i].playerID));
+        for (int i = 0; i < playerDatabase.pprefs.Count; i++)
+            spawnPlayer(playerDatabase.pprefs[i],
+                        playerSpawnLocations.getRandomUnusedLocation());
     }
 
-    Player spawnPlayer(PlayerData data, Transform location) {
+    Player spawnPlayer(PlayerData data, Vector3 location) {
         Player aux = Instantiate(playerPrefab).GetComponent<Player>();
         aux.setPlayer(data.playerID, data.joystick, data.color);
-        aux.transform.position = location.position;
+        aux.transform.position = location;
         aux.name = "Player #" + (data.playerID + 1);
 
         return aux;
@@ -39,6 +36,6 @@ public class PlayerSpawner : MonoBehaviour {
 
     void startDefaultGame() {
         PlayerData aux = new PlayerData("_J0", 0, 0, Color.white);
-        spawnPlayer(aux, playerSpawnLocationManager.transform.GetChild(0));
+        spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());
     }
 }

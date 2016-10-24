@@ -14,21 +14,21 @@ public class PlayerTrappedDetector : MonoBehaviour {
     }
 	
 	void OnCollisionEnter2D(Collision2D target) {
-        if (target.gameObject.layer == LayerMask.NameToLayer("Common Floor")) {
+        if (target.gameObject.layer == LayerMask.NameToLayer("CommonTerrain")) {
             colliding = true;
             StartCoroutine(waitAndSee());
         }
     }
 
     void OnCollisionStay2D(Collision2D target) {
-        if (target.gameObject.layer == LayerMask.NameToLayer("Common Floor")) {
+        if (target.gameObject.layer == LayerMask.NameToLayer("CommonTerrain")) {
             colliding = true;
             StartCoroutine(waitAndSee());
         }
     }
 
     void OnCollisionExit2D(Collision2D target) {
-        if (target.gameObject.layer == LayerMask.NameToLayer("Common Floor")) {
+        if (target.gameObject.layer == LayerMask.NameToLayer("CommonTerrain")) {
             colliding = false;
         }
     }

@@ -241,17 +241,17 @@ Prefab:
     - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
         type: 2}
       propertyPath: m_Color.r
-      value: 0.34299308
+      value: 0.75735295
       objectReference: {fileID: 0}
     - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
         type: 2}
       propertyPath: m_Color.g
-      value: 0.7647059
+      value: 0.033412617
       objectReference: {fileID: 0}
     - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
         type: 2}
       propertyPath: m_Color.b
-      value: 0.6949051
+      value: 0.033412617
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c2b9a71b3f38904fa73ab3444b95095, type: 2}
@@ -456,6 +456,21 @@ Prefab:
       propertyPath: m_Name
       value: Player Select Screen Text (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.7411761
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.14705884
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c2b9a71b3f38904fa73ab3444b95095, type: 2}
   m_IsPrefabParent: 0
@@ -595,6 +610,21 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.29411763
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.50344825
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c2b9a71b3f38904fa73ab3444b95095, type: 2}
@@ -879,6 +909,21 @@ Prefab:
     - target: {fileID: 1000011636827462, guid: 6c2b9a71b3f38904fa73ab3444b95095, type: 2}
       propertyPath: m_Name
       value: Player Select Screen Text (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.4632152
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.8602941
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011853203276, guid: 6c2b9a71b3f38904fa73ab3444b95095,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.08223397
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6c2b9a71b3f38904fa73ab3444b95095, type: 2}

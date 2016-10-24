@@ -20,6 +20,7 @@ public class SpawnLocations : MonoBehaviour {
     }
 
     void resetUnusedLocations() {
+        getLocations();
         unusedLocations.Clear();
         unusedLocations.AddRange(locations);
     }
@@ -36,6 +37,8 @@ public class SpawnLocations : MonoBehaviour {
         }
 
         int randomIndex = Random.Range(0, unusedLocations.Count);
+        Debug.Log("Random Index: " + randomIndex);
+        Debug.Log("unusedLocations.Count: " + unusedLocations.Count);
         Vector3 randomLocation = unusedLocations[randomIndex].position;
         unusedLocations.RemoveAt(randomIndex);
 

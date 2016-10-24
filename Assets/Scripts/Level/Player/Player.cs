@@ -51,6 +51,8 @@ public class Player : MonoBehaviour {
     [SerializeField]
     GameObject playerMarker_prefab;
     [SerializeField]
+    GameObject playerVictories_prefab;
+    [SerializeField]
     ParticleSystem explosion_psystem;
     [SerializeField]
     GameObject trappedDetectors;
@@ -151,12 +153,12 @@ public class Player : MonoBehaviour {
         GameObject playerUI_container = HushPuppy.safeFind("PlayerUIContainer");
 
         playerStatus = Instantiate(playerStatus_prefab).GetComponent<PlayerUIStatus>();
-        playerStatus.name = "Player " + (playerID + 1) + " Status";
+        playerStatus.name = "Player #" + (playerID + 1) + " Status";
         playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
-        playerStatus.setUI(playerID + 1, GetComponent<SpriteRenderer>());
+        playerStatus.setUI(playerID, GetComponent<SpriteRenderer>());
 
         playerMarker = Instantiate(playerMarker_prefab).GetComponent<PlayerUIMarker>();
-        playerMarker.name = "Player " + (playerID + 1) + " Marker";
+        playerMarker.name = "Player #" + (playerID + 1) + " Marker";
         playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
         playerMarker.setMarker(this.originalColor);
     }

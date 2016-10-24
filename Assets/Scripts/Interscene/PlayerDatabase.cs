@@ -9,6 +9,7 @@ public class PlayerData {
     public int joystickNum; //numero do joystick do jogador
     public int playerID; //ordem que o player apertou pra entrar no jogo
     public Color color; //sprite que ele escolheu pra jogar
+    public int victories = 0;
 
     public PlayerData(string joystick, int joystickNum, int playerID, Color color) {
         this.joystick = joystick;
@@ -23,11 +24,16 @@ public class PlayerDatabase : MonoBehaviour {
     bool hasSeenAGame = false;
     public List<PlayerData> pprefs = new List<PlayerData>();
     List<int> playersIn = new List<int>();
-    List<Color> baseColors = new List<Color>();
+
+    public int victoriesNeeded = 1;
     public int winnerID = -1;
 
-    //textos que ficam ativos quando o joystick entra em jogo
-    public GameObject playerTexts;
+    [SerializeField] 
+    List<Color> playerColors = new List<Color>();
+    List<Color> currentColorArray = new List<Color>();
+
+    [SerializeField]
+    GameObject playerTexts; //textos que ficam ativos quando o joystick entra em jogo
 
     void Start() {
         deleteNewerCopies();
@@ -40,6 +46,26 @@ public class PlayerDatabase : MonoBehaviour {
 	void Update () {
         if (!hasSeenAGame) handleInput();
 	}
+
+    #region Handle Victories
+    public void resetVictories() {
+        for (int i = 0; i < pprefs.Count; i++)
+            pprefs[i].victories = 0;
+    }
+
+    public void giveVictoryTo(int playerID) {
+        pprefs[playerID].victories++;
+    }
+
+    public int getGameWinner() {
+        for (int i = 0; i < pprefs.Count; i++) {
+            if (pprefs[i].victories >= victoriesNeeded)
+                return i;
+        }
+
+        return -1; //no winner yet
+    }
+    #endregion
 
     #region Player Select Screen
     void deleteNewerCopies() {
@@ -56,7 +82,7 @@ public class PlayerDatabase : MonoBehaviour {
                 PlayerData aux = new PlayerData("_J" + i.ToString(),
                                                 i,
                                                 currentID,
-                                                getRandomPlayerColor());
+                                                getRandomPlayerColor(true));
 
                 pprefs.Add(aux);
                 playersIn.Add(i);
@@ -66,6 +92,15 @@ public class PlayerDatabase : MonoBehaviour {
                 playerTexts.transform.GetChild(currentID).GetComponentInChildren<Image>().color = aux.color;
 
                 currentID++;
+            } else if (Input.GetButtonDown("Fire1_J" + i.ToString()) && playersIn.Contains(i)) {
+                for (int j = 0; j < pprefs.Count; j++) {
+                    if (pprefs[j].joystickNum == i) {
+                        Color aux = getRandomPlayerColor(false);
+                        pprefs[j].color = aux;
+                        playerTexts.transform.GetChild(pprefs[j].playerID).GetComponentInChildren<Image>().color = aux;
+                        break;
+                    }
+                }
             }
         }
 
@@ -74,6 +109,7 @@ public class PlayerDatabase : MonoBehaviour {
     }
 
     void goLevelSelect() {
+        resetVictories();
         DontDestroyOnLoad(this.gameObject);
         SceneManager.LoadScene("LevelSelect");
         hasSeenAGame = true;
@@ -90,18 +126,19 @@ public class PlayerDatabase : MonoBehaviour {
         //                { Color.magenta, false },
         //                { Color.yellow, false } };
 
-        baseColors = new List<Color> {
-            Color.green, Color.gray,
+        /*baseColors = new List<Color> {
+            Color.green, Color.yellow,
             Color.cyan, Color.blue,
-            Color.red, Color.magenta,
-            Color.yellow };
+            Color.red, Color.magenta};*/
+
+        currentColorArray.AddRange(playerColors);
     }
 
-    Color getRandomPlayerColor() {
-        int i = Random.Range(0, baseColors.Count);
-        float saturation = Random.Range(0.1f, 0.4f);
-        Color aux = baseColors[i];
+    Color getRandomPlayerColor(bool firstTime) {
+        int i = Random.Range(0, currentColorArray.Count);
+        /*Color aux = baseColors[i];
         float aux_r, aux_g, aux_b;
+        float saturation = Random.Range(0.2f, 0.4f);
 
         aux_r = aux.r += (saturation * -Mathf.Sign(aux.r - 0.5f));
         aux_g = aux.g += (saturation * -Mathf.Sign(aux.g - 0.5f));
@@ -109,6 +146,18 @@ public class PlayerDatabase : MonoBehaviour {
 
         Color output = new Color(aux_r, aux_g, aux_b);
         baseColors.RemoveAt(i);
+        if (baseColors.Count == 0) {
+            initBaseColors();
+        }
+        return output;*/
+
+        Color output = currentColorArray[i];
+        currentColorArray.Remove(output);
+        if (firstTime)
+            playerColors.Remove(output);
+
+        if (currentColorArray.Count == 0)
+            initBaseColors();
         return output;
     }
 

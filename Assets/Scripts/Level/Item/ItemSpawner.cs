@@ -10,7 +10,7 @@ public class ItemSpawner : MonoBehaviour {
     bool itemInGame = false;
 
 	void Start () {
-        itemSpawnLocations = HushPuppy.itemSpawnLocations;
+        itemSpawnLocations = (SpawnLocations) HushPuppy.safeFindComponent("ItemSpawnLocations", "SpawnLocations");
         StartCoroutine(handleSpawns());
     }
 
@@ -37,10 +37,13 @@ public class ItemSpawner : MonoBehaviour {
                 rotatingPlatforms.Add(aux);
         }
 
+        if (rotatingPlatforms.Count == 0) return null;
         return rotatingPlatforms[Random.Range(0, rotatingPlatforms.Count)];
     }
 
     void activateRotatingPlatformItem(RotatingPlatform rp) {
+        if (rp == null) return;
+
         rp.switchItem(true);
         itemInGame = true;
     }

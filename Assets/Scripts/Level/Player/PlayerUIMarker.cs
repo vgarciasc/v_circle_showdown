@@ -24,7 +24,7 @@ public class PlayerUIMarker : MonoBehaviour {
     }
 
     void getCanvasRect() {
-        canvasRt = HushPuppy.canvas.GetComponent<RectTransform>();
+        canvasRt = (RectTransform) HushPuppy.safeFindComponent("Canvas", "RectTransform");
     }
 
     Border outOfScreen(Vector2 pos) {

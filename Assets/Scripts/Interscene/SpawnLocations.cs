@@ -30,12 +30,12 @@ public class SpawnLocations : MonoBehaviour {
     }
 
     public Vector3 getRandomUnusedLocation() {
-        if (locations.Count == 0) {
+        if (unusedLocations.Count == 0) {
             Debug.Log("No new spawn positions in '" + this.gameObject.name + "'. Using an used one instead.");
             resetUnusedLocations();
         }
 
-        int randomIndex = Random.Range(0, locations.Count);
+        int randomIndex = Random.Range(0, unusedLocations.Count);
         Vector3 randomLocation = unusedLocations[randomIndex].position;
         unusedLocations.RemoveAt(randomIndex);
 

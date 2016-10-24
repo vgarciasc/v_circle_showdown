@@ -1,58 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Platform : MonoBehaviour {
-    [Header("Serialized Variables")]
     [SerializeField]
-    float hSpeed = 5f;
+    [Range(0f, 3f)]
+    float speed = 1f;
     [SerializeField]
-    float vSpeed = 5f;
+    List<Transform> transformArray = new List<Transform>();
     [SerializeField]
-    float hDistance;
-    [SerializeField]
-    float vDistance;
-    [SerializeField]
-    bool hMovementEnabled = false;
-    [SerializeField]
-    bool startGoingRight = true;
-    [SerializeField]
-    bool vMovementEnabled = false;
-    [SerializeField]
-    bool startGoingUp = true;
+    bool enableMovement = false;
 
-    Rigidbody2D rb;
-    Vector2 originalPos,
-        leftRightLimit,
-        upDownLimit;
+    List<Vector3> positions = new List<Vector3>();
+    int currentPosition = 0;
+    Vector3 lastPosition,
+            nextPosition;
 
     void Start() {
-        /*References*/
-        rb = GetComponent<Rigidbody2D>();
-
-        /*Reset values*/
-        originalPos = this.transform.localPosition;
-        leftRightLimit = new Vector2(originalPos.x - hDistance, originalPos.x + hDistance);
-        upDownLimit = new Vector2(originalPos.y - vDistance, originalPos.y + vDistance);
+        initPositions();
     }
 
     void Update() {
-        if (hMovementEnabled) moveHorizontal();
-        if (vMovementEnabled) moveVertical();
+        updatePosition();
     }
 
-    void moveHorizontal() {
-        if ((transform.localPosition.x > leftRightLimit.y && Mathf.Sign(hSpeed) == 1) ||
-            (transform.localPosition.x < leftRightLimit.x && Mathf.Sign(hSpeed) == -1))
-            hSpeed *= -1;
+    void initPositions() {
+        if (!enableMovement) return;
 
-        rb.velocity = new Vector2(hSpeed, rb.velocity.y);
+        positions.Add(this.transform.position);
+        for (int i = 0; i < transformArray.Count; i++)
+            positions.Add(transformArray[i].position);
+
+        setNextPosition();
     }
 
-    void moveVertical() {
-        if ((transform.localPosition.y > upDownLimit.y && Mathf.Sign(vSpeed) == 1) ||
-            (transform.localPosition.y < upDownLimit.x && Mathf.Sign(vSpeed) == -1))
-            vSpeed *= -1;
+    void setNextPosition() {
+        if (!enableMovement) return;
 
-        rb.velocity = new Vector2(rb.velocity.x, vSpeed);
+        lastPosition = positions[currentPosition];
+        currentPosition = (currentPosition + 1) % positions.Count;
+        nextPosition = positions[currentPosition];
+    }
+
+    void updatePosition() {
+        if (!enableMovement) return;
+
+        this.transform.position += (nextPosition - lastPosition) * Time.deltaTime * speed;
+        if (Vector3.Distance(this.transform.position, nextPosition) < 0.2f) {
+            setNextPosition();
+        }
     }
 }

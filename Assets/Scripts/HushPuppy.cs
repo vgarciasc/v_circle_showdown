@@ -4,29 +4,22 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 static class HushPuppy {
-    public static ItemSpawner itemSpawner;
-    public static GameController gameController;
-    public static PlayerDatabase playerDatabase;
-    public static SpawnLocations itemSpawnLocations,
-        playerSpawnLocations;
-
-    public static Canvas canvas;
-
-    public static GameObject playerUIContainer;
+    //public static ItemSpawner itemSpawner;
+    //public static GameController gameController;
 
     static HushPuppy() {
-        itemSpawner = (ItemSpawner) safeFindComponent("GameController", "ItemSpawner");
-        gameController = (GameController) safeFindComponent("GameController", "GameController");
-        playerDatabase = (PlayerDatabase) safeFindComponent("PlayerDatabase", "PlayerDatabase");
-        itemSpawnLocations = (SpawnLocations) safeFindComponent("ItemSpawnLocations", "SpawnLocations");
-        playerSpawnLocations = (SpawnLocations) safeFindComponent("PlayerSpawnLocations", "SpawnLocations");
+        //itemSpawner = (ItemSpawner) safeFindComponent("GameController", "ItemSpawner");
+        //gameController = (GameController) safeFindComponent("GameController", "GameController");
+        //playerDatabase = (PlayerDatabase)safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        //itemSpawnLocations = (SpawnLocations)safeFindComponent("ItemSpawnLocations", "SpawnLocations");
+        //playerSpawnLocations = (SpawnLocations)safeFindComponent("PlayerSpawnLocations", "SpawnLocations");
 
-        canvas = (Canvas) safeFindComponent("Canvas", "Canvas");
+        //canvas = (Canvas)safeFindComponent("Canvas", "Canvas");
 
-        playerUIContainer = safeFind("PlayerUIContainer");
+        //playerUIContainer = safeFind("PlayerUIContainer");
     }
 
-    static GameObject safeFind(string name) {
+    public static GameObject safeFind(string name) {
         GameObject go = GameObject.FindGameObjectWithTag(name);
         if (go == null) {
             Debug.Log("'" + name + "' not found.");
@@ -35,7 +28,7 @@ static class HushPuppy {
         return go;
     }
 
-    static Component safeComponent(GameObject go, string componentName) {
+    public static Component safeComponent(GameObject go, string componentName) {
         Component c = go.GetComponent(componentName);
         if (c == null) {
             Debug.Log("'" + componentName + "' component not found in GameObject '" + go.name + "'.");

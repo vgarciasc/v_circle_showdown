@@ -70,6 +70,7 @@ public class Player : MonoBehaviour {
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
+    GameController gcontroller;
 
     /*Reset variables*/
     Color originalColor;
@@ -111,6 +112,7 @@ public class Player : MonoBehaviour {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
+        gcontroller = (GameController) HushPuppy.safeFindComponent("GameController", "GameController");
 
         /*Default values*/
         originalMass = rb.mass;
@@ -146,7 +148,7 @@ public class Player : MonoBehaviour {
 
     #region UI Elements
     void startUI() {
-        GameObject playerUI_container = HushPuppy.playerUIContainer;
+        GameObject playerUI_container = HushPuppy.safeFind("PlayerUIContainer");
 
         playerStatus = Instantiate(playerStatus_prefab).GetComponent<PlayerUIStatus>();
         playerStatus.name = "Player " + (playerID + 1) + " Status";
@@ -232,6 +234,9 @@ public class Player : MonoBehaviour {
 
     #region Collision Treatment
     public void OnCollisionEnter2D(Collision2D target) {
+        if (target.gameObject.tag == "Spikes")
+            hitSpikes();
+
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
@@ -252,7 +257,7 @@ public class Player : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D target) {
         switch (target.gameObject.tag) {
             case "Spikes":
-                killPlayer();
+                hitSpikes();
                 break;
             case "Arena":
                 inArena = true;
@@ -284,17 +289,16 @@ public class Player : MonoBehaviour {
     }
 
     public void takeHit(float transferSize) {
-        if (isReversed) {
-            giveHit(transferSize);
-            
-        }
-
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(invincibleFrames));
     }
 
     void giveHit(float transferSize) {
         //this.changeSize(- transferSize);
+    }
+
+    void hitSpikes() {
+        killPlayer();
     }
 
     IEnumerator temporaryInvincibility(int frames) {
@@ -339,7 +343,7 @@ public class Player : MonoBehaviour {
 
     //to be used only by animation
     void AnimationKillPlayer() {
-        Hub.gameController.checkGameOver();
+        gcontroller.checkGameOver();
         Destroy(this.gameObject);
     }
     #endregion

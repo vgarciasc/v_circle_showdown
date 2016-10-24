@@ -7,11 +7,12 @@ public class PlayerSpawner : MonoBehaviour {
     GameObject playerPrefab;
 
     SpawnLocations playerSpawnLocations;
+    PlayerDatabase playerDatabase;
 
     void Start() {
-        playerSpawnLocations = HushPuppy.playerSpawnLocations;
+        playerSpawnLocations = (SpawnLocations) HushPuppy.safeFindComponent("PlayerSpawnLocations", "SpawnLocations");
+        playerDatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
 
-        PlayerDatabase playerDatabase = HushPuppy.playerDatabase;
         if (playerDatabase == null) {
             startDefaultGame(); return;
         }

@@ -38,7 +38,8 @@ public class RotatingPlatform : MonoBehaviour {
 
     void spawnItem() {
         switchItem(false);
-        Hub.itemSpawner.spawnItem(itemPosition.position);
+        ItemSpawner itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
+        itemSpawner.spawnItem(itemPosition.position);
     }
 
     public void switchItem(bool value) {

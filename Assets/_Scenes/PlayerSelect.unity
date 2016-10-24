@@ -134,21 +134,6 @@ Prefab:
       propertyPath: playerTexts
       value: 
       objectReference: {fileID: 453609238}
-    - target: {fileID: 114000013094801548, guid: ef2487d30e538ca41832406a3e1768e5,
-        type: 2}
-      propertyPath: playerColors.Array.data[2].r
-      value: 0.6014814
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013094801548, guid: ef2487d30e538ca41832406a3e1768e5,
-        type: 2}
-      propertyPath: playerColors.Array.data[2].g
-      value: 0.9191176
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013094801548, guid: ef2487d30e538ca41832406a3e1768e5,
-        type: 2}
-      propertyPath: playerColors.Array.data[2].b
-      value: 0.6299591
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ef2487d30e538ca41832406a3e1768e5, type: 2}
   m_IsPrefabParent: 0
@@ -492,7 +477,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1051266080}
-  - 114: {fileID: 1051266079}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -500,17 +484,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1051266079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1051266078}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83f3565f44fd9a8439785c46e23d251a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1051266080
 Transform:
   m_ObjectHideFlags: 0

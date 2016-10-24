@@ -14,14 +14,16 @@ public class Item : MonoBehaviour {
     [SerializeField]
     public static float reverseDuration = 5.0f;
 
+    ItemSpawner itemSpawner;
     bool isBlackHole = false;
 
     void Start() {
+        itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
         this.GetComponent<SpriteRenderer>().sprite = itemSprite[(int) type];
     }
 
     public void destroy() {
-        HushPuppy.itemSpawner.setItemInGame(false);
+        itemSpawner.setItemInGame(false);
         Destroy(this.gameObject);
     }
 

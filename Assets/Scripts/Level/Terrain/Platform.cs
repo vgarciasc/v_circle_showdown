@@ -20,7 +20,7 @@ public class Platform : MonoBehaviour {
         initPositions();
     }
 
-    void Update() {
+    void FixedUpdate() {
         updatePosition();
     }
 

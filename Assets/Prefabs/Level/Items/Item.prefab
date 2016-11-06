@@ -76,7 +76,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5cf2e62c4d53fcc4db2b8d5041c84263, type: 3}
   - {fileID: 21300000, guid: bcca134f9ec77f3449a9543bc3523a7e, type: 3}
   - {fileID: 21300000, guid: 0ae58327cd0352649b349f5336e166ba, type: 3}
-  banned: 040000000000000005000000
+  - {fileID: 21300000, guid: 9fa6c0272e96ada4d9b405479c936191, type: 3}
+  banned: 0400000000000000
 --- !u!212 &212000014175178286
 SpriteRenderer:
   m_ObjectHideFlags: 1

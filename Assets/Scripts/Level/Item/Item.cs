@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Item : MonoBehaviour {
-    public enum Type { NONE, TRIANGLE, REVERSE, HERBALIFE, BLACK_HOLE, GHOST };
+    public enum Type { NONE, TRIANGLE, REVERSE, HERBALIFE, BLACK_HOLE, GHOST, STUN };
     public Type type;
 
     [SerializeField]
@@ -16,6 +16,10 @@ public class Item : MonoBehaviour {
     public static float reverseDuration = 5.0f;
     [SerializeField]
     public static float ghostDuration = 5.0f;
+    [SerializeField]
+    public static float stunCarriedDuration = 5.0f;
+    [SerializeField]
+    public static float stunDuration = 5.0f;
     [SerializeField]
     List<Type> banned = new List<Type>();
 

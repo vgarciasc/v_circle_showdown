@@ -47,13 +47,13 @@ public class Player : MonoBehaviour {
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
     [SerializeField]
-    GameObject playerStatus_prefab;
+    GameObject playerStatusPrefab;
     [SerializeField]
-    GameObject playerMarker_prefab;
+    GameObject playerMarkerPrefab;
     [SerializeField]
-    GameObject playerVictories_prefab;
+    GameObject playerVictoriesPrefab;
     [SerializeField]
-    ParticleSystem explosion_psystem;
+    ParticleSystem explosionParticleSystem;
     [SerializeField]
     GameObject trappedDetectors;
     [SerializeField]
@@ -62,8 +62,10 @@ public class Player : MonoBehaviour {
     Sprite circlePlayer;
     [SerializeField]
     Sprite trianglePlayer;
+    [SerializeField]
+    GameObject stunIndicator;
 
-    GameObject playerStatus_container;
+    GameObject playerStatusContainer;
 
     Rigidbody2D rb;
     Animator anim;
@@ -98,7 +100,8 @@ public class Player : MonoBehaviour {
         inArena = true,
         blockInput = false,
         isReversed = false,
-        inPortalCooldown = false;
+        inPortalCooldown = false,
+        stunPotion = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -132,7 +135,7 @@ public class Player : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        manageCollisionType();
+        //manageCollisionType();
         manageTackle();
         updateLastVelocity();
     }
@@ -152,12 +155,12 @@ public class Player : MonoBehaviour {
     void startUI() {
         GameObject playerUI_container = HushPuppy.safeFind("PlayerUIContainer");
 
-        playerStatus = Instantiate(playerStatus_prefab).GetComponent<PlayerUIStatus>();
+        playerStatus = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
         playerStatus.name = "Player #" + (playerID + 1) + " Status";
         playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
         playerStatus.setUI(playerID, GetComponent<SpriteRenderer>());
 
-        playerMarker = Instantiate(playerMarker_prefab).GetComponent<PlayerUIMarker>();
+        playerMarker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
         playerMarker.name = "Player #" + (playerID + 1) + " Marker";
         playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
         playerMarker.setMarker(this.originalColor);
@@ -243,13 +246,15 @@ public class Player : MonoBehaviour {
 
             float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
-
+            
             if (isReversed || enemy.isReversed) {
                 enemy.giveHit(hitSizeIncrement + hitStrength);
                 this.takeHit(hitSizeIncrement + hitStrength);
+                if (stunPotion) { stunPotion = false; this.takeStun_(hitStrength); }
             } else {
                 this.giveHit(hitSizeIncrement + hitStrength);
                 enemy.takeHit(hitSizeIncrement + hitStrength);
+                if (stunPotion) { stunPotion = false; enemy.takeStun_(hitStrength); }
             }
         }
     }
@@ -291,6 +296,17 @@ public class Player : MonoBehaviour {
     public void takeHit(float transferSize) {
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(invincibleFrames));
+    }
+
+    public void takeStun_(float modifier) { StartCoroutine(takeStun(modifier)); }
+    IEnumerator takeStun(float modifier) {
+        blockInput = true;
+        stunIndicator.SetActive(true);
+
+        yield return new WaitForSeconds(Item.stunDuration * modifier);
+
+        stunIndicator.SetActive(false);
+        blockInput = false;
     }
 
     void giveHit(float transferSize) {
@@ -396,13 +412,13 @@ public class Player : MonoBehaviour {
         perc /= 2f;
 
         if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc);
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
         else if (originalColor.g >= originalColor.b && originalColor.g >= originalColor.r)
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g, originalColor.b - perc);
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g, originalColor.b - perc, originalColor.a);
         else if (originalColor.b >= originalColor.g && originalColor.b >= originalColor.r)
             this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b);
         else
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc);
+            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
 
         rb.mass = originalMass + tackleWeight * perc;
     }
@@ -419,14 +435,18 @@ public class Player : MonoBehaviour {
     #region Cornered Detection
     //caso esse codigo gere erros no futuro, voce deve simplesmente alterar os colliders de detecçao de entalamento no prefab pra que eles
     //sejam menores. a precisao de detecçao de entalamento é sacrificada, mas pelo menos gera menos bugs
-    bool[] corneredDetected = new bool[2];
-    public void corneredDetection(int detectorID, bool value) {
-        corneredDetected[detectorID] = value;
-        //if (playerID == 1) Debug.Log("corneredDetected[0]: " + corneredDetected[0]);
-        //if (playerID == 1) Debug.Log("corneredDetected[1]: " + corneredDetected[1]);
-        if (corneredDetected[0] && corneredDetected[1]) {
-            killPlayer();
-        }
+    //bool[] corneredDetected = new bool[2];
+    //public void corneredDetection(int detectorID, bool value) {
+    //    corneredDetected[detectorID] = value;
+    //    //if (playerID == 1) Debug.Log("corneredDetected[0]: " + corneredDetected[0]);
+    //    //if (playerID == 1) Debug.Log("corneredDetected[1]: " + corneredDetected[1]);
+    //    if (corneredDetected[0] && corneredDetected[1]) {
+    //        killPlayer();
+    //    }
+    //}
+
+    public void corneredDetection() {
+        killPlayer();
     }
 
     //int corneredDetected = 0;
@@ -443,15 +463,15 @@ public class Player : MonoBehaviour {
     void startPsystem() {
         Color aux = originalColor;
         aux += new Color(0.3f, 0.3f, 0.3f);
-        explosion_psystem.startColor = aux;
+        explosionParticleSystem.startColor = aux;
     }
 
     void startEmission() {
         float scale = this.transform.localScale.x * 0.15f + 0.15f;
-        explosion_psystem.gameObject.transform.localScale = new Vector3(scale, scale, scale); 
+        explosionParticleSystem.gameObject.transform.localScale = new Vector3(scale, scale, scale); 
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         scamera.screenShake_(2f);
-        explosion_psystem.gameObject.SetActive(true);
+        explosionParticleSystem.gameObject.SetActive(true);
     }
     #endregion
 
@@ -487,11 +507,26 @@ public class Player : MonoBehaviour {
             case Item.Type.GHOST:
                 StartCoroutine(useGhostPotion(Item.ghostDuration));
                 break;
+            case Item.Type.STUN:
+                StartCoroutine(useStunPotion(Item.stunCarriedDuration));
+                break;
         }
     }
 
     void useHerbalife() {
         transform.localScale = originalScale;
+    }
+
+    IEnumerator useStunPotion(float duration) {
+        stunPotion = true;
+        Color aux = originalColor;
+        originalColor = Color.yellow;
+
+        yield return new WaitForSeconds(duration);
+
+        if (stunPotion) {
+            originalColor = aux;
+        }
     }
 
     IEnumerator useTrianglePotion(float duration) {
@@ -531,7 +566,7 @@ public class Player : MonoBehaviour {
         trappedDetectors.SetActive(false);
 
         Color aux = originalColor;
-        originalColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.5f);
+        originalColor = HushPuppy.getColorWithOpacity(originalColor, 0.5f);
 
         yield return new WaitForSeconds(duration);
 

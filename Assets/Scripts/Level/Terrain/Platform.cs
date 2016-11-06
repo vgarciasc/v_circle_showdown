@@ -46,7 +46,7 @@ public class Platform : MonoBehaviour {
         if (!enableMovement) return;
 
         this.transform.position += (nextPosition - lastPosition) * Time.deltaTime * speed;
-        if (Vector3.Distance(this.transform.position, nextPosition) < 0.2f) {
+        if (Vector3.Distance(this.transform.position, nextPosition) < 0.5f) {
             setNextPosition();
         }
     }

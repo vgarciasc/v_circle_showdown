@@ -6,6 +6,9 @@ public class ItemSpawner : MonoBehaviour {
     SpawnLocations itemSpawnLocations;
     [SerializeField]
     GameObject itemPrefab;
+    [SerializeField]
+    [Range(0f, 20f)]
+    float itemSpawnInterval = 5.0f;
 
     bool itemInGame = false;
 
@@ -21,31 +24,10 @@ public class ItemSpawner : MonoBehaviour {
     IEnumerator handleSpawns() {
         while (true) {
             yield return new WaitUntil(() => !itemInGame);
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(itemSpawnInterval);
             if (!itemInGame)
-                activateRotatingPlatformItem(getRandomRotatingPlatform());
+                spawnItem(itemSpawnLocations.getRandomLocation());
         }
-    }
-
-    RotatingPlatform getRandomRotatingPlatform() {
-        GameObject[] floors = GameObject.FindGameObjectsWithTag("Floor");
-        List<RotatingPlatform> rotatingPlatforms = new List<RotatingPlatform>();
-
-        for (int i = 0; i < floors.Length; i++) {
-            RotatingPlatform aux = floors[i].GetComponent<RotatingPlatform>();
-            if (aux != null)
-                rotatingPlatforms.Add(aux);
-        }
-
-        if (rotatingPlatforms.Count == 0) return null;
-        return rotatingPlatforms[Random.Range(0, rotatingPlatforms.Count)];
-    }
-
-    void activateRotatingPlatformItem(RotatingPlatform rp) {
-        if (rp == null) return;
-
-        rp.switchItem(true);
-        itemInGame = true;
     }
 
     //spawn an item of type 'itemType'
@@ -53,12 +35,14 @@ public class ItemSpawner : MonoBehaviour {
         GameObject aux = (GameObject) Instantiate(itemPrefab, location, Quaternion.identity);
         Item item = aux.GetComponent<Item>();
         item.type = itemType;
+        setItemInGame(true);
     }
 
     //spawn item of random type
     public void spawnItem(Vector3 location) {
-        GameObject aux = (GameObject)Instantiate(itemPrefab, location, Quaternion.identity);
+        GameObject aux = (GameObject) Instantiate(itemPrefab, location, Quaternion.identity);
         Item item = aux.GetComponent<Item>();
         item.setRandomType();
+        setItemInGame(true);
     }
 }

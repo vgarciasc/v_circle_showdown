@@ -10,6 +10,11 @@ public class GameController : MonoBehaviour {
         pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
     }
 
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.L))
+            SceneManager.LoadScene("LevelSelect");
+    }
+
     public void checkGameOver() { StartCoroutine(checkGameOver_()); }
     IEnumerator checkGameOver_() {
         yield return new WaitForSeconds(2.0f);

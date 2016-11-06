@@ -201,8 +201,6 @@ public class Player : MonoBehaviour {
     }
 
     void handleInput() {
-        //if (Input.GetKeyDown(KeyCode.G))
-        //    Camera.main.GetComponent<SpecialCamera>().screenShake_(0.1f);
         if (Input.GetKeyDown(KeyCode.K))
             killPlayer();
 
@@ -486,6 +484,9 @@ public class Player : MonoBehaviour {
             case Item.Type.REVERSE:
                 StartCoroutine(useReverse(Item.reverseDuration));
                 break;
+            case Item.Type.GHOST:
+                StartCoroutine(useGhostPotion(Item.ghostDuration));
+                break;
         }
     }
 
@@ -520,6 +521,25 @@ public class Player : MonoBehaviour {
 
         originalColor = aux;
         isReversed = false;
+    }
+
+    IEnumerator useGhostPotion(float duration) {
+        bool circle = circleCollider.enabled;
+
+        circleCollider.enabled = false;
+        triangleCollider.enabled = false;
+        trappedDetectors.SetActive(false);
+
+        Color aux = originalColor;
+        originalColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.5f);
+
+        yield return new WaitForSeconds(duration);
+
+        originalColor = aux;
+
+        trappedDetectors.SetActive(true);
+        if (circle) circleCollider.enabled = true;
+        else triangleCollider.enabled = true;
     }
     #endregion
 }

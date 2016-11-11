@@ -59,16 +59,25 @@ public class Player : MonoBehaviour {
     [SerializeField]
     GameObject triangleSpikes;
     [SerializeField]
-    Sprite circlePlayer;
+    Sprite circleBorder;
     [SerializeField]
-    Sprite trianglePlayer;
+    Sprite circleBackground;
+    [SerializeField]
+    Sprite triangleBorder;
+    [SerializeField]
+    Sprite triangleBackground;
     [SerializeField]
     GameObject stunIndicator;
+    [SerializeField]
+    GameObject spriteBackground;
+    [SerializeField]
+    GameObject forceField;
 
     GameObject playerStatusContainer;
 
     Rigidbody2D rb;
     Animator anim;
+    Color playerColor;
     PlayerUIStatus playerStatus;
     PlayerUIMarker playerMarker;
     SpecialCamera scamera;
@@ -77,7 +86,7 @@ public class Player : MonoBehaviour {
     GameController gcontroller;
 
     /*Reset variables*/
-    Color originalColor;
+    Color originalBorderColor;
     float originalMass;
     Vector3 originalScale;
 
@@ -98,6 +107,7 @@ public class Player : MonoBehaviour {
     Vector3 lastVelocity;
     bool invincible = false,
         inArena = true,
+        blockCharge = false,
         blockInput = false,
         isReversed = false,
         inPortalCooldown = false,
@@ -106,12 +116,11 @@ public class Player : MonoBehaviour {
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
         this.joystick = joystick;
-        this.GetComponent<SpriteRenderer>().color = color;
+        playerColor = color;
     }
 
     void Start() {
         /*References*/
-        originalColor = GetComponent<SpriteRenderer>().color;
         rb = GetComponentInChildren<Rigidbody2D>();
         anim = GetComponent<Animator>();
         scamera = Camera.main.GetComponent<SpecialCamera>();
@@ -124,11 +133,12 @@ public class Player : MonoBehaviour {
         originalScale = transform.localScale;
 
         /*Init functions*/
+        startColors();
         startUI();
         startPsystem();
         startAnimator();
         createJoystickInput();
-        changeSprite(circlePlayer);
+        changeSprite(circleBorder, circleBackground);
         resetTackle();
         StartCoroutine(checkOutOfScreen());
         StartCoroutine(grow());
@@ -146,8 +156,9 @@ public class Player : MonoBehaviour {
     }
 
     #region Spritefest
-    void changeSprite(Sprite sprite) {
-        GetComponent<SpriteRenderer>().sprite = sprite;
+    void changeSprite(Sprite border, Sprite background) {
+        GetComponent<SpriteRenderer>().sprite = border;
+        spriteBackground.GetComponent<SpriteRenderer>().sprite = background;
     }
     #endregion
 
@@ -158,12 +169,12 @@ public class Player : MonoBehaviour {
         playerStatus = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
         playerStatus.name = "Player #" + (playerID + 1) + " Status";
         playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
-        playerStatus.setUI(playerID, GetComponent<SpriteRenderer>());
+        playerStatus.setUI(playerID, this.playerColor);
 
         playerMarker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
         playerMarker.name = "Player #" + (playerID + 1) + " Marker";
         playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
-        playerMarker.setMarker(this.originalColor);
+        playerMarker.setMarker(this.playerColor);
     }
 
     void updateMarker() {
@@ -364,6 +375,15 @@ public class Player : MonoBehaviour {
     }
     #endregion
 
+    #region Misc
+    void startColors() {
+        originalBorderColor = Color.black;
+        spriteBackground.GetComponent<SpriteRenderer>().color = playerColor;
+        forceField.GetComponent<SpriteRenderer>().color = playerColor;
+        this.GetComponent<SpriteRenderer>().color = originalBorderColor;
+    }
+    #endregion
+
     #region Size Methods
     IEnumerator grow() {
         /* Gradual Growth */
@@ -396,29 +416,36 @@ public class Player : MonoBehaviour {
     #region Tackle Bell
     void resetTackle() {
         tackleBuildup = 0f;
-        this.GetComponent<SpriteRenderer>().color = originalColor;
         rb.mass = originalMass;
     }
 
     void increaseTackleBuildup() {
+        if (blockCharge) return;
         tackleBuildup += 1f;
     }
     
     void manageTackle() {
+        if (blockCharge) return;
+            
         if (tackleBuildup >= maxTackleBuildup)
             tackleBuildup = maxTackleBuildup;
 
         float perc = tackleBuildup / maxTackleBuildup;
         perc /= 2f;
 
-        if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
-        else if (originalColor.g >= originalColor.b && originalColor.g >= originalColor.r)
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g, originalColor.b - perc, originalColor.a);
-        else if (originalColor.b >= originalColor.g && originalColor.b >= originalColor.r)
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b);
-        else
-            this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
+        //if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
+        //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
+        //else if (originalColor.g >= originalColor.b && originalColor.g >= originalColor.r)
+        //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g, originalColor.b - perc, originalColor.a);
+        //else if (originalColor.b >= originalColor.g && originalColor.b >= originalColor.r)
+        //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b);
+        //else
+        //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
+
+        //this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b - perc, originalColor.a);
+
+        Color aux = forceField.GetComponent<SpriteRenderer>().color;
+        forceField.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, 0 + perc);
 
         rb.mass = originalMass + tackleWeight * perc;
     }
@@ -461,7 +488,7 @@ public class Player : MonoBehaviour {
 
     #region Particle System
     void startPsystem() {
-        Color aux = originalColor;
+        Color aux = playerColor;
         aux += new Color(0.3f, 0.3f, 0.3f);
         explosionParticleSystem.startColor = aux;
     }
@@ -517,22 +544,25 @@ public class Player : MonoBehaviour {
         transform.localScale = originalScale;
     }
 
+    //DEPRECATED
     IEnumerator useStunPotion(float duration) {
         stunPotion = true;
-        Color aux = originalColor;
-        originalColor = Color.yellow;
+        Color aux = playerColor;
+        playerColor = Color.yellow;
 
         yield return new WaitForSeconds(duration);
 
         if (stunPotion) {
-            originalColor = aux;
+            playerColor = aux;
         }
     }
 
     IEnumerator useTrianglePotion(float duration) {
-        blockInput = true;
-        changeSprite(trianglePlayer);
+        changeSprite(triangleBorder, triangleBackground);
         triangleSpikes.SetActive(true);
+
+        blockInput = true;
+        blockCharge = true;
         trappedDetectors.SetActive(false);
         circleCollider.enabled = false;
         triangleCollider.enabled = true;
@@ -540,21 +570,23 @@ public class Player : MonoBehaviour {
         yield return new WaitForSeconds(duration);
 
         blockInput = false;
-        changeSprite(circlePlayer);
+        blockCharge = false;
+        changeSprite(circleBorder, circleBackground);
         triangleSpikes.SetActive(false);
         trappedDetectors.SetActive(true);
         circleCollider.enabled = true;
         triangleCollider.enabled = false;
     }
 
+    //DEPRECATED
     IEnumerator useReverse(float duration) {
         isReversed = true;
-        Color aux = originalColor;
-        originalColor = HushPuppy.invertColor(originalColor);
+        Color aux = playerColor;
+        playerColor = HushPuppy.invertColor(playerColor);
 
         yield return new WaitForSeconds(duration);
 
-        originalColor = aux;
+        playerColor = aux;
         isReversed = false;
     }
 
@@ -565,12 +597,18 @@ public class Player : MonoBehaviour {
         triangleCollider.enabled = false;
         trappedDetectors.SetActive(false);
 
-        Color aux = originalColor;
-        originalColor = HushPuppy.getColorWithOpacity(originalColor, 0.5f);
+        Color aux1 = playerColor;
+        playerColor = HushPuppy.getColorWithOpacity(playerColor, 0.5f);
+
+        Color aux2 = spriteBackground.GetComponent<SpriteRenderer>().color;
+        spriteBackground.GetComponent<SpriteRenderer>().color = HushPuppy.getColorWithOpacity(aux2, 0.5f);
+        blockCharge = true;
 
         yield return new WaitForSeconds(duration);
 
-        originalColor = aux;
+        blockCharge = false;
+        playerColor = aux1;
+        spriteBackground.GetComponent<SpriteRenderer>().color = aux2;
 
         trappedDetectors.SetActive(true);
         if (circle) circleCollider.enabled = true;

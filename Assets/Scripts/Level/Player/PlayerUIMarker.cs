@@ -4,7 +4,12 @@ using System.Collections;
 
 public class PlayerUIMarker : MonoBehaviour {
     RectTransform canvasRt;
+    Vector3 originalScale;
     enum Border { None, Right, Left, Top, Bottom };
+
+    void Awake() {
+        originalScale = this.transform.localScale;
+    }
 
     public void setMarker(Color playerColor) {
         this.GetComponent<Image>().color = playerColor;
@@ -20,7 +25,7 @@ public class PlayerUIMarker : MonoBehaviour {
         Vector2 screenPos = Camera.main.WorldToScreenPoint(playerPos);
         Vector2 viewportPos = Camera.main.WorldToViewportPoint(playerPos);
         this.transform.position = new Vector2(screenPos.x, screenPos.y);
-        placeBorder(outOfScreen(viewportPos));
+        placeBorder(outOfScreen(viewportPos), distanceFromScreen(viewportPos));
     }
 
     void getCanvasRect() {
@@ -30,12 +35,20 @@ public class PlayerUIMarker : MonoBehaviour {
     Border outOfScreen(Vector2 pos) {
         if (pos.x < 0) return Border.Left;
         else if (pos.x > 1) return Border.Right;
-        else if (pos.y > 1) return Border.Top;
         else if (pos.y < 0) return Border.Bottom;
+        else if (pos.y > 1) return Border.Top;
         return Border.None;
     }
 
-    void placeBorder(Border pp) {
+    float distanceFromScreen(Vector2 pos) {
+        if (pos.x < 0) return -pos.x;
+        else if (pos.x > 1) return pos.x - 1;
+        else if (pos.y < 0) return -pos.y;
+        else if (pos.y > 1) return pos.y - 1;
+        else return -1;
+    }
+
+    void placeBorder(Border pp, float distance) {
         Vector2 pos = this.transform.localPosition;
         float posx = pos.x; float posy = pos.y;
         if (posx < - canvasRt.sizeDelta.x / 2) posx = - canvasRt.sizeDelta.x / 2;
@@ -43,6 +56,11 @@ public class PlayerUIMarker : MonoBehaviour {
         if (posy < - canvasRt.sizeDelta.y / 2) posy = - canvasRt.sizeDelta.y / 2;
         if (posy > canvasRt.sizeDelta.y / 2) posy = canvasRt.sizeDelta.y / 2;
         pos = new Vector2(posx, posy);
+
+        float sizeModifier = (-0.6f * distance + 1);
+        this.transform.localScale = originalScale * sizeModifier;
+        this.transform.localScale = new Vector2(Mathf.Clamp(this.transform.localScale.x, 0.2f, 1f),
+                                                Mathf.Clamp(this.transform.localScale.y, 0.2f, 1f));
 
         switch (pp) {
             case Border.Right:

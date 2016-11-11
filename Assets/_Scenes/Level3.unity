@@ -195,12 +195,18 @@ Prefab:
     - target: {fileID: 114000012435884822, guid: 4bc2500bc90d2ad4d9bd6b592ec11347,
         type: 2}
       propertyPath: interval
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1000010853021236, guid: 4bc2500bc90d2ad4d9bd6b592ec11347, type: 2}
       propertyPath: m_Name
       value: Death Pinball Machine (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012435884822, guid: 4bc2500bc90d2ad4d9bd6b592ec11347,
+        type: 2}
+      propertyPath: deathPinball
+      value: 
+      objectReference: {fileID: 1000013256492842, guid: 6e62bb492f4af994cbbefa6afee4219c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4bc2500bc90d2ad4d9bd6b592ec11347, type: 2}
   m_IsPrefabParent: 0
@@ -524,12 +530,18 @@ Prefab:
     - target: {fileID: 114000012435884822, guid: 4bc2500bc90d2ad4d9bd6b592ec11347,
         type: 2}
       propertyPath: interval
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1000010853021236, guid: 4bc2500bc90d2ad4d9bd6b592ec11347, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012435884822, guid: 4bc2500bc90d2ad4d9bd6b592ec11347,
+        type: 2}
+      propertyPath: deathPinball
+      value: 
+      objectReference: {fileID: 1000013256492842, guid: 6e62bb492f4af994cbbefa6afee4219c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4bc2500bc90d2ad4d9bd6b592ec11347, type: 2}
   m_IsPrefabParent: 0

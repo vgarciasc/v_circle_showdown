@@ -28,8 +28,8 @@ public class PlayerUIStatus : MonoBehaviour {
         unshowItem();
     }
 
-    public void setUI(int playerID, SpriteRenderer playerSprite) {
-        this.playerColor = playerSprite.color;
+    public void setUI(int playerID, Color playerColor) {
+        this.playerColor = playerColor;
         this.playerID = playerID;
 
         this.GetComponentsInChildren<Text>()[0].text = "Player #" + (playerID + 1).ToString();

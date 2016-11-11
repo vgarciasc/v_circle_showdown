@@ -27,7 +27,6 @@ public class GameOver : MonoBehaviour {
         }
 
         playerCongratulations.text = "CONGRATULATIONS, PLAYER " + (pd.pprefs[pd.winnerID].playerID + 1).ToString() + "!";
-        playerSprite.sprite = playerPrefab.GetComponent<SpriteRenderer>().sprite;
         playerSprite.color = pd.pprefs[pd.winnerID].color;
         pd.winnerID = -1;
     }

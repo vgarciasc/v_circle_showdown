@@ -10,29 +10,44 @@ public class PongPaddle : MonoBehaviour {
     [SerializeField]
     Transform lowerTransform;
 
-    float upperExtreme,
+    float nextPosition_y, lastPosition_y,
+        speed = 1f,
+        upperExtreme,
         lowerExtreme;
 
     void Start() {
         upperExtreme = upperTransform.position.y;
         lowerExtreme = lowerTransform.position.y;
+        nextPosition_y = lastPosition_y = this.transform.position.y;
     }
 
-	void Update() {
+    void FixedUpdate() {
+        this.transform.position += new Vector3(0f,
+                                             (nextPosition_y - lastPosition_y) * Time.deltaTime * speed);
         changePosition();
 	}
 
     void changePosition() {
-        float threshold = 15f;
+        float threshold = 10f;
+        bool ballInCourt = false;
 
         if (spikeball == null || spikeball.position.y > upperExtreme || spikeball.position.y < lowerExtreme) return;
 
         if ((Mathf.Abs(spikeball.position.x - this.transform.position.x) < threshold)) { //close enough
-            this.transform.position = new Vector3(this.transform.position.x,
-                                                spikeball.position.y,
-                                                this.transform.position.z);
+            if (!ballInCourt) {
+                ballInCourt = true;
+                lastPosition_y = this.transform.position.y;
+            }
+            nextPosition_y = spikeball.position.y;
         } else {
-            this.transform.position += new Vector3(0f, Random.Range(-0.05f, 0.05f), 0f);
+            ballInCourt = false;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D coll) {
+        GameObject target = coll.gameObject;
+        if (target.tag == "Spikes") {
+            speed += 1.4f;
         }
     }
 }

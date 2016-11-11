@@ -61,14 +61,15 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="ink-engine">
+      <HintPath>Assets\Plugins\Ink\Inklecate\ink-engine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\OutlineEffect\Outline.cs" />
-    <Compile Include="Assets\Plugins\OutlineEffect\OutlineEffect.cs" />
+    <Compile Include="Assets\Plugins\Ink\Example\Scripts\BasicInkExample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Plugins\OutlineEffect\Resources\OutlineEffect\OutlineBufferShader.shader" />
-    <None Include="Assets\Plugins\OutlineEffect\Resources\OutlineEffect\OutlineShader.shader" />
+    <None Include="Assets\Plugins\Ink\Template\Template.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

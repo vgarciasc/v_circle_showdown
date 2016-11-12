@@ -15,6 +15,9 @@ TagManager:
   - Item
   - ItemSpawnLocations
   - ItemSpawner
+  - Nebula
+  - Charger
+  - Inverse Nebula
   layers:
   - Default
   - TransparentFX

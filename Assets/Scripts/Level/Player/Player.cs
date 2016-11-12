@@ -72,6 +72,8 @@ public class Player : MonoBehaviour {
     GameObject spriteBackground;
     [SerializeField]
     GameObject forceField;
+    [SerializeField]
+    GameObject chargeIndicator;
 
     GameObject playerStatusContainer;
 
@@ -126,7 +128,7 @@ public class Player : MonoBehaviour {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        gcontroller = (GameController) HushPuppy.safeFindComponent("GameController", "GameController");
+        gcontroller = (GameController)HushPuppy.safeFindComponent("GameController", "GameController");
 
         /*Default values*/
         originalMass = rb.mass;
@@ -145,12 +147,14 @@ public class Player : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        //manageCollisionType();
         manageTackle();
         updateLastVelocity();
     }
 
     void Update() {
+        //DEBUG
+        forceField.SetActive(false);
+
         handleInput();
         updateMarker();
     }
@@ -189,11 +193,12 @@ public class Player : MonoBehaviour {
         while (SceneManager.GetActiveScene().name != "GameOver") {
             if (this.GetComponent<SpriteRenderer>().isVisible) {
                 timeLeft = maxSecondsOutOfScreen;
-                playerStatus.setTime(false); 
+                playerStatus.setTime(false);
             } else {
-                playerStatus.setTime(timeLeft--); }
+                playerStatus.setTime(timeLeft--);
+            }
 
-            if (timeLeft < 0) timeOut(); 
+            if (timeLeft < 0) timeOut();
 
             yield return new WaitForSeconds(1f);
         }
@@ -221,9 +226,9 @@ public class Player : MonoBehaviour {
         float h_mov = Input.GetAxis(jsHorizontal) * speed;
         if (Mathf.Abs(rb.velocity.x) < maxVelocity)
             move(h_mov);
-        if (Input.GetButtonDown(jsJump)) 
+        if (Input.GetButtonDown(jsJump))
             jump();
-        if (Input.GetButtonDown(jsFire1)) 
+        if (Input.GetButtonDown(jsFire1))
             resetTackle();
         if (Input.GetButton(jsFire1))
             increaseTackleBuildup();
@@ -251,13 +256,16 @@ public class Player : MonoBehaviour {
         if (target.gameObject.tag == "Spikes")
             hitSpikes();
 
+        if (target.gameObject.tag == "Charger")
+            hitCharger();
+
+        Debug.Log("Name: " + target.gameObject.name + ", Tag: " + target.gameObject.tag);
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
 
             float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
-            
             if (isReversed || enemy.isReversed) {
                 enemy.giveHit(hitSizeIncrement + hitStrength);
                 this.takeHit(hitSizeIncrement + hitStrength);
@@ -292,19 +300,21 @@ public class Player : MonoBehaviour {
             inArena = false;
     }
 
+    public void OnTriggerStay2D(Collider2D target) {
+        if (target.gameObject.tag == "Nebula")
+            changeSize(0.005f);
+
+        if (target.gameObject.tag == "Inverse Nebula")
+            changeSize(-0.005f);
+    }
+
     public bool isInvincible() { return invincible; }
     public bool isInArena() { return inArena; }
 
     void shakeScreen(float hitStrength) { scamera.screenShake_(hitStrength); }
 
-    void manageCollisionType() {
-        if (lastVelocity.x > 15f)
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        else
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Discrete;
-    }
-
     public void takeHit(float transferSize) {
+        Debug.Log("Transfer Size: " + transferSize);
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(invincibleFrames));
     }
@@ -328,19 +338,15 @@ public class Player : MonoBehaviour {
         killPlayer();
     }
 
+    void hitCharger() {
+        changeSize(0.3f);
+    }
+
     IEnumerator temporaryInvincibility(int frames) {
         invincible = true;
         for (int i = 0; i < frames; i++)
             yield return new WaitForEndOfFrame();
         invincible = false;
-    }
-
-    float velocityHitMagnitude() {
-        float aux = lastVelocity.x;
-        if (lastVelocity.y > aux) aux = lastVelocity.y;
-        if (lastVelocity.z > aux) aux = lastVelocity.z;
-
-        return aux/60;
     }
 
     void updateLastVelocity() {
@@ -349,8 +355,18 @@ public class Player : MonoBehaviour {
         lastVelocity.x = rb.velocity.magnitude;
     }
 
+    float velocityHitMagnitude() {
+        float aux = lastVelocity.x;
+        if (lastVelocity.y > aux) aux = lastVelocity.y;
+        if (lastVelocity.z > aux) aux = lastVelocity.z;
+
+        return aux / 60;
+    }
+
     void killPlayer() {
         anim.enabled = true;
+        circleCollider.enabled = false;
+        triangleCollider.enabled = false;
         playerStatus.playerKilled();
         playerMarker.playerKilled();
         anim.SetTrigger("explode");
@@ -375,12 +391,13 @@ public class Player : MonoBehaviour {
     }
     #endregion
 
-    #region Misc
+    #region Colors
     void startColors() {
         originalBorderColor = Color.black;
         spriteBackground.GetComponent<SpriteRenderer>().color = playerColor;
         forceField.GetComponent<SpriteRenderer>().color = playerColor;
         this.GetComponent<SpriteRenderer>().color = originalBorderColor;
+        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(playerColor.r - 0.4f, playerColor.g - 0.4f, playerColor.b - 0.4f, 0.5f);
     }
     #endregion
 
@@ -408,7 +425,8 @@ public class Player : MonoBehaviour {
         if (this.transform.localScale.x > maxSize)
             killPlayer();
         if (this.transform.localScale.x < minSize)
-            this.transform.localScale = new Vector2(minSize, minSize);
+            /*this.transform.localScale = new Vector2(minSize, minSize);*/
+            killPlayer();
     }
 
     #endregion
@@ -423,15 +441,18 @@ public class Player : MonoBehaviour {
         if (blockCharge) return;
         tackleBuildup += 1f;
     }
-    
+
+    float white = 0;
+    bool whiteOut = false;
+
     void manageTackle() {
         if (blockCharge) return;
-            
+
         if (tackleBuildup >= maxTackleBuildup)
             tackleBuildup = maxTackleBuildup;
 
         float perc = tackleBuildup / maxTackleBuildup;
-        perc /= 2f;
+        perc /= 1f;
 
         //if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
         //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
@@ -441,11 +462,16 @@ public class Player : MonoBehaviour {
         //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b);
         //else
         //    this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g - perc, originalColor.b - perc, originalColor.a);
-
         //this.GetComponent<SpriteRenderer>().color = new Color(originalColor.r - perc, originalColor.g - perc, originalColor.b - perc, originalColor.a);
 
-        Color aux = forceField.GetComponent<SpriteRenderer>().color;
-        forceField.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, 0 + perc);
+        //Color aux = forceField.GetComponent<SpriteRenderer>().color;
+        //forceField.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, 0 + perc);
+
+        float multiplier = Mathf.Sin(perc * Mathf.PI / 2);
+
+        chargeIndicator.transform.localScale = new Vector3(multiplier, multiplier, multiplier);
+        Color aux = chargeIndicator.GetComponent<SpriteRenderer>().color;
+        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, multiplier);
 
         rb.mass = originalMass + tackleWeight * perc;
     }
@@ -495,7 +521,7 @@ public class Player : MonoBehaviour {
 
     void startEmission() {
         float scale = this.transform.localScale.x * 0.15f + 0.15f;
-        explosionParticleSystem.gameObject.transform.localScale = new Vector3(scale, scale, scale); 
+        explosionParticleSystem.gameObject.transform.localScale = new Vector3(scale, scale, scale);
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         scamera.screenShake_(2f);
         explosionParticleSystem.gameObject.SetActive(true);
@@ -563,6 +589,7 @@ public class Player : MonoBehaviour {
 
         blockInput = true;
         blockCharge = true;
+        forceField.SetActive(false);
         trappedDetectors.SetActive(false);
         circleCollider.enabled = false;
         triangleCollider.enabled = true;
@@ -572,6 +599,7 @@ public class Player : MonoBehaviour {
         blockInput = false;
         blockCharge = false;
         changeSprite(circleBorder, circleBackground);
+        forceField.SetActive(true);
         triangleSpikes.SetActive(false);
         trappedDetectors.SetActive(true);
         circleCollider.enabled = true;

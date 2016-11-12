@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Level\Player\PlayerUIStatus.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\BlackHole.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\DeathPinballMachine.cs" />
+    <Compile Include="Assets\Scripts\Level\Terrain\Dispenser.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\Platform.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\PongPaddle.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\Portal.cs" />

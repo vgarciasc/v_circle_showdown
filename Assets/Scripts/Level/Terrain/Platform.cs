@@ -20,7 +20,7 @@ public class Platform : MonoBehaviour {
         initPositions();
     }
 
-    void LateFixedUpdate() {
+    void LateUpdate() {
         updatePosition();
     }
 
@@ -40,14 +40,15 @@ public class Platform : MonoBehaviour {
         lastPosition = positions[currentPosition];
         currentPosition = (currentPosition + 1) % positions.Count;
         nextPosition = positions[currentPosition];
+
+        Vector3 aux = Vector3.Normalize(nextPosition - lastPosition);
+        this.GetComponent<Rigidbody2D>().velocity = aux * 5 * speed;
     }
 
     void updatePosition() {
         if (!enableMovement) return;
 
-        this.transform.position += (nextPosition - lastPosition) * Time.deltaTime * speed;
-        if (Vector3.Distance(this.transform.position, nextPosition) < 0.5f) {
+        if (Vector3.Distance(this.transform.position, nextPosition) < 0.5f)
             setNextPosition();
-        }
     }
 }

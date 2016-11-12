@@ -9,45 +9,77 @@ public class PongPaddle : MonoBehaviour {
     Transform upperTransform;
     [SerializeField]
     Transform lowerTransform;
+    [SerializeField]
+    PongPaddle brotherPaddle;
+    [SerializeField]
+    Color spikeColor;
+    [SerializeField]
+    Color floorColor;
 
-    float nextPosition_y, lastPosition_y,
-        speed = 1f,
+    bool spikesOn;
+
+    float originalPosY,
+        nextPosY,
+        currentPosY,
+        speed = 5f,
         upperExtreme,
         lowerExtreme;
 
     void Start() {
         upperExtreme = upperTransform.position.y;
         lowerExtreme = lowerTransform.position.y;
-        nextPosition_y = lastPosition_y = this.transform.position.y;
+        originalPosY = nextPosY = currentPosY = this.transform.position.y;
+        switchSpikes(false);
     }
 
     void FixedUpdate() {
-        this.transform.position += new Vector3(0f,
-                                             (nextPosition_y - lastPosition_y) * Time.deltaTime * speed);
         changePosition();
+        checkPosition();
 	}
+
+    void setVelocity() {
+        Vector3 aux = this.GetComponent<Rigidbody2D>().velocity;
+        this.GetComponent<Rigidbody2D>().velocity = new Vector2(aux.x, Mathf.Sign(nextPosY - originalPosY) * speed);
+    }
+
+    void checkPosition() {
+        if (Mathf.Abs(currentPosY - nextPosY) < 0.02f) {
+            currentPosY = nextPosY;
+        } else if ((this.transform.position.y > upperExtreme) || (this.transform.position.y < lowerExtreme)) {
+            nextPosY = originalPosY;
+        }
+    }
 
     void changePosition() {
         float threshold = 10f;
-        bool ballInCourt = false;
 
         if (spikeball == null || spikeball.position.y > upperExtreme || spikeball.position.y < lowerExtreme) return;
 
         if ((Mathf.Abs(spikeball.position.x - this.transform.position.x) < threshold)) { //close enough
-            if (!ballInCourt) {
-                ballInCourt = true;
-                lastPosition_y = this.transform.position.y;
-            }
-            nextPosition_y = spikeball.position.y;
+            currentPosY = this.transform.position.y;
+            nextPosY = spikeball.position.y;
+            setVelocity();
+        }
+    }
+
+    public void switchSpikes(bool value) {
+        if (value) {
+            spikesOn = true;
+            this.tag = "Spikes";
+            this.GetComponent<SpriteRenderer>().color = spikeColor;
         } else {
-            ballInCourt = false;
+            spikesOn = false;
+            this.tag = "Floor";
+            this.GetComponent<SpriteRenderer>().color = floorColor;
         }
     }
 
     void OnCollisionEnter2D(Collision2D coll) {
         GameObject target = coll.gameObject;
-        if (target.tag == "Spikes") {
+        if (target.transform == spikeball) {
             speed += 1.4f;
+            if (!spikesOn) switchSpikes(true);
+            if (brotherPaddle.spikesOn) brotherPaddle.switchSpikes(false);
         }
     }
 }

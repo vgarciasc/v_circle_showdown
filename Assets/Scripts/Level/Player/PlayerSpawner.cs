@@ -36,7 +36,7 @@ public class PlayerSpawner : MonoBehaviour {
     }
 
     void startDefaultGame() {
-        PlayerData aux = new PlayerData("_J0", 0, 0, Color.white);
+        PlayerData aux = new PlayerData("_J0", 0, 0, Color.grey);
         spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());
     }
 }

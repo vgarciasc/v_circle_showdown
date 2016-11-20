@@ -67,16 +67,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ecc368ad0b0984889653d1e1a66f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 2
+  itemsList:
+  - {fileID: 11400000, guid: b16a47890aaff3d47924e5f9a0076308, type: 2}
+  - {fileID: 11400000, guid: cf82462639e93994f9a0d828f4905487, type: 2}
+  - {fileID: 11400000, guid: 2f843cd64639df749b43b5a80f1e3a50, type: 2}
+  data: {fileID: 0}
   blackhole: {fileID: 1000011593831764, guid: 584e127e0e08b5a4a86a4cbcab9bae6f, type: 2}
-  itemSprite:
-  - {fileID: 0}
-  - {fileID: 21300000, guid: cc612442e3c30174290247b23f3e05d8, type: 3}
-  - {fileID: 21300000, guid: 5ef287d9e0a0ff048ab0d23bdbc3ba08, type: 3}
-  - {fileID: 21300000, guid: 5cf2e62c4d53fcc4db2b8d5041c84263, type: 3}
-  - {fileID: 21300000, guid: bcca134f9ec77f3449a9543bc3523a7e, type: 3}
-  - {fileID: 21300000, guid: 0ae58327cd0352649b349f5336e166ba, type: 3}
-  - {fileID: 21300000, guid: 9fa6c0272e96ada4d9b405479c936191, type: 3}
   banned: 02000000000000000600000004000000
 --- !u!212 &212000014175178286
 SpriteRenderer:

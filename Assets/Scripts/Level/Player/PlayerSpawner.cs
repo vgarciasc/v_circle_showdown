@@ -23,7 +23,7 @@ public class PlayerSpawner : MonoBehaviour {
 
         for (int i = 0; i < playerDatabase.pprefs.Count; i++)
             spawnPlayer(playerDatabase.pprefs[i],
-                        playerSpawnLocations.getRandomUnusedLocation());
+                        playerSpawnLocations.getLocationByIndex(i));
     }
 
     Player spawnPlayer(PlayerData data, Vector3 location) {

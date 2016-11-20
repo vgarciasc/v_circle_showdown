@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class PlayerUIStatus : MonoBehaviour {
+public class PlayerUIStatus : MonoBehaviour, IObserver {
     [Header("References")]
     [SerializeField]
     Image redCross;
@@ -26,6 +26,14 @@ public class PlayerUIStatus : MonoBehaviour {
         pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
         setTime(false);
         unshowItem();
+    }
+
+    public void onNotify(Event ev) {
+        switch (ev) {
+            case Event.PLAYER_KILLED:
+                this.playerKilled();
+                break;
+        }
     }
 
     public void setUI(int playerID, Color playerColor) {
@@ -59,7 +67,7 @@ public class PlayerUIStatus : MonoBehaviour {
         this.time.enabled = value; }
     #endregion
 
-    public void playerKilled() {
+    void playerKilled() {
         unshowItem();
         redCross.enabled = true;
         setTime(false);

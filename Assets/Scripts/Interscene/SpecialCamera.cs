@@ -39,7 +39,7 @@ public class SpecialCamera : MonoBehaviour {
     void updateCameraPosition() {
         for (int i = 0; i < players.Length; i++) {
             Vector3 viewportPos = cam.WorldToViewportPoint(players[i].transform.position);
-            if ((viewportPos.x > 1 || viewportPos.x < 0 || viewportPos.y > 1 || viewportPos.y < 0) && players[i].GetComponent<Player>().isInArena()) {
+            if ((viewportPos.x > 1 || viewportPos.x < 0 || viewportPos.y > 1 || viewportPos.y < 0)) {
                 follow(viewportPos);
             }
         }
@@ -61,7 +61,6 @@ public class SpecialCamera : MonoBehaviour {
     #region Screen Shake
     public void screenShake_(float power) { StartCoroutine(screenShake(power)); }
     IEnumerator screenShake(float power) {
-        Vector3 originalPos = this.transform.localPosition;
         for (int i = 0; i < 10; i++) {
             yield return new WaitForEndOfFrame();
             this.transform.localPosition = new Vector3(originalPos.x + Random.Range(-power / 2, power / 2),

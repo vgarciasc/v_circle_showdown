@@ -221,6 +221,10 @@ MonoBehaviour:
   speed: 1
   transformArray: []
   enableMovement: 0
+  acceleration: 0
+  maxVelocity: 50
+  startDelay: 0
+  enableRumble: 0
 --- !u!61 &409223021
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -318,6 +322,10 @@ MonoBehaviour:
   speed: 1
   transformArray: []
   enableMovement: 0
+  acceleration: 0
+  maxVelocity: 50
+  startDelay: 0
+  enableRumble: 0
 --- !u!61 &759096861
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -590,6 +598,10 @@ MonoBehaviour:
   speed: 1
   transformArray: []
   enableMovement: 0
+  acceleration: 0
+  maxVelocity: 50
+  startDelay: 0
+  enableRumble: 0
 --- !u!61 &1777755327
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -757,6 +769,26 @@ Prefab:
       propertyPath: m_AnchoredPosition.x
       value: -0.01
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: levelItems.Array.data[0].probability
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: levelItems.Array.data[2].probability
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: levelItems.Array.data[1].probability
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: levelItems.Array.data[3].probability
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
   m_IsPrefabParent: 0
@@ -808,6 +840,10 @@ MonoBehaviour:
   speed: 1
   transformArray: []
   enableMovement: 0
+  acceleration: 0
+  maxVelocity: 50
+  startDelay: 0
+  enableRumble: 0
 --- !u!61 &1946066100
 BoxCollider2D:
   m_ObjectHideFlags: 0

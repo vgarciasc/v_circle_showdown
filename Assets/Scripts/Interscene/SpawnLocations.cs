@@ -48,5 +48,12 @@ public class SpawnLocations : MonoBehaviour {
     public Vector3 getDefaultLocation() {
         return locations[0].position;
     }
+
+    public Vector3 getLocationByIndex(int index) {
+        if (index < 0) return locations[0].position;
+        if (index > locations.Count) return locations[locations.Count - 1].position;
+
+        return locations[index].position;
+    }
     #endregion
 }

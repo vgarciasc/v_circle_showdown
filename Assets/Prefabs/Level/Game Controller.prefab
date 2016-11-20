@@ -166,7 +166,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 224000014119894334}
-  - 114: {fileID: 114000011363327868}
+  - 114: {fileID: 114000013300135558}
   m_Layer: 0
   m_Name: Players
   m_TagString: Untagged
@@ -456,26 +456,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010131889982}
   m_Enabled: 1
---- !u!114 &114000011363327868
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012489548400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 95.3
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
 --- !u!114 &114000011470123826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -527,8 +507,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d762c40dea09846a5c8395416ff2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelItems:
+  - item: {fileID: 11400000, guid: b16a47890aaff3d47924e5f9a0076308, type: 2}
+    probability: 5
+  - item: {fileID: 11400000, guid: cf82462639e93994f9a0d828f4905487, type: 2}
+    probability: 2
+  - item: {fileID: 11400000, guid: 2f843cd64639df749b43b5a80f1e3a50, type: 2}
+    probability: 5
+  - item: {fileID: 11400000, guid: ddf6515044606694796d4e84a1df264c, type: 2}
+    probability: 5
   itemPrefab: {fileID: 1000011800157578, guid: 663d239c849a0a04da7709406d47f008, type: 2}
-  itemSpawnInterval: 7
+  itemSpawnInterval: 10
 --- !u!114 &114000012497651550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -570,6 +559,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a3858db917de2418f931c3d5ebba1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114000013300135558
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012489548400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1297475563, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 7
+  m_Spacing: 52.39
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
 --- !u!114 &114000013347465988
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -990,6 +999,6 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -273.1, y: 148.6}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -300.5, y: 160.36}
+  m_SizeDelta: {x: 87.9, y: -0.6}
   m_Pivot: {x: 0.5, y: 0.5}

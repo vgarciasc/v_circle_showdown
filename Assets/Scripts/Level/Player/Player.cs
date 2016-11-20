@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, ISmashable {
     /* Custom values for testing */
     [Header("Serialized Variables")]
     [SerializeField]
@@ -47,6 +47,8 @@ public class Player : MonoBehaviour {
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
     [SerializeField]
+    GameObject bombPrefab;
+    [SerializeField]
     GameObject playerStatusPrefab;
     [SerializeField]
     GameObject playerMarkerPrefab;
@@ -55,7 +57,9 @@ public class Player : MonoBehaviour {
     [SerializeField]
     ParticleSystem explosionParticleSystem;
     [SerializeField]
-    GameObject trappedDetectors;
+    GameObject circleTrappedDetector;
+    [SerializeField]
+    GameObject triangleTrappedDetector;
     [SerializeField]
     GameObject triangleSpikes;
     [SerializeField]
@@ -67,16 +71,17 @@ public class Player : MonoBehaviour {
     [SerializeField]
     Sprite triangleBackground;
     [SerializeField]
-    GameObject stunIndicator;
-    [SerializeField]
     GameObject spriteBackground;
     [SerializeField]
     GameObject forceField;
     [SerializeField]
     GameObject chargeIndicator;
+    [SerializeField]
+    GameObject cannonPosition;
 
     GameObject playerStatusContainer;
 
+    Subject subject = new Subject();
     Rigidbody2D rb;
     Animator anim;
     Color playerColor;
@@ -104,16 +109,16 @@ public class Player : MonoBehaviour {
     [Header("Other")]
     public int playerID = -1;
     public string joystick;
-    Item.Type currentItem;
+    ItemData currentItem;
     float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
-        inArena = true,
+        ghostSwallow = false;
+
+    /*Blockers*/
+    bool blockGrowth = false,
         blockCharge = false,
-        blockInput = false,
-        isReversed = false,
-        inPortalCooldown = false,
-        stunPotion = false;
+        blockInput = false;
 
     public void setPlayer(int playerID, string joystick, Color color) {
         this.playerID = playerID;
@@ -141,6 +146,7 @@ public class Player : MonoBehaviour {
         startAnimator();
         createJoystickInput();
         changeSprite(circleBorder, circleBackground);
+        toggleTriangleDetection(false);
         resetTackle();
         StartCoroutine(checkOutOfScreen());
         StartCoroutine(grow());
@@ -174,11 +180,13 @@ public class Player : MonoBehaviour {
         playerStatus.name = "Player #" + (playerID + 1) + " Status";
         playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
         playerStatus.setUI(playerID, this.playerColor);
+        subject.addObserver(playerStatus);
 
         playerMarker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
         playerMarker.name = "Player #" + (playerID + 1) + " Marker";
         playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
         playerMarker.setMarker(this.playerColor);
+        subject.addObserver(playerMarker);
     }
 
     void updateMarker() {
@@ -259,22 +267,19 @@ public class Player : MonoBehaviour {
         if (target.gameObject.tag == "Charger")
             hitCharger();
 
-        Debug.Log("Name: " + target.gameObject.name + ", Tag: " + target.gameObject.tag);
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
             if (enemy.isInvincible()) return;
 
             float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
-            if (isReversed || enemy.isReversed) {
-                enemy.giveHit(hitSizeIncrement + hitStrength);
-                this.takeHit(hitSizeIncrement + hitStrength);
-                if (stunPotion) { stunPotion = false; this.takeStun_(hitStrength); }
-            } else {
-                this.giveHit(hitSizeIncrement + hitStrength);
-                enemy.takeHit(hitSizeIncrement + hitStrength);
-                if (stunPotion) { stunPotion = false; enemy.takeStun_(hitStrength); }
-            }
+            
+            this.giveHit(hitSizeIncrement + hitStrength);
+            enemy.takeHit(hitSizeIncrement + hitStrength);
+        }
+
+        else if (ghostSwallow && target.gameObject.tag == "Player") {
+            swallowPlayer(target.gameObject.GetComponent<Player>());
         }
     }
 
@@ -283,9 +288,6 @@ public class Player : MonoBehaviour {
             case "Spikes":
                 hitSpikes();
                 break;
-            case "Arena":
-                inArena = true;
-                break;
             case "Portal":
                 target.GetComponent<Portal>().teleport(this.gameObject);
                 break;
@@ -293,11 +295,6 @@ public class Player : MonoBehaviour {
                 getItem(target.gameObject.GetComponent<Item>());
                 break;
         }
-    }
-
-    public void OnTriggerExit2D(Collider2D target) {
-        if (target.gameObject.tag == "Arena")
-            inArena = false;
     }
 
     public void OnTriggerStay2D(Collider2D target) {
@@ -309,25 +306,13 @@ public class Player : MonoBehaviour {
     }
 
     public bool isInvincible() { return invincible; }
-    public bool isInArena() { return inArena; }
 
     void shakeScreen(float hitStrength) { scamera.screenShake_(hitStrength); }
 
     public void takeHit(float transferSize) {
-        Debug.Log("Transfer Size: " + transferSize);
+        //Debug.Log("Transfer Size: " + transferSize);
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(invincibleFrames));
-    }
-
-    public void takeStun_(float modifier) { StartCoroutine(takeStun(modifier)); }
-    IEnumerator takeStun(float modifier) {
-        blockInput = true;
-        stunIndicator.SetActive(true);
-
-        yield return new WaitForSeconds(Item.stunDuration * modifier);
-
-        stunIndicator.SetActive(false);
-        blockInput = false;
     }
 
     void giveHit(float transferSize) {
@@ -367,9 +352,18 @@ public class Player : MonoBehaviour {
         anim.enabled = true;
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
-        playerStatus.playerKilled();
-        playerMarker.playerKilled();
+
+        subject.notify(Event.PLAYER_KILLED);
         anim.SetTrigger("explode");
+    }
+
+    void swallowPlayer(Player enemy) {
+        changeSize(enemy.transform.localScale.x / 2f);
+        enemy.swallowed();
+    }
+
+    void swallowed() {
+        this.killPlayer();
     }
 
     bool isLookingAtObject(Transform target) {
@@ -412,7 +406,7 @@ public class Player : MonoBehaviour {
         /*'Spurts' Growth */
         while (true) {
             yield return new WaitForSeconds(timeBetweenSpurts);
-            changeSize(timeSizeIncrement);
+            if (!blockGrowth) changeSize(timeSizeIncrement);
         }
     }
 
@@ -435,6 +429,10 @@ public class Player : MonoBehaviour {
     void resetTackle() {
         tackleBuildup = 0f;
         rb.mass = originalMass;
+    }
+
+    void toggleChargeIndicator(bool value) {
+        chargeIndicator.SetActive(value);
     }
 
     void increaseTackleBuildup() {
@@ -498,18 +496,23 @@ public class Player : MonoBehaviour {
     //    }
     //}
 
-    public void corneredDetection() {
-        killPlayer();
+    void toggleTriangleDetection(bool value) {
+        circleTrappedDetector.SetActive(!value);
+        triangleTrappedDetector.SetActive(value);
     }
 
-    //int corneredDetected = 0;
-    //public void corneredDetection(int detectorID, bool value) {
-    //    if (value) corneredDetected++; else corneredDetected--;
-    //    if (corneredDetected <= 0)
-    //        corneredDetected = 0;
-    //    if (corneredDetected >= 2)
-    //        killPlayer();
-    //}
+    void toggleCircleDetection(bool value) {
+        toggleTriangleDetection(!value);
+    }
+
+    void toggleStuckDetection(bool value) {
+        circleTrappedDetector.SetActive(value);
+        triangleTrappedDetector.SetActive(value);
+    }
+
+    public void smashedDetected() {
+        killPlayer();
+    }
     #endregion
 
     #region Particle System
@@ -528,40 +531,36 @@ public class Player : MonoBehaviour {
     }
     #endregion
 
-    #region Items
+    #region Item
     void getItem(Item item) {
-        if (item.type == Item.Type.BLACK_HOLE) {
+        if (item.data.type == ItemType.BLACK_HOLE) {
             item.activateBlackHole();
             return;
         }
 
-        currentItem = item.type;
+        currentItem = item.data;
         playerStatus.showItem(item);
         item.destroy();
     }
 
-    void useItem(Item.Type itemType) {
-        if (itemType == Item.Type.NONE) return;
+    void useItem(ItemData itemData) {
         playerStatus.unshowItem();
-        currentItem = Item.Type.NONE;
+        currentItem = itemData;
 
-        switch (itemType) {
-            case Item.Type.HERBALIFE:
+        switch (itemData.type) {
+            case ItemType.HERBALIFE:
                 useHerbalife();
                 break;
-            case Item.Type.TRIANGLE:
-                StartCoroutine(useTrianglePotion(Item.triangleDuration));
+            case ItemType.TRIANGLE:
+                StartCoroutine(useTrianglePotion(itemData.cooldown));
                 break;
-            case Item.Type.BLACK_HOLE:
+            case ItemType.BLACK_HOLE:
                 break;
-            case Item.Type.REVERSE:
-                StartCoroutine(useReverse(Item.reverseDuration));
+            case ItemType.GHOST:
+                StartCoroutine(useGhostPotion(itemData.cooldown));
                 break;
-            case Item.Type.GHOST:
-                StartCoroutine(useGhostPotion(Item.ghostDuration));
-                break;
-            case Item.Type.STUN:
-                StartCoroutine(useStunPotion(Item.stunCarriedDuration));
+            case ItemType.BOMB:
+                useBomb();
                 break;
         }
     }
@@ -570,77 +569,85 @@ public class Player : MonoBehaviour {
         transform.localScale = originalScale;
     }
 
-    //DEPRECATED
-    IEnumerator useStunPotion(float duration) {
-        stunPotion = true;
-        Color aux = playerColor;
-        playerColor = Color.yellow;
+    void toggleTriangle(bool value) {
+        if (value)
+            changeSprite(triangleBorder, triangleBackground);
+        else
+            changeSprite(circleBorder, circleBackground);
 
-        yield return new WaitForSeconds(duration);
-
-        if (stunPotion) {
-            playerColor = aux;
-        }
+        triangleSpikes.SetActive(value);
+        blockInput = value;
+        blockCharge = value;
+        forceField.SetActive(!value);
+        toggleChargeIndicator(!value);
+        toggleTriangleDetection(value);
+        circleCollider.enabled = !value;
+        triangleCollider.enabled = value;
+        resetTackle();
     }
 
     IEnumerator useTrianglePotion(float duration) {
-        changeSprite(triangleBorder, triangleBackground);
-        triangleSpikes.SetActive(true);
-
-        blockInput = true;
-        blockCharge = true;
-        forceField.SetActive(false);
-        trappedDetectors.SetActive(false);
-        circleCollider.enabled = false;
-        triangleCollider.enabled = true;
+        toggleTriangle(true);
 
         yield return new WaitForSeconds(duration);
 
-        blockInput = false;
-        blockCharge = false;
-        changeSprite(circleBorder, circleBackground);
-        forceField.SetActive(true);
-        triangleSpikes.SetActive(false);
-        trappedDetectors.SetActive(true);
-        circleCollider.enabled = true;
-        triangleCollider.enabled = false;
-    }
-
-    //DEPRECATED
-    IEnumerator useReverse(float duration) {
-        isReversed = true;
-        Color aux = playerColor;
-        playerColor = HushPuppy.invertColor(playerColor);
-
-        yield return new WaitForSeconds(duration);
-
-        playerColor = aux;
-        isReversed = false;
+        toggleTriangle(false);
     }
 
     IEnumerator useGhostPotion(float duration) {
-        bool circle = circleCollider.enabled;
-
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
-        trappedDetectors.SetActive(false);
-
-        Color aux1 = playerColor;
-        playerColor = HushPuppy.getColorWithOpacity(playerColor, 0.5f);
-
-        Color aux2 = spriteBackground.GetComponent<SpriteRenderer>().color;
-        spriteBackground.GetComponent<SpriteRenderer>().color = HushPuppy.getColorWithOpacity(aux2, 0.5f);
+        toggleStuckDetection(false);
+        toggleChargeIndicator(false);
         blockCharge = true;
+        blockGrowth = true;
+        resetTackle();
 
-        yield return new WaitForSeconds(duration);
+        Color transparent = HushPuppy.getColorWithOpacity(spriteBackground.GetComponent<SpriteRenderer>().color, 0.5f);
+        spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
 
+        yield return new WaitForSeconds(duration * 3 / 5);
+        Coroutine cr = StartCoroutine(useGhostPotion_blink(playerColor, transparent));
+        yield return new WaitForSeconds(duration * 2 / 5);
+        StopCoroutine(cr);
+
+        spriteBackground.GetComponent<SpriteRenderer>().color = playerColor;
+
+        circleCollider.enabled = true;
+        toggleCircleDetection(true);
+        toggleChargeIndicator(true);
         blockCharge = false;
-        playerColor = aux1;
-        spriteBackground.GetComponent<SpriteRenderer>().color = aux2;
+        blockGrowth = false;
 
-        trappedDetectors.SetActive(true);
-        if (circle) circleCollider.enabled = true;
-        else triangleCollider.enabled = true;
+        StartCoroutine(ghostSwallowActivate());
+    }
+
+    IEnumerator ghostSwallowActivate() {
+        ghostSwallow = true;
+
+        for (int i = 0; i < 3; i++)
+            yield return new WaitForEndOfFrame();
+
+        ghostSwallow = false;
+    }
+
+    IEnumerator useGhostPotion_blink(Color original, Color transparent) {
+        bool toggle = true;
+        while (true) {
+            toggle = !toggle;
+            if (toggle) spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
+            else spriteBackground.GetComponent<SpriteRenderer>().color = original;
+            for (int i = 0; i < 5; i++)
+                yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void useBomb() {
+        Bomb bomb = Instantiate(bombPrefab).GetComponent<Bomb>();
+        bomb.transform.position = cannonPosition.transform.position;
+
+        bomb.setBomb(this.transform.up, this.transform.localScale, tackleBuildup);
+        resetTackle();
     }
     #endregion
 }

@@ -63,8 +63,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Event.cs" />
     <Compile Include="Assets\Scripts\Game Over\GameOver.cs" />
     <Compile Include="Assets\Scripts\HushPuppy.cs" />
+    <Compile Include="Assets\Scripts\IObserver.cs" />
+    <Compile Include="Assets\Scripts\ISmashable.cs" />
     <Compile Include="Assets\Scripts\Interscene\DestroyOutOfScreen.cs" />
     <Compile Include="Assets\Scripts\Interscene\PlayerDatabase.cs" />
     <Compile Include="Assets\Scripts\Interscene\SceneLoader.cs" />
@@ -72,13 +75,17 @@
     <Compile Include="Assets\Scripts\Interscene\SpecialCamera.cs" />
     <Compile Include="Assets\Scripts\Interscene\VictorySlider.cs" />
     <Compile Include="Assets\Scripts\Level\GameController.cs" />
+    <Compile Include="Assets\Scripts\Level\Item\Bomb.cs" />
     <Compile Include="Assets\Scripts\Level\Item\Item.cs" />
+    <Compile Include="Assets\Scripts\Level\Item\ItemData.cs" />
     <Compile Include="Assets\Scripts\Level\Item\ItemSpawner.cs" />
+    <Compile Include="Assets\Scripts\Level\Item\LevelItemData.cs" />
     <Compile Include="Assets\Scripts\Level\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerSpawner.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerTrappedDetector.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerUIMarker.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerUIStatus.cs" />
+    <Compile Include="Assets\Scripts\Level\SpecialMoves.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\BlackHole.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\DeathPinballMachine.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\Dispenser.cs" />
@@ -87,6 +94,9 @@
     <Compile Include="Assets\Scripts\Level\Terrain\Portal.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\RotatingPlatform.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\SpikeBall.cs" />
+    <Compile Include="Assets\Scripts\Level\Terrain\WashingPlatform.cs" />
+    <Compile Include="Assets\Scripts\SmashDetection.cs" />
+    <Compile Include="Assets\Scripts\Subject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

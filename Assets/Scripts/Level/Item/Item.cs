@@ -3,32 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Item : MonoBehaviour {
-    public enum Type { NONE, TRIANGLE, REVERSE, HERBALIFE, BLACK_HOLE, GHOST, STUN };
-    public Type type;
+    public ItemData data;    
 
     [SerializeField]
     GameObject blackhole;
-    [SerializeField]
-    Sprite[] itemSprite;
-    [SerializeField]
-    public static float triangleDuration = 5.0f;
-    [SerializeField]
-    public static float reverseDuration = 5.0f;
-    [SerializeField]
-    public static float ghostDuration = 5.0f;
-    [SerializeField]
-    public static float stunCarriedDuration = 5.0f;
-    [SerializeField]
-    public static float stunDuration = 5.0f;
-    [SerializeField]
-    List<Type> banned = new List<Type>();
 
     ItemSpawner itemSpawner;
     bool isBlackHole = false;
 
+    public void setItem(ItemSpawner itemSpawner) {
+        this.itemSpawner = itemSpawner;
+    }
+
     void Start() {
-        itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
-        this.GetComponent<SpriteRenderer>().sprite = itemSprite[(int) type];
+        if (itemSpawner == null) itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
     }
 
     void Update() {
@@ -49,9 +37,28 @@ public class Item : MonoBehaviour {
         destroy();
     }
 
+    public void setType(ItemData item) {
+        this.data = item;
+        this.GetComponent<SpriteRenderer>().sprite = item.sprite;
+    }
+
     public void setRandomType() {
         //you ain't gonna get (Item.Type) NONE
-        do { this.type = (Type)Random.Range(1, System.Enum.GetNames(typeof(Type)).Length); }
-        while (banned.Contains(this.type));
+        List<int> probabilities = new List<int>();
+        int total = 0;
+
+        for (int i = 0; i < itemSpawner.levelItems.Count; i++) {
+            total += itemSpawner.levelItems[i].probability;
+            probabilities.Add(total);
+            //Debug.Log("probabilities[" + i + "]: " + probabilities[i]);
+        }
+
+        int random = Random.Range(1, total);
+        //Debug.Log("random: " + random);
+        int index;
+        for (index = 0; index < probabilities.Count && random > probabilities[index]; index++);
+        //Debug.Log("index: " + index);
+        setType(itemSpawner.levelItems[index].item);
+        //data.type = (ItemType) Random.Range(1, System.Enum.GetNames(typeof(ItemType)).Length);
     }
 }

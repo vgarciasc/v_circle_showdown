@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour {
     SpawnLocations itemSpawnLocations;
+
+    public List<LevelItemData> levelItems = new List<LevelItemData>();
+
     [SerializeField]
     GameObject itemPrefab;
     [SerializeField]
@@ -30,11 +33,12 @@ public class ItemSpawner : MonoBehaviour {
         }
     }
 
-    //spawn an item of type 'itemType'
-    public void spawnItem(Vector3 location, Item.Type itemType) {
+    //spawn a certain item
+    public void spawnItem(Vector3 location, ItemData itemData) {
         GameObject aux = (GameObject) Instantiate(itemPrefab, location, Quaternion.identity);
         Item item = aux.GetComponent<Item>();
-        item.type = itemType;
+        item.setItem(this);
+        item.setType(itemData);
         setItemInGame(true);
     }
 
@@ -42,6 +46,7 @@ public class ItemSpawner : MonoBehaviour {
     public void spawnItem(Vector3 location) {
         GameObject aux = (GameObject) Instantiate(itemPrefab, location, Quaternion.identity);
         Item item = aux.GetComponent<Item>();
+        item.setItem(this);
         item.setRandomType();
         setItemInGame(true);
     }

@@ -5,14 +5,26 @@ using System.Collections.Generic;
 public class Item : MonoBehaviour {
     public ItemData data;    
 
+    [Header("Prefabs and References")]
     [SerializeField]
     GameObject blackhole;
+    [SerializeField]
+    GameObject sprite;
 
+    [Header("Mystery Box")]
+    [SerializeField]
+    GameObject mysteryBox;
+    [SerializeField]
+    bool isMysteryBox = true;
+
+    Transform box1, box2;
     ItemSpawner itemSpawner;
-    bool isBlackHole = false;
 
-    public void setItem(ItemSpawner itemSpawner) {
+    public void setItem(ItemSpawner itemSpawner, ItemData itemData) {
         this.itemSpawner = itemSpawner;
+        this.data = itemData;
+        if (isMysteryBox) setMysteryBox();
+        else setItemSprite();
     }
 
     void Start() {
@@ -20,7 +32,19 @@ public class Item : MonoBehaviour {
     }
 
     void Update() {
-        this.transform.Rotate(new Vector3(0f, 0f, 0.5f));
+        if (isMysteryBox && box1 != null && box2 != null) {
+            float speed = 1f;
+            box1.Rotate(new Vector3(0f, 0f, speed));
+            box2.Rotate(new Vector3(0f, 0f, -speed));
+        } else {
+            sprite.transform.Rotate(new Vector3(0f, 0f, 0.3f));
+        }
+    }
+
+    void setItemSprite() {
+        sprite.SetActive(true);
+        mysteryBox.SetActive(false);
+        sprite.GetComponent<SpriteRenderer>().sprite = data.sprite;
     }
 
     public void destroy() {
@@ -28,37 +52,15 @@ public class Item : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
-    public Sprite getSprite() {
-        return this.GetComponent<SpriteRenderer>().sprite;
-    }
-
     public void activateBlackHole() {
         Instantiate(blackhole, this.transform.position, Quaternion.identity);
         destroy();
     }
 
-    public void setType(ItemData item) {
-        this.data = item;
-        this.GetComponent<SpriteRenderer>().sprite = item.sprite;
-    }
-
-    public void setRandomType() {
-        //you ain't gonna get (Item.Type) NONE
-        List<int> probabilities = new List<int>();
-        int total = 0;
-
-        for (int i = 0; i < itemSpawner.levelItems.Count; i++) {
-            total += itemSpawner.levelItems[i].probability;
-            probabilities.Add(total);
-            //Debug.Log("probabilities[" + i + "]: " + probabilities[i]);
-        }
-
-        int random = Random.Range(1, total);
-        //Debug.Log("random: " + random);
-        int index;
-        for (index = 0; index < probabilities.Count && random > probabilities[index]; index++);
-        //Debug.Log("index: " + index);
-        setType(itemSpawner.levelItems[index].item);
-        //data.type = (ItemType) Random.Range(1, System.Enum.GetNames(typeof(ItemType)).Length);
+    void setMysteryBox() {
+        sprite.SetActive(false);
+        mysteryBox.SetActive(true);
+        box1 = mysteryBox.transform.GetChild(1);
+        box2 = mysteryBox.transform.GetChild(2);
     }
 }

@@ -43,13 +43,6 @@ public class SpikeBall : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter2D(Collider2D coll) {
-        GameObject target = coll.gameObject;
-
-        if (target.tag == "Portal")
-            target.GetComponent<Portal>().teleport(this.gameObject);
-    }
-
     void resetVelocity() {
         rb.velocity = startVelocity;
     }

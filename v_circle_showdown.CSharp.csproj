@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Level\Item\ItemData.cs" />
     <Compile Include="Assets\Scripts\Level\Item\ItemSpawner.cs" />
     <Compile Include="Assets\Scripts\Level\Item\LevelItemData.cs" />
+    <Compile Include="Assets\Scripts\Level\Item\MushroomCloud.cs" />
     <Compile Include="Assets\Scripts\Level\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerSpawner.cs" />
     <Compile Include="Assets\Scripts\Level\Player\PlayerTrappedDetector.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Assets\Scripts\Level\Terrain\WashingPlatform.cs" />
     <Compile Include="Assets\Scripts\SmashDetection.cs" />
     <Compile Include="Assets\Scripts\Subject.cs" />
+    <Compile Include="Assets\Scripts\Teleportable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

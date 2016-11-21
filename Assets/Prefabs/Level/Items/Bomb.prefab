@@ -24,6 +24,7 @@ GameObject:
   - 114: {fileID: 114000013206359306}
   - 50: {fileID: 50000011860566422}
   - 58: {fileID: 58000014244023932}
+  - 114: {fileID: 114000010531889458}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -159,7 +160,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1000010529477840}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 93b5e2d3bfc48654f9a5980ea76f67ae, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: -0.03, y: -0.08}
@@ -182,6 +183,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114000010531889458
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010529477840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 761da17484932704c92a80d55a13cb7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114000011905964092
 MonoBehaviour:
   m_ObjectHideFlags: 1

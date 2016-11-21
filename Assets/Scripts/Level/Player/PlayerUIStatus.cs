@@ -74,9 +74,9 @@ public class PlayerUIStatus : MonoBehaviour, IObserver {
     }
 
     #region Item Hsneanigans
-    public void showItem(Item item) {
+    public void showItem(ItemData item) {
         carriedItem.enabled = true;
-        carriedItem.sprite = item.getSprite();
+        carriedItem.sprite = item.sprite;
     }
 
     public void unshowItem() {

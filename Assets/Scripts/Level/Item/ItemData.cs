@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType { NONE, TRIANGLE, HERBALIFE, BLACK_HOLE, GHOST, STUN, BOMB };
+public enum ItemType { NONE, TRIANGLE, HERBALIFE, BLACK_HOLE, GHOST, STUN, BOMB, MUSHROOM };
 [CreateAssetMenu(fileName = "Data", menuName = "Item Data", order = 1)]
 public class ItemData : ScriptableObject {
     public float cooldown = 5f;

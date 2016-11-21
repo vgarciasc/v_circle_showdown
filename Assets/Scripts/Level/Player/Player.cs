@@ -47,8 +47,6 @@ public class Player : MonoBehaviour, ISmashable {
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
     [SerializeField]
-    GameObject bombPrefab;
-    [SerializeField]
     GameObject playerStatusPrefab;
     [SerializeField]
     GameObject playerMarkerPrefab;
@@ -64,6 +62,8 @@ public class Player : MonoBehaviour, ISmashable {
     GameObject triangleSpikes;
     [SerializeField]
     Sprite circleBorder;
+    [SerializeField]
+    Sprite circleBorderAlmostExploding;
     [SerializeField]
     Sprite circleBackground;
     [SerializeField]
@@ -91,6 +91,7 @@ public class Player : MonoBehaviour, ISmashable {
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
     GameController gcontroller;
+    ItemSpawner itemSpawner;
 
     /*Reset variables*/
     Color originalBorderColor;
@@ -113,7 +114,8 @@ public class Player : MonoBehaviour, ISmashable {
     float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
-        ghostSwallow = false;
+        ghostSwallow = false,
+        almostExploding = false;
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -133,7 +135,9 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        gcontroller = (GameController)HushPuppy.safeFindComponent("GameController", "GameController");
+        gcontroller = (GameController) HushPuppy.safeFindComponent("GameController", "GameController");
+        itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
+        subject.addObserver((SpecialMoves) HushPuppy.safeFindComponent("GameController", "SpecialMoves"));
 
         /*Default values*/
         originalMass = rb.mass;
@@ -149,6 +153,7 @@ public class Player : MonoBehaviour, ISmashable {
         toggleTriangleDetection(false);
         resetTackle();
         StartCoroutine(checkOutOfScreen());
+        StartCoroutine(handleAlmostMaxSize());
         StartCoroutine(grow());
     }
 
@@ -169,6 +174,10 @@ public class Player : MonoBehaviour, ISmashable {
     void changeSprite(Sprite border, Sprite background) {
         GetComponent<SpriteRenderer>().sprite = border;
         spriteBackground.GetComponent<SpriteRenderer>().sprite = background;
+    }
+
+    void changeBorderColor(Color cr) {
+        GetComponent<SpriteRenderer>().color = cr;
     }
     #endregion
 
@@ -285,24 +294,27 @@ public class Player : MonoBehaviour, ISmashable {
 
     public void OnTriggerEnter2D(Collider2D target) {
         switch (target.gameObject.tag) {
-            case "Spikes":
-                hitSpikes();
-                break;
-            case "Portal":
-                target.GetComponent<Portal>().teleport(this.gameObject);
-                break;
             case "Item":
                 getItem(target.gameObject.GetComponent<Item>());
+                break;
+            case "Spikes":
+                hitSpikes();
                 break;
         }
     }
 
     public void OnTriggerStay2D(Collider2D target) {
-        if (target.gameObject.tag == "Nebula")
-            changeSize(0.005f);
-
-        if (target.gameObject.tag == "Inverse Nebula")
-            changeSize(-0.005f);
+        switch (target.gameObject.tag) {
+            case "Item":
+                getItem(target.gameObject.GetComponent<Item>());
+                break;
+            case "Nebula":
+                changeSize(0.005f + 0.01f * tackleBuildup / 100f);
+                break;
+            case "Inverse Nebula":
+                changeSize(-0.005f - 0.01f * tackleBuildup / 100f);
+                break;
+        }
     }
 
     public bool isInvincible() { return invincible; }
@@ -416,6 +428,9 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void checkSize() {
+        //manageAlmostExploding();
+        almostExploding = this.transform.localScale.x > maxSize * 4 / 5;
+
         if (this.transform.localScale.x > maxSize)
             killPlayer();
         if (this.transform.localScale.x < minSize)
@@ -423,6 +438,34 @@ public class Player : MonoBehaviour, ISmashable {
             killPlayer();
     }
 
+    IEnumerator handleAlmostMaxSize() {
+        bool toggle = false;
+        while (true) {
+            changeBorderColor(originalBorderColor);
+            yield return new WaitUntil(() => almostExploding);
+
+            toggle = !toggle;
+            if (toggle) changeBorderColor(originalBorderColor);
+            else changeBorderColor(HushPuppy.getColorWithOpacity(originalBorderColor, 0.5f));
+
+            for (int i = 0; i < 10; i++)
+                    yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void manageAlmostExploding() {
+        bool aux = this.transform.localScale.x > maxSize * 4 / 5;
+
+        if (isCircle() && aux != almostExploding) {
+            if (aux) {
+                changeSprite(circleBorderAlmostExploding, circleBackground);
+            } else {
+                changeSprite(circleBorder, circleBackground);
+            }
+        }
+
+        almostExploding = aux;
+    }
     #endregion
 
     #region Tackle Bell
@@ -515,6 +558,12 @@ public class Player : MonoBehaviour, ISmashable {
     }
     #endregion
 
+    #region Triangle vs. Circle
+    bool isCircle() {
+        return circleCollider.enabled;
+    }
+    #endregion
+
     #region Particle System
     void startPsystem() {
         Color aux = playerColor;
@@ -539,7 +588,7 @@ public class Player : MonoBehaviour, ISmashable {
         }
 
         currentItem = item.data;
-        playerStatus.showItem(item);
+        playerStatus.showItem(item.data);
         item.destroy();
     }
 
@@ -561,6 +610,9 @@ public class Player : MonoBehaviour, ISmashable {
                 break;
             case ItemType.BOMB:
                 useBomb();
+                break;
+            case ItemType.MUSHROOM:
+                useMushroom(itemData.cooldown);
                 break;
         }
     }
@@ -643,11 +695,12 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void useBomb() {
-        Bomb bomb = Instantiate(bombPrefab).GetComponent<Bomb>();
-        bomb.transform.position = cannonPosition.transform.position;
-
-        bomb.setBomb(this.transform.up, this.transform.localScale, tackleBuildup);
+        itemSpawner.createBomb(this.transform, cannonPosition.transform, tackleBuildup);
         resetTackle();
+    }
+
+    void useMushroom(float duration) {
+        itemSpawner.createMushroomCloud(this.transform, duration);
     }
     #endregion
 }

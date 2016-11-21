@@ -68,13 +68,6 @@ public class Bomb : MonoBehaviour, ISmashable {
         Destroy(this.gameObject);
     }
 
-    void OnTriggerEnter2D(Collider2D coll) {
-        GameObject target = coll.gameObject;
-
-        if (target.tag == "Portal")
-            target.GetComponent<Portal>().teleport(this.gameObject);
-    }
-
     public void smashedDetected() {
         explode();
     }

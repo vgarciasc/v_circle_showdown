@@ -50,6 +50,7 @@ public class SpawnLocations : MonoBehaviour {
     }
 
     public Vector3 getLocationByIndex(int index) {
+        getLocations();
         if (index < 0) return locations[0].position;
         if (index > locations.Count) return locations[locations.Count - 1].position;
 

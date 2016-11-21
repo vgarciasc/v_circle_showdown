@@ -11,8 +11,10 @@ public class GameController : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.L)) {
             SceneManager.LoadScene("LevelSelect");
+            pdatabase.resetVictories();
+        }
     }
 
     public void checkGameOver() { StartCoroutine(checkGameOver_()); }

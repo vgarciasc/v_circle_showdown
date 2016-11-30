@@ -20,10 +20,6 @@ public class Portal : MonoBehaviour {
         setParticleSystem();
     }
 
-    void Update() {
-        sprite.Rotate(new Vector3(0f, 0f, 0.5f));
-    }
-
     Portal nextPortal() {
         return possibleExits[Random.Range(0, possibleExits.Length)];
     }

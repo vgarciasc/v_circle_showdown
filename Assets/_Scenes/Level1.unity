@@ -449,40 +449,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011752038488, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: enableEventHorizon
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011752038488, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: fullTransformation
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011752038488, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: maxSpeed
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000013625698386, guid: b08d13bd79238944284310e516ea5291, type: 2}
-      propertyPath: m_TagString
-      value: Charger
-      objectReference: {fileID: 0}
-    - target: {fileID: 212000011990741232, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 0.77391577
-      objectReference: {fileID: 0}
-    - target: {fileID: 212000011990741232, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 0.23405062
-      objectReference: {fileID: 0}
-    - target: {fileID: 212000011990741232, guid: b08d13bd79238944284310e516ea5291,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 0.8602941
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b08d13bd79238944284310e516ea5291, type: 2}
   m_IsPrefabParent: 0
@@ -842,7 +808,7 @@ Prefab:
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: levelItems.Array.data[0].probability
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
@@ -858,6 +824,11 @@ Prefab:
         type: 2}
       propertyPath: levelItems.Array.data[3].probability
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: levelItems.Array.data[5].probability
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}

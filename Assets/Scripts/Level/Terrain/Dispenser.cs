@@ -3,8 +3,6 @@ using System.Collections;
 
 public class Dispenser : MonoBehaviour {
     [SerializeField]
-    GameObject dispenserPosition;
-    [SerializeField]
     GameObject objectDispensed;
     [SerializeField]
     Color lightOn = Color.green;
@@ -19,15 +17,17 @@ public class Dispenser : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && !cooldownOn) {
+        Debug.Log("A");
             dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
         }
     }
     
     void dispenseObject(float playerSpeed) {
+        Transform dispenser = getRandomDispenserPosition();
         float sizeModifier = playerSpeed / 5f;
         GameObject dispensed = Instantiate(objectDispensed);
-        dispensed.transform.position = dispenserPosition.transform.position;
-        dispensed.GetComponent<Rigidbody2D>().AddForce(dispenserPosition.transform.up * speed, ForceMode2D.Impulse);
+        dispensed.transform.position = dispenser.position;
+        dispensed.GetComponent<Rigidbody2D>().AddForce(dispenser.up * speed, ForceMode2D.Impulse);
         dispensed.transform.localScale *= sizeModifier;
 
         StartCoroutine(cooldown());
@@ -44,10 +44,12 @@ public class Dispenser : MonoBehaviour {
     }
 
     void toggleButton(bool value) {
-        if (value) {
-            this.GetComponent<SpriteRenderer>().color = lightOn;
-        } else {
-            this.GetComponent<SpriteRenderer>().color = lightOff;
-        }
+        if (value) this.GetComponent<SpriteRenderer>().color = lightOn;
+        else this.GetComponent<SpriteRenderer>().color = lightOff;
+    }
+
+    Transform getRandomDispenserPosition() {
+        return transform.GetChild(Random.Range(0, transform.childCount));
+        //return dispenserPosition[0].transform;
     }
 }

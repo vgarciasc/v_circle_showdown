@@ -274,7 +274,7 @@ public class Player : MonoBehaviour, ISmashable {
             hitSpikes();
 
         if (target.gameObject.tag == "Charger")
-            hitCharger();
+            hitCharger(target.gameObject.GetComponent<Rigidbody2D>().velocity);
 
         if (target.gameObject.tag == "Player" && isLookingAtObject(target.transform)) {
             Player enemy = target.gameObject.GetComponent<Player>();
@@ -335,8 +335,10 @@ public class Player : MonoBehaviour, ISmashable {
         killPlayer();
     }
 
-    void hitCharger() {
-        changeSize(0.3f);
+    void hitCharger(Vector2 velocity) {
+        float aux = velocity.magnitude;
+        changeSize(0.5f * aux / 20f);
+        shakeScreen(0.5f * aux / 20f);
     }
 
     IEnumerator temporaryInvincibility(int frames) {
@@ -593,8 +595,10 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void useItem(ItemData itemData) {
+        if (itemData == null) return;
+
         playerStatus.unshowItem();
-        currentItem = itemData;
+        currentItem = null;
 
         switch (itemData.type) {
             case ItemType.HERBALIFE:

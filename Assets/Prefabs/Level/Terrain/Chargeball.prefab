@@ -26,7 +26,7 @@ GameObject:
   - 58: {fileID: 58000013107446106}
   m_Layer: 0
   m_Name: Chargeball
-  m_TagString: Nebula
+  m_TagString: Charger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,8 +103,8 @@ MonoBehaviour:
   maxSpeed: 30
   blackHolePrefab: {fileID: 114000010534690284, guid: 584e127e0e08b5a4a86a4cbcab9bae6f,
     type: 2}
-  enableEventHorizon: 1
-  fullTransformation: 1
+  enableEventHorizon: 0
+  fullTransformation: 0
 --- !u!212 &212000011990741232
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -135,6 +135,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3dc18d90c65b61748a2f2523a90ba7f3, type: 3}
-  m_Color: {r: 0.410195, g: 0.24075478, b: 0.53676474, a: 1}
+  m_Color: {r: 0.65941113, g: 0.24134946, b: 0.6838235, a: 1}
   m_FlipX: 0
   m_FlipY: 0

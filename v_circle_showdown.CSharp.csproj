@@ -96,9 +96,11 @@
     <Compile Include="Assets\Scripts\Level\Terrain\RotatingPlatform.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\SpikeBall.cs" />
     <Compile Include="Assets\Scripts\Level\Terrain\WashingPlatform.cs" />
+    <Compile Include="Assets\Scripts\Rotator.cs" />
     <Compile Include="Assets\Scripts\SmashDetection.cs" />
     <Compile Include="Assets\Scripts\Subject.cs" />
     <Compile Include="Assets\Scripts\Teleportable.cs" />
+    <Compile Include="Assets\Scripts\TimeDestroyer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

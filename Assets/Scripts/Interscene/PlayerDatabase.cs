@@ -82,7 +82,7 @@ public class PlayerDatabase : MonoBehaviour {
                 PlayerData aux = new PlayerData("_J" + i.ToString(),
                                                 i,
                                                 currentID,
-                                                getRandomPlayerColor(true));
+                                                getRandomPlayerColor(Color.clear));
 
                 pprefs.Add(aux);
                 playersIn.Add(i);
@@ -95,7 +95,7 @@ public class PlayerDatabase : MonoBehaviour {
             } else if (Input.GetButtonDown("Fire1_J" + i.ToString()) && playersIn.Contains(i)) {
                 for (int j = 0; j < pprefs.Count; j++) {
                     if (pprefs[j].joystickNum == i) {
-                        Color aux = getRandomPlayerColor(false);
+                        Color aux = getRandomPlayerColor(pprefs[j].color);
                         pprefs[j].color = aux;
                         playerTexts.transform.GetChild(pprefs[j].playerID).GetComponentInChildren<Image>().color = aux;
                         break;
@@ -134,7 +134,7 @@ public class PlayerDatabase : MonoBehaviour {
         currentColorArray.AddRange(playerColors);
     }
 
-    Color getRandomPlayerColor(bool firstTime) {
+    Color getRandomPlayerColor(Color currentColor) {
         int i = Random.Range(0, currentColorArray.Count);
         /*Color aux = baseColors[i];
         float aux_r, aux_g, aux_b;
@@ -153,8 +153,10 @@ public class PlayerDatabase : MonoBehaviour {
 
         Color output = currentColorArray[i];
         currentColorArray.Remove(output);
-        if (firstTime)
-            playerColors.Remove(output);
+        if (currentColor == Color.clear)
+            currentColorArray.Remove(output);
+        else
+            currentColorArray.Add(currentColor);
 
         if (currentColorArray.Count == 0)
             initBaseColors();

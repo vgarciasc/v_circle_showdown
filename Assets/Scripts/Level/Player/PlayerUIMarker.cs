@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class PlayerUIMarker : MonoBehaviour, IObserver {
+public class PlayerUIMarker : MonoBehaviour{
     RectTransform canvasRt;
     Vector3 originalScale;
     enum Border { None, Right, Left, Top, Bottom };
@@ -11,18 +11,11 @@ public class PlayerUIMarker : MonoBehaviour, IObserver {
         originalScale = this.transform.localScale;
     }
 
-    public void onNotify(Event ev) {
-        switch (ev) {
-            case Event.PLAYER_KILLED:
-                StartCoroutine(playerKilled());
-                break;
-        }
-    }
-
     public void setMarker(Color playerColor) {
         this.GetComponent<Image>().color = playerColor;
     }
 
+    public void playerKilled_() { StartCoroutine(playerKilled()); }
     IEnumerator playerKilled() {
         yield return new WaitForSeconds(1.0f);
         HushPuppy.fadeImgOut(this.gameObject, 0.5f);

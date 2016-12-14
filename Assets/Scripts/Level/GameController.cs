@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
     PlayerDatabase pdatabase;
 
-    void Awake() {
+    void Start() {
         pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+            Player player = (Player) HushPuppy.safeComponent(go, "Player");
+            player.death_event += checkGameOver_;
+        }
     }
 
     void Update() {
@@ -17,13 +20,13 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void checkGameOver() { StartCoroutine(checkGameOver_()); }
-    IEnumerator checkGameOver_() {
+    public void checkGameOver_() { StartCoroutine(checkGameOver()); }
+    IEnumerator checkGameOver() {
         yield return new WaitForSeconds(2.0f);
         GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
 
         if (go.Length == 1) { //apenas um jogador vivo (vitorioso)
-            int winnerID = go[0].GetComponent<Player>().playerID;
+            int winnerID = go[0].GetComponent<Player>().ID;
             getNextScene(winnerID);
         } else if (go.Length == 0) { //nenhum jogador vivo (empate)
             getNextScene(-1);

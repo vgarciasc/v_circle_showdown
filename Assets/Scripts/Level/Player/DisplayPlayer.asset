@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b33caea7d5dda94ab3393ebc7c79642, type: 3}
+  m_Name: DisplayPlayer
+  m_EditorClassIdentifier: 
+  maxVelocity: 6
+  maxSecondsOutOfScreen: 3
+  maxTackleBuildup: 100
+  tackleWeight: 0.5
+  maxSize: 15
+  minSize: 0.6
+  mass: 0.5
+  scale: {x: 1, y: 1, z: 1}
+  tackleForce: 50
+  jumpForce: 300
+  speed: 0.3
+  hitSizeIncrement: 0
+  timeSizeIncrement: 0
+  timeBetweenSpurts: 0.8
+  hitTransferRatio: 40
+  invincibleFrames: 20
+  portalCooldown: 1

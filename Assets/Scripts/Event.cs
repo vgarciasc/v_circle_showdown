@@ -1,1 +1,0 @@
-﻿public enum Event {  PLAYER_KILLED };

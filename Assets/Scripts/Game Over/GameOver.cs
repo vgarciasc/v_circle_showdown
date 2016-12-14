@@ -26,8 +26,8 @@ public class GameOver : MonoBehaviour {
             return;
         }
 
-        playerCongratulations.text = "CONGRATULATIONS, PLAYER " + (pd.pprefs[pd.winnerID].playerID + 1).ToString() + "!";
-        playerSprite.color = pd.pprefs[pd.winnerID].color;
+        playerCongratulations.text = "CONGRATULATIONS, PLAYER " + (pd.players[pd.winnerID].playerID + 1).ToString() + "!";
+        playerSprite.color = pd.players[pd.winnerID].color;
         pd.winnerID = -1;
     }
 

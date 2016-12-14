@@ -17,18 +17,18 @@ public class PlayerSpawner : MonoBehaviour {
             startDefaultGame(); return;
         }
 
-        if (playerSpawnLocations.transform.childCount < playerDatabase.pprefs.Count) {
+        if (playerSpawnLocations.transform.childCount < playerDatabase.players.Count) {
             Debug.Log("Not enough spawn points!"); return;
         }
 
-        for (int i = 0; i < playerDatabase.pprefs.Count; i++)
-            spawnPlayer(playerDatabase.pprefs[i],
+        for (int i = 0; i < playerDatabase.players.Count; i++)
+            spawnPlayer(playerDatabase.players[i],
                         playerSpawnLocations.getLocationByIndex(i));
     }
 
-    Player spawnPlayer(PlayerData data, Vector3 location) {
+    Player spawnPlayer(PlayerInstance data, Vector3 location) {
         Player aux = Instantiate(playerPrefab).GetComponent<Player>();
-        aux.setPlayer(data.playerID, data.joystick, data.color);
+        aux.setPlayer(data);
         aux.transform.position = location;
         aux.name = "Player #" + (data.playerID + 1);
 
@@ -36,7 +36,7 @@ public class PlayerSpawner : MonoBehaviour {
     }
 
     void startDefaultGame() {
-        PlayerData aux = new PlayerData("_J0", 0, 0, Color.grey);
+        PlayerInstance aux = new PlayerInstance("_J0", 0, 0, Color.grey);
         spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());
     }
 }

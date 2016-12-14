@@ -1,43 +1,34 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using System.Collections.Generic;
-
-public class PlayerData {
-    public string joystick; //formato "_Jk" para joystick de numero k
-    public int joystickNum; //numero do joystick do jogador
-    public int playerID; //ordem que o player apertou pra entrar no jogo
-    public Color color; //sprite que ele escolheu pra jogar
-    public int victories = 0;
-
-    public PlayerData(string joystick, int joystickNum, int playerID, Color color) {
-        this.joystick = joystick;
-        this.joystickNum = joystickNum;
-        this.playerID = playerID;
-        this.color = color;
-    }
-}
 
 public class PlayerDatabase : MonoBehaviour {
     int currentID = 0;
     bool hasSeenAGame = false;
-    public List<PlayerData> pprefs = new List<PlayerData>();
-    List<int> playersIn = new List<int>();
+    PlayerDatabaseSpawner spawner;
 
     public int victoriesNeeded = 1;
     public int winnerID = -1;
+
+    List<int> playersIn = new List<int>();
+    public List<PlayerInstance> players = new List<PlayerInstance>();
+    List<string> joystickNames = new List<string>();
 
     [SerializeField] 
     List<Color> playerColors = new List<Color>();
     List<Color> currentColorArray = new List<Color>();
 
     [SerializeField]
-    GameObject playerTexts; //textos que ficam ativos quando o joystick entra em jogo
+    Transform playerTexts; //textos que ficam ativos quando o joystick entra em jogo
 
     void Start() {
         deleteNewerCopies();
         initBaseColors();
+        spawner = GetComponent<PlayerDatabaseSpawner>();
+
+        joystickNames.Add("Keyboard");
+        joystickNames.AddRange(Input.GetJoystickNames());
 
         foreach (Transform t in playerTexts.transform)
             t.gameObject.SetActive(false);
@@ -49,22 +40,22 @@ public class PlayerDatabase : MonoBehaviour {
 
     #region Handle Victories
     public void resetVictories() {
-        for (int i = 0; i < pprefs.Count; i++)
-            pprefs[i].victories = 0;
+        for (int i = 0; i < players.Count; i++)
+            players[i].victories = 0;
     }
 
     public void giveVictoryTo(int playerID) {
-        pprefs[playerID].victories++;
+        players[playerID].victories++;
     }
 
     public int getGameWinner() {
-        for (int i = 0; i < pprefs.Count; i++) {
-            if (pprefs[i].victories >= victoriesNeeded)
+        for (int i = 0; i < players.Count; i++)
+            if (players[i].victories >= victoriesNeeded)
                 return i;
-        }
 
         return -1; //no winner yet
     }
+
     #endregion
 
     #region Player Select Screen
@@ -79,32 +70,57 @@ public class PlayerDatabase : MonoBehaviour {
             if (Input.GetButtonDown("Fire1_J" + i.ToString()) && !playersIn.Contains(i)) {
                 Debug.Log("Joystick #" + i + " entrou no jogo!");
 
-                PlayerData aux = new PlayerData("_J" + i.ToString(),
+                PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
                                                 i,
                                                 currentID,
                                                 getRandomPlayerColor(Color.clear));
 
-                pprefs.Add(aux);
+                players.Add(aux);
                 playersIn.Add(i);
-
-                playerTexts.transform.GetChild(currentID).gameObject.SetActive(true);
-                playerTexts.transform.GetChild(currentID).GetComponent<Text>().text = "Player #" + (currentID + 1) + " has entered the game.";
-                playerTexts.transform.GetChild(currentID).GetComponentInChildren<Image>().color = aux.color;
+            
+                spawner.setPlayer(currentID, aux);
+                spawner.activatePlayer(currentID);
+                playerTexts.GetChild(currentID).gameObject.SetActive(true);
+                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = "Player #" + (currentID + 1) + " has entered the game." +
+                "\n <color=grey> (" + joystickNames[i] + ") </color>";
+                // playerTexts.transform.GetChild(currentID).GetComponentInChildren<Image>().color = aux.color;
 
                 currentID++;
+
             } else if (Input.GetButtonDown("Fire1_J" + i.ToString()) && playersIn.Contains(i)) {
-                for (int j = 0; j < pprefs.Count; j++) {
-                    if (pprefs[j].joystickNum == i) {
-                        Color aux = getRandomPlayerColor(pprefs[j].color);
-                        pprefs[j].color = aux;
-                        playerTexts.transform.GetChild(pprefs[j].playerID).GetComponentInChildren<Image>().color = aux;
-                        break;
-                    }
-                }
+                int player_ID = get_player_entry_ID(i);
+                Color aux = getRandomPlayerColor(players[player_ID].color);
+                players[player_ID].color = aux;
+                spawner.setPlayer(player_ID, players[player_ID]);
+
+            } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && playersIn.Contains(i)) {
+                int player_ID = get_player_entry_ID(i);
+                toggleReady(player_ID);
+
             }
         }
 
-        if (Input.GetButton("Submit"))
+        if (Input.GetKeyDown(KeyCode.L))
+            goLevelSelect();
+    }
+
+    int get_player_entry_ID(int joystickNum) {
+        for (int j = 0; j < players.Count; j++)
+            if (players[j].joystickNum == joystickNum)
+                return j;
+
+        return 0;
+    }
+
+    int ready = 0;
+    void toggleReady(int player_ID) {
+        bool value = playerTexts.GetChild(player_ID).GetChild(2).gameObject.activeSelf;
+        playerTexts.GetChild(player_ID).GetChild(2).gameObject.SetActive(!value);
+
+        if (value) ready--;
+        else ready++;
+
+        if (ready >= players.Count)
             goLevelSelect();
     }
 

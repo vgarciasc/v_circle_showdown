@@ -2,17 +2,9 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class SpecialMoves : MonoBehaviour, IObserver {
+public class SpecialMoves : MonoBehaviour {
     [SerializeField]
     Text mainText;
-
-    public void onNotify(Event ev) {
-        switch (ev) {
-            case Event.PLAYER_KILLED:
-                StartCoroutine(showcaseText("PLAYER KILLED"));
-                break;
-        }
-    }
 
     IEnumerator showcaseText(string text) {
         mainText.text = text;

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class PlayerUIStatus : MonoBehaviour, IObserver {
+public class PlayerUIStatus : MonoBehaviour {
     [Header("References")]
     [SerializeField]
     Image redCross;
@@ -28,14 +28,6 @@ public class PlayerUIStatus : MonoBehaviour, IObserver {
         unshowItem();
     }
 
-    public void onNotify(Event ev) {
-        switch (ev) {
-            case Event.PLAYER_KILLED:
-                this.playerKilled();
-                break;
-        }
-    }
-
     public void setUI(int playerID, Color playerColor) {
         this.playerColor = playerColor;
         this.playerID = playerID;
@@ -49,7 +41,7 @@ public class PlayerUIStatus : MonoBehaviour, IObserver {
     void setVictories(int playerID) {
         for (int i = 0; i < pdatabase.victoriesNeeded; i++) {
             GameObject aux = (GameObject) Instantiate(victoryIcon, victoriesContainer, false);
-            if (pdatabase.pprefs[playerID].victories > i)
+            if (pdatabase.players[playerID].victories > i)
                 aux.GetComponent<Image>().color = playerColor;
             else
                 aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.5f);
@@ -67,7 +59,7 @@ public class PlayerUIStatus : MonoBehaviour, IObserver {
         this.time.enabled = value; }
     #endregion
 
-    void playerKilled() {
+    public void playerKilled() {
         unshowItem();
         redCross.enabled = true;
         setTime(false);

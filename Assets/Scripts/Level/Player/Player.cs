@@ -1,57 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Player : MonoBehaviour, ISmashable {
-    /* Custom values for testing */
-    [Header("Serialized Variables")]
-    [SerializeField]
-    [Range(0, 1f)]
-    float speed = 0.3f;
-    [SerializeField]
-    float maxVelocity = 6f;
-    [SerializeField]
-    float maxTackleBuildup = 100f;
-    [SerializeField]
-    float maxSecondsOutOfScreen = 3f;
-    [SerializeField]
-    [Range(0, 300f)]
-    float tackleForce = 50f;
-    [SerializeField]
-    float tackleWeight = 0.5f;
-    [SerializeField]
-    [Range(0, 900f)]
-    float jumpForce = 300f;
-    [SerializeField]
-    [Range(0, 1f)]
-    float hitSizeIncrement = 0.2f;
-    [SerializeField]
-    [Range(0, 0.2f)]
-    float timeSizeIncrement = 0.02f;
-    [SerializeField]
-    [Range(0.8f, 10.0f)]
-    float timeBetweenSpurts = 1.0f;
-    [SerializeField]
-    float maxSize = 15f;
-    [SerializeField]
-    float minSize = 0.6f;
-    [SerializeField]
-    [Range(1, 80f)]
-    float hitTransferRatio = 40f;
-    [SerializeField]
-    [Range(0, 60)]
-    int invincibleFrames = 20;
-    [SerializeField]
-    float portalCooldown = 1.0f;
-
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
-    [SerializeField]
-    GameObject playerStatusPrefab;
-    [SerializeField]
-    GameObject playerMarkerPrefab;
-    [SerializeField]
-    GameObject playerVictoriesPrefab;
     [SerializeField]
     ParticleSystem explosionParticleSystem;
     [SerializeField]
@@ -76,27 +28,26 @@ public class Player : MonoBehaviour, ISmashable {
     GameObject forceField;
     [SerializeField]
     GameObject chargeIndicator;
-    [SerializeField]
-    GameObject cannonPosition;
+    
+    public GameObject cannonPosition;
 
-    GameObject playerStatusContainer;
+    public PlayerData data;
 
-    Subject subject = new Subject();
+    public Color color;
+    public delegate void UIDelegate();
+    public event UIDelegate death_event;
+    public delegate void ItemDelegate(ItemData item_data);
+    public event ItemDelegate get_item_event, 
+                            use_item_event;    
+
     Rigidbody2D rb;
     Animator anim;
-    Color playerColor;
-    PlayerUIStatus playerStatus;
-    PlayerUIMarker playerMarker;
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
-    GameController gcontroller;
-    ItemSpawner itemSpawner;
 
     /*Reset variables*/
-    Color originalBorderColor;
-    float originalMass;
-    Vector3 originalScale;
+    Color border_color;
 
     /*Joystick Input*/
     string jsHorizontal,
@@ -108,10 +59,10 @@ public class Player : MonoBehaviour, ISmashable {
 
     /*Other*/
     [Header("Other")]
-    public int playerID = -1;
+    public int ID = -1;
     public string joystick;
     ItemData currentItem;
-    float tackleBuildup;
+    public float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
         ghostSwallow = false,
@@ -122,10 +73,11 @@ public class Player : MonoBehaviour, ISmashable {
         blockCharge = false,
         blockInput = false;
 
-    public void setPlayer(int playerID, string joystick, Color color) {
-        this.playerID = playerID;
-        this.joystick = joystick;
-        playerColor = color;
+    public void setPlayer(PlayerInstance instance) {
+        this.ID = instance.playerID;
+        this.joystick = instance.joystick;
+        this.color = instance.color;
+        startColors();
     }
 
     void Start() {
@@ -135,24 +87,14 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        gcontroller = (GameController) HushPuppy.safeFindComponent("GameController", "GameController");
-        itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
-        subject.addObserver((SpecialMoves) HushPuppy.safeFindComponent("GameController", "SpecialMoves"));
-
-        /*Default values*/
-        originalMass = rb.mass;
-        originalScale = transform.localScale;
 
         /*Init functions*/
-        startColors();
-        startUI();
         startPsystem();
         startAnimator();
         createJoystickInput();
         changeSprite(circleBorder, circleBackground);
         toggleTriangleDetection(false);
         resetTackle();
-        StartCoroutine(checkOutOfScreen());
         StartCoroutine(handleAlmostMaxSize());
         StartCoroutine(grow());
     }
@@ -167,7 +109,6 @@ public class Player : MonoBehaviour, ISmashable {
         forceField.SetActive(false);
 
         handleInput();
-        updateMarker();
     }
 
     #region Spritefest
@@ -181,48 +122,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
     #endregion
 
-    #region UI Elements
-    void startUI() {
-        GameObject playerUI_container = HushPuppy.safeFind("PlayerUIContainer");
-
-        playerStatus = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
-        playerStatus.name = "Player #" + (playerID + 1) + " Status";
-        playerStatus.transform.SetParent(playerUI_container.transform.GetChild(0), false);
-        playerStatus.setUI(playerID, this.playerColor);
-        subject.addObserver(playerStatus);
-
-        playerMarker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
-        playerMarker.name = "Player #" + (playerID + 1) + " Marker";
-        playerMarker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
-        playerMarker.setMarker(this.playerColor);
-        subject.addObserver(playerMarker);
-    }
-
-    void updateMarker() {
-        playerMarker.setPosition(this.transform.position);
-    }
-    #endregion
-
-    #region Out of Screen
-    IEnumerator checkOutOfScreen() {
-        yield return new WaitForSeconds(1f);
-        float timeLeft = maxSecondsOutOfScreen;
-        while (SceneManager.GetActiveScene().name != "GameOver") {
-            if (this.GetComponent<SpriteRenderer>().isVisible) {
-                timeLeft = maxSecondsOutOfScreen;
-                playerStatus.setTime(false);
-            } else {
-                playerStatus.setTime(timeLeft--);
-            }
-
-            if (timeLeft < 0) timeOut();
-
-            yield return new WaitForSeconds(1f);
-        }
-    }
-
     public void timeOut() { killPlayer(); }
-    #endregion
 
     #region Input
     void createJoystickInput() {
@@ -240,8 +140,8 @@ public class Player : MonoBehaviour, ISmashable {
         if (Input.GetKeyDown(KeyCode.K))
             killPlayer();
 
-        float h_mov = Input.GetAxis(jsHorizontal) * speed;
-        if (Mathf.Abs(rb.velocity.x) < maxVelocity)
+        float h_mov = Input.GetAxis(jsHorizontal) * data.speed;
+        if (Mathf.Abs(rb.velocity.x) < data.maxVelocity)
             move(h_mov);
         if (Input.GetButtonDown(jsJump))
             jump();
@@ -259,7 +159,7 @@ public class Player : MonoBehaviour, ISmashable {
 
     void jump() {
         if (blockInput) return;
-        rb.AddForce(new Vector2(0, jumpForce));
+        rb.AddForce(new Vector2(0, data.jumpForce));
     }
 
     void move(float movement) {
@@ -283,8 +183,8 @@ public class Player : MonoBehaviour, ISmashable {
             float hitStrength = velocityHitMagnitude();
             shakeScreen(hitStrength);
             
-            this.giveHit(hitSizeIncrement + hitStrength);
-            enemy.takeHit(hitSizeIncrement + hitStrength);
+            this.giveHit(data.hitSizeIncrement + hitStrength);
+            enemy.takeHit(data.hitSizeIncrement + hitStrength);
         }
 
         else if (ghostSwallow && target.gameObject.tag == "Player") {
@@ -324,7 +224,7 @@ public class Player : MonoBehaviour, ISmashable {
     public void takeHit(float transferSize) {
         //Debug.Log("Transfer Size: " + transferSize);
         changeSize(transferSize);
-        StartCoroutine(temporaryInvincibility(invincibleFrames));
+        StartCoroutine(temporaryInvincibility(data.invincibleFrames));
     }
 
     void giveHit(float transferSize) {
@@ -367,7 +267,7 @@ public class Player : MonoBehaviour, ISmashable {
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
 
-        subject.notify(Event.PLAYER_KILLED);
+        death_event();
         anim.SetTrigger("explode");
     }
 
@@ -394,18 +294,17 @@ public class Player : MonoBehaviour, ISmashable {
 
     //to be used only by animation
     void AnimationKillPlayer() {
-        gcontroller.checkGameOver();
         Destroy(this.gameObject);
     }
     #endregion
 
     #region Colors
     void startColors() {
-        originalBorderColor = Color.black;
-        spriteBackground.GetComponent<SpriteRenderer>().color = playerColor;
-        forceField.GetComponent<SpriteRenderer>().color = playerColor;
-        this.GetComponent<SpriteRenderer>().color = originalBorderColor;
-        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(playerColor.r - 0.4f, playerColor.g - 0.4f, playerColor.b - 0.4f, 0.5f);
+        border_color = Color.black;
+        spriteBackground.GetComponent<SpriteRenderer>().color = color;
+        forceField.GetComponent<SpriteRenderer>().color = color;
+        this.GetComponent<SpriteRenderer>().color = border_color;
+        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
     }
     #endregion
 
@@ -419,8 +318,8 @@ public class Player : MonoBehaviour, ISmashable {
 
         /*'Spurts' Growth */
         while (true) {
-            yield return new WaitForSeconds(timeBetweenSpurts);
-            if (!blockGrowth) changeSize(timeSizeIncrement);
+            yield return new WaitForSeconds(data.timeBetweenSpurts);
+            if (!blockGrowth) changeSize(data.timeSizeIncrement);
         }
     }
 
@@ -431,11 +330,11 @@ public class Player : MonoBehaviour, ISmashable {
 
     void checkSize() {
         //manageAlmostExploding();
-        almostExploding = this.transform.localScale.x > maxSize * 4 / 5;
+        almostExploding = this.transform.localScale.x > data.maxSize * 4 / 5;
 
-        if (this.transform.localScale.x > maxSize)
+        if (this.transform.localScale.x > data.maxSize)
             killPlayer();
-        if (this.transform.localScale.x < minSize)
+        if (this.transform.localScale.x < data.minSize)
             /*this.transform.localScale = new Vector2(minSize, minSize);*/
             killPlayer();
     }
@@ -443,12 +342,12 @@ public class Player : MonoBehaviour, ISmashable {
     IEnumerator handleAlmostMaxSize() {
         bool toggle = false;
         while (true) {
-            changeBorderColor(originalBorderColor);
+            changeBorderColor(border_color);
             yield return new WaitUntil(() => almostExploding);
 
             toggle = !toggle;
-            if (toggle) changeBorderColor(originalBorderColor);
-            else changeBorderColor(HushPuppy.getColorWithOpacity(originalBorderColor, 0.5f));
+            if (toggle) changeBorderColor(border_color);
+            else changeBorderColor(HushPuppy.getColorWithOpacity(border_color, 0.5f));
 
             for (int i = 0; i < 10; i++)
                     yield return new WaitForEndOfFrame();
@@ -456,7 +355,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void manageAlmostExploding() {
-        bool aux = this.transform.localScale.x > maxSize * 4 / 5;
+        bool aux = this.transform.localScale.x > data.maxSize * 4 / 5;
 
         if (isCircle() && aux != almostExploding) {
             if (aux) {
@@ -471,9 +370,9 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region Tackle Bell
-    void resetTackle() {
+    public void resetTackle() {
         tackleBuildup = 0f;
-        rb.mass = originalMass;
+        rb.mass = data.mass;
     }
 
     void toggleChargeIndicator(bool value) {
@@ -491,10 +390,10 @@ public class Player : MonoBehaviour, ISmashable {
     void manageTackle() {
         if (blockCharge) return;
 
-        if (tackleBuildup >= maxTackleBuildup)
-            tackleBuildup = maxTackleBuildup;
+        if (tackleBuildup >= data.maxTackleBuildup)
+            tackleBuildup = data.maxTackleBuildup;
 
-        float perc = tackleBuildup / maxTackleBuildup;
+        float perc = tackleBuildup / data.maxTackleBuildup;
         perc /= 1f;
 
         //if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
@@ -516,12 +415,12 @@ public class Player : MonoBehaviour, ISmashable {
         Color aux = chargeIndicator.GetComponent<SpriteRenderer>().color;
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, multiplier);
 
-        rb.mass = originalMass + tackleWeight * perc;
+        rb.mass = data.mass + data.tackleWeight * perc;
     }
 
     void releaseTackle(float power) {
-        float perc = tackleBuildup / maxTackleBuildup;
-        Vector2 direction = this.transform.up * tackleForce * perc * power;
+        float perc = tackleBuildup / data.maxTackleBuildup;
+        Vector2 direction = this.transform.up * data.tackleForce * perc * power;
         rb.velocity += direction;
         //rb.velocity += new Vector2(Mathf.Sign(rb.velocity.x) * 10f, 0);
         resetTackle();
@@ -534,8 +433,8 @@ public class Player : MonoBehaviour, ISmashable {
     //bool[] corneredDetected = new bool[2];
     //public void corneredDetection(int detectorID, bool value) {
     //    corneredDetected[detectorID] = value;
-    //    //if (playerID == 1) Debug.Log("corneredDetected[0]: " + corneredDetected[0]);
-    //    //if (playerID == 1) Debug.Log("corneredDetected[1]: " + corneredDetected[1]);
+    //    //if (ID == 1) Debug.Log("corneredDetected[0]: " + corneredDetected[0]);
+    //    //if (ID == 1) Debug.Log("corneredDetected[1]: " + corneredDetected[1]);
     //    if (corneredDetected[0] && corneredDetected[1]) {
     //        killPlayer();
     //    }
@@ -568,7 +467,7 @@ public class Player : MonoBehaviour, ISmashable {
 
     #region Particle System
     void startPsystem() {
-        Color aux = playerColor;
+        Color aux = color;
         aux += new Color(0.3f, 0.3f, 0.3f);
         explosionParticleSystem.startColor = aux;
     }
@@ -590,42 +489,22 @@ public class Player : MonoBehaviour, ISmashable {
         }
 
         currentItem = item.data;
-        playerStatus.showItem(item.data);
+        get_item_event(item.data);
         item.destroy();
     }
 
     void useItem(ItemData itemData) {
         if (itemData == null) return;
 
-        playerStatus.unshowItem();
+        use_item_event(itemData);
         currentItem = null;
-
-        switch (itemData.type) {
-            case ItemType.HERBALIFE:
-                useHerbalife();
-                break;
-            case ItemType.TRIANGLE:
-                StartCoroutine(useTrianglePotion(itemData.cooldown));
-                break;
-            case ItemType.BLACK_HOLE:
-                break;
-            case ItemType.GHOST:
-                StartCoroutine(useGhostPotion(itemData.cooldown));
-                break;
-            case ItemType.BOMB:
-                useBomb();
-                break;
-            case ItemType.MUSHROOM:
-                useMushroom(itemData.cooldown);
-                break;
-        }
     }
 
     void useHerbalife() {
-        transform.localScale = originalScale;
+        transform.localScale = data.scale;
     }
 
-    void toggleTriangle(bool value) {
+    public void toggleTriangle(bool value) {
         if (value)
             changeSprite(triangleBorder, triangleBackground);
         else
@@ -642,14 +521,6 @@ public class Player : MonoBehaviour, ISmashable {
         resetTackle();
     }
 
-    IEnumerator useTrianglePotion(float duration) {
-        toggleTriangle(true);
-
-        yield return new WaitForSeconds(duration);
-
-        toggleTriangle(false);
-    }
-
     IEnumerator useGhostPotion(float duration) {
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
@@ -663,11 +534,11 @@ public class Player : MonoBehaviour, ISmashable {
         spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
 
         yield return new WaitForSeconds(duration * 3 / 5);
-        Coroutine cr = StartCoroutine(useGhostPotion_blink(playerColor, transparent));
+        Coroutine cr = StartCoroutine(useGhostPotion_blink(color, transparent));
         yield return new WaitForSeconds(duration * 2 / 5);
         StopCoroutine(cr);
 
-        spriteBackground.GetComponent<SpriteRenderer>().color = playerColor;
+        spriteBackground.GetComponent<SpriteRenderer>().color = color;
 
         circleCollider.enabled = true;
         toggleCircleDetection(true);
@@ -696,15 +567,6 @@ public class Player : MonoBehaviour, ISmashable {
             for (int i = 0; i < 5; i++)
                 yield return new WaitForEndOfFrame();
         }
-    }
-
-    void useBomb() {
-        itemSpawner.createBomb(this.transform, cannonPosition.transform, tackleBuildup);
-        resetTackle();
-    }
-
-    void useMushroom(float duration) {
-        itemSpawner.createMushroomCloud(this.transform, duration);
     }
     #endregion
 }

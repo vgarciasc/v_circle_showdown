@@ -242,7 +242,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000013576263392}
   - 114: {fileID: 114000010265959760}
+  - 114: {fileID: 114000012722864078}
   - 212: {fileID: 212000011125384188}
+  - 114: {fileID: 114000014064908784}
   - 95: {fileID: 95000012303748316}
   - 50: {fileID: 50000011120884036}
   - 58: {fileID: 58000013486315398}
@@ -501,7 +503,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014042269632}
   m_UseAutoMass: 0
-  m_Mass: 0.5
+  m_Mass: 0.1
   m_LinearDrag: 1
   m_AngularDrag: 0.5
   m_GravityScale: 2
@@ -642,27 +644,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ce30308e75f524ab7a6e3c4e1d07da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.3
-  maxVelocity: 13
-  maxTackleBuildup: 100
-  maxSecondsOutOfScreen: 3
-  tackleForce: 60
-  tackleWeight: 0.5
-  jumpForce: 300
-  hitSizeIncrement: 0.06
-  timeSizeIncrement: 0.1111
-  timeBetweenSpurts: 3.01
-  maxSize: 8
-  minSize: 0.6
-  hitTransferRatio: 59.8
-  invincibleFrames: 12
-  portalCooldown: 1
-  playerStatusPrefab: {fileID: 1000012027783952, guid: cf6d52889e16b2148a0b9bbbfc14f1c5,
-    type: 2}
-  playerMarkerPrefab: {fileID: 1000010549392374, guid: 7fde63883282ed54da92745d0a343223,
-    type: 2}
-  playerVictoriesPrefab: {fileID: 1000011121550842, guid: 8cf450b3f1937044daeed69fb9bf634e,
-    type: 2}
   explosionParticleSystem: {fileID: 198000010217548062}
   circleTrappedDetector: {fileID: 1000012588943430}
   triangleTrappedDetector: {fileID: 1000012542891840}
@@ -677,8 +658,11 @@ MonoBehaviour:
   forceField: {fileID: 1000013920249444}
   chargeIndicator: {fileID: 1000013188220940}
   cannonPosition: {fileID: 1000011763375380}
-  playerID: -1
+  data: {fileID: 11400000, guid: 503b38639bacac14ea85600911b2e266, type: 2}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  ID: -1
   joystick: 
+  tackleBuildup: 0
 --- !u!114 &114000011328965218
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -690,6 +674,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 738ee3ddeb81db242ba9fc142a5e2117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114000012722864078
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014042269632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c28494821765f4d98de5354305360e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStatusPrefab: {fileID: 1000012027783952, guid: cf6d52889e16b2148a0b9bbbfc14f1c5,
+    type: 2}
+  playerMarkerPrefab: {fileID: 1000010549392374, guid: 7fde63883282ed54da92745d0a343223,
+    type: 2}
 --- !u!114 &114000013732057582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -699,6 +698,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 738ee3ddeb81db242ba9fc142a5e2117, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114000014064908784
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014042269632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7fc843b39c7354b81f4cb9508254f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114000014172046132

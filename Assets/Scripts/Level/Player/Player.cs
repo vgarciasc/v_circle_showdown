@@ -34,6 +34,7 @@ public class Player : MonoBehaviour, ISmashable {
     public PlayerData data;
 
     public Color color;
+    public bool isTriangle;
     public delegate void UIDelegate();
     public event UIDelegate death_event;
     public delegate void ItemDelegate(ItemData item_data);
@@ -357,7 +358,7 @@ public class Player : MonoBehaviour, ISmashable {
     void manageAlmostExploding() {
         bool aux = this.transform.localScale.x > data.maxSize * 4 / 5;
 
-        if (isCircle() && aux != almostExploding) {
+        if (!isTriangle && aux != almostExploding) {
             if (aux) {
                 changeSprite(circleBorderAlmostExploding, circleBackground);
             } else {
@@ -459,12 +460,6 @@ public class Player : MonoBehaviour, ISmashable {
     }
     #endregion
 
-    #region Triangle vs. Circle
-    bool isCircle() {
-        return circleCollider.enabled;
-    }
-    #endregion
-
     #region Particle System
     void startPsystem() {
         Color aux = color;
@@ -510,6 +505,7 @@ public class Player : MonoBehaviour, ISmashable {
         else
             changeSprite(circleBorder, circleBackground);
 
+        isTriangle = !isTriangle;
         triangleSpikes.SetActive(value);
         blockInput = value;
         blockCharge = value;

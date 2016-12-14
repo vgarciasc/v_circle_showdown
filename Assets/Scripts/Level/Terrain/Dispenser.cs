@@ -17,8 +17,14 @@ public class Dispenser : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Player" && !cooldownOn) {
-        Debug.Log("A");
-            dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
+            Player player = (Player) HushPuppy.safeComponent(target.gameObject, "Player");
+            if (player.isTriangle) {
+                for (int i = 0; i < 50; i++) {
+                    dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
+                }
+            } else {
+                dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
+            }
         }
     }
     
@@ -28,7 +34,10 @@ public class Dispenser : MonoBehaviour {
         GameObject dispensed = Instantiate(objectDispensed);
         dispensed.transform.position = dispenser.position;
         dispensed.GetComponent<Rigidbody2D>().AddForce(dispenser.up * speed, ForceMode2D.Impulse);
-        dispensed.transform.localScale *= sizeModifier;
+        
+        //doesnt make triangles smol
+        if (sizeModifier > 1f)
+            dispensed.transform.localScale *= sizeModifier;
 
         StartCoroutine(cooldown());
     }

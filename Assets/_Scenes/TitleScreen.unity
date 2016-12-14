@@ -763,8 +763,8 @@ Canvas:
   m_GameObject: {fileID: 1775478669}
   m_Enabled: 1
   serializedVersion: 2
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 1791134726}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -876,6 +876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blackscreen: {fileID: 709776362}
   startAnimator: {fileID: 1776446119}
+  openingArtAnimator: {fileID: 680018749}
 --- !u!222 &1776446121
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -894,6 +895,7 @@ GameObject:
   - 92: {fileID: 1791134725}
   - 124: {fileID: 1791134724}
   - 81: {fileID: 1791134723}
+  - 114: {fileID: 1791134728}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -969,6 +971,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &1791134728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1791134722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2527d7a39a6076d4eb90cc9beeec36fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camBorders: {fileID: 0}
 --- !u!1 &1807229964
 GameObject:
   m_ObjectHideFlags: 0

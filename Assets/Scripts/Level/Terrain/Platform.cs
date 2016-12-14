@@ -92,7 +92,7 @@ public class Platform : MonoBehaviour {
         Vector3 aux = Vector3.Normalize(nextPosition - lastPosition);
         float modifier = Mathf.Clamp(5 * speed * Mathf.Pow(1 + acceleration / 25, iterations), -maxVelocity, maxVelocity);
 
-        this.GetComponent<Rigidbody2D>().velocity = aux * modifier;
+        this.GetComponentInChildren<Rigidbody2D>().velocity = aux * modifier;
     }
 
     void updatePosition() {

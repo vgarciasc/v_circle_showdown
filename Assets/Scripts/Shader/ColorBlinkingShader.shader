@@ -1,4 +1,4 @@
-﻿Shader "Custom/Test UI Shader"
+﻿Shader "Custom/Changing Color Shader"
 {
 	Properties
 	{
@@ -13,6 +13,11 @@
 		_NoiseTex ("Noise Texture", 2D) = "white" {}
 
 		_ColorMask ("Color Mask", Float) = 15
+		_ColorChangingSpeed ("Color Changing Speed", Float) = 15
+		_ColorStartTime_RED ("RED Start Time", Float) = 2
+		_ColorStartTime_BLUE ("BLUE Start Time", Float) = 20
+		_ColorStartTime_GREEN ("GREEN Start Time", Float) = 40
+		
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 	}
@@ -94,22 +99,18 @@
 
 			sampler2D _MainTex;
 			sampler2D _NoiseTex;
-			float _DistortionDamper;
-			float _DistortionSpreader;
+			float _ColorChangingSpeed;
+			float _ColorStartTime_RED;
+			float _ColorStartTime_GREEN;
+			float _ColorStartTime_BLUE;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				float2 offset = float2( 
-					tex2D(_NoiseTex, float2(IN.worldPosition.y / _DistortionSpreader + _Time[1], 0 )).r, 
-					tex2D(_NoiseTex, float2(0, IN.worldPosition.x / _DistortionSpreader + _Time[1])).r);
-				
-				offset -= 0.5;
-
 				// half4 color = (tex2D(_MainTex, IN.texcoord + offset / _DistortionDamper) + _TextureSampleAdd) * IN.color;
 				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-				color.r = (sin(_Time[1] * 5) + 1) / 2;
-				color.g = (sin(20 + _Time[2] * 5) + 1) / 2;
-				color.b = (sin(2 + _Time[3] * 5) + 1) / 2;
+				color.r = (sin(_ColorStartTime_RED + _Time[1] * _ColorChangingSpeed / 20) + 1) / 2;
+				color.g = (sin(_ColorStartTime_GREEN + _Time[2] * _ColorChangingSpeed / 20) + 1) / 2;
+				color.b = (sin(_ColorStartTime_BLUE + _Time[3] * _ColorChangingSpeed / 20) + 1) / 2;
 
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
 				

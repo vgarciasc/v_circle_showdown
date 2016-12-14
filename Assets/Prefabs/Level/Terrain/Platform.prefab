@@ -19,13 +19,28 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000012123712680}
-  - 212: {fileID: 212000012924116502}
   - 61: {fileID: 61000011053882532}
   - 114: {fileID: 114000010987941088}
   - 50: {fileID: 50000010400391902}
+  - 212: {fileID: 212000012300781252}
   m_Layer: 8
   m_Name: Platform
   m_TagString: Floor
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000014241825290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000013137102564}
+  m_Layer: 8
+  m_Name: GameObject
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,11 +52,25 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012830413828}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.49, y: 2.78, z: 0}
-  m_LocalScale: {x: 10.46767, y: -1.6433173, z: 1}
+  m_LocalPosition: {x: -22.54, y: 0.06, z: 0}
+  m_LocalScale: {x: 1.1456909, y: -27.624666, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 4000013137102564}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &4000013137102564
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014241825290}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 40, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 4000012123712680}
   m_RootOrder: 0
 --- !u!50 &50000010400391902
 Rigidbody2D:
@@ -85,10 +114,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7c3c8abd4bf9974688b1580bbf32cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  transformArray: []
-  enableMovement: 0
---- !u!212 &212000012924116502
+  speed: 0.53
+  transformArray:
+  - {fileID: 4000013137102564}
+  enableMovement: 1
+  acceleration: 2.4
+  maxVelocity: 15
+  startDelay: 3
+  enableRumble: 0
+--- !u!212 &212000012300781252
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -118,6 +152,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.8602941, g: 0.7151086, b: 0.45544982, a: 1}
   m_FlipX: 0
   m_FlipY: 0

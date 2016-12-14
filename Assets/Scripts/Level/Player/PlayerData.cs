@@ -2,7 +2,7 @@
 
 [CreateAssetMenu(fileName = "Data", menuName = "PlayerData", order = 1)]
 public class PlayerData : ScriptableObject {
-    public float maxVelocity = 6f;
+    public float maxVelocity = 10f;
     public float maxSecondsOutOfScreen = 3f;
     public float maxTackleBuildup = 100f;
     public float tackleWeight = 0.5f;

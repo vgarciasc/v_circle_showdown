@@ -527,7 +527,7 @@ GameObject:
   - 222: {fileID: 858449716}
   - 114: {fileID: 858449715}
   m_Layer: 0
-  m_Name: Image
+  m_Name: Black Sash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -548,8 +548,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -38, y: 9}
-  m_SizeDelta: {x: 639, y: 229}
+  m_AnchoredPosition: {x: -37.7, y: 9}
+  m_SizeDelta: {x: 638.5, y: 229}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &858449715
 MonoBehaviour:
@@ -557,7 +557,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 858449713}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -1018,22 +1018,22 @@ Prefab:
     - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -16
+      value: -0.000007629397
       objectReference: {fileID: 0}
     - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 917
+      value: 1061
       objectReference: {fileID: 0}
     - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 567
+      value: 920
       objectReference: {fileID: 0}
     - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
         type: 2}
@@ -1064,16 +1064,6 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
-        type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012818667272, guid: 53e48b34e1ab67a4690d6138df69a134,
-        type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 53e48b34e1ab67a4690d6138df69a134, type: 2}

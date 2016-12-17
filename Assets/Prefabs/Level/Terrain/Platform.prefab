@@ -37,7 +37,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012123712680}
   - 114: {fileID: 114000010987941088}
-  - 114: {fileID: 114000014032536152}
   - 50: {fileID: 50000010888747478}
   m_Layer: 8
   m_Name: Platform
@@ -153,18 +152,6 @@ MonoBehaviour:
   maxVelocity: 50
   startDelay: 0
   enableRumble: 0
---- !u!114 &114000014032536152
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012830413828}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 942f025d4c5251141962a79efb654995, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  border: {fileID: 1000013785668070}
 --- !u!212 &212000011700135342
 SpriteRenderer:
   m_ObjectHideFlags: 1

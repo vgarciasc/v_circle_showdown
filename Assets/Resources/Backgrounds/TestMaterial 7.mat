@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: TestMaterial 4
-  m_Shader: {fileID: 4800000, guid: 3253ef2dfa1fd004b814280f2f0df2b0, type: 3}
+  m_Name: TestMaterial 7
+  m_Shader: {fileID: 4800000, guid: f7cae97e017d6de4e9b5950defa25506, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -105,13 +105,13 @@ Material:
       second: 1
     - first:
         name: _DistortionFrequency
-      second: 104
+      second: 88
     - first:
         name: _DistortionScale
-      second: 0.031
+      second: 0.024
     - first:
         name: _DistortionSpeed
-      second: 4.7
+      second: 0.11
     - first:
         name: _DistortionSpreader
       second: 50
@@ -174,13 +174,13 @@ Material:
       second: 0
     - first:
         name: _VerticalWaveVelocity
-      second: 10
+      second: 16.6
     - first:
         name: _WaveAmplitude
       second: 54.6
     - first:
         name: _WaveQuantity
-      second: 9
+      second: 9.9
     - first:
         name: _Waves
       second: 6.14

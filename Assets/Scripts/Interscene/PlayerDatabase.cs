@@ -87,7 +87,7 @@ public class PlayerDatabase : MonoBehaviour {
 
                 currentID++;
 
-            } else if (Input.GetButtonDown("Fire1_J" + i.ToString()) && playersIn.Contains(i)) {
+            } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && playersIn.Contains(i)) {
                 int player_ID = get_player_entry_ID(i);
                 Color aux = getRandomPlayerColor(players[player_ID].color);
                 players[player_ID].color = aux;

@@ -18,6 +18,7 @@ TagManager:
   - Nebula
   - Charger
   - Inverse Nebula
+  - BombExplosion
   layers:
   - Default
   - TransparentFX

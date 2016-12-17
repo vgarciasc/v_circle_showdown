@@ -8,24 +8,32 @@ public class TitleScreenManager : MonoBehaviour {
 	public Animator startAnimator,
 				openingArtAnimator;
 	
+	bool hasPressedStart;
+	
 	void Update () {
-		if (Input.GetButtonDown("Submit")) {
-			callNextScene_();
+		for (int i = 0; i < 4; i++) {
+			if (Input.GetButtonDown("Submit_J" + i)) {
+				callNextScene_();
+			}
 		}
 	}
 
 	public void Anim_startIdle() {
 		startAnimator.SetBool("idle", true); }
 
-	public void callNextScene_() { StartCoroutine(callNextScene()); }
+	public void callNextScene_() {
+		if (hasPressedStart) return;
+		else hasPressedStart = true;
+		StartCoroutine(callNextScene());
+	}
 	IEnumerator callNextScene() {
         SpecialCamera scamera = Camera.main.GetComponent<SpecialCamera>();
-		scamera.screenShake_(2f);
+		scamera.screenShake_(1f);
 
 		startAnimator.SetTrigger("start");
 		openingArtAnimator.SetTrigger("start");
 
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(1f);
 		blackscreen.enabled = true;
 		HushPuppy.fadeIn(blackscreen.gameObject, 2f);
 		yield return new WaitForSeconds(2.5f);

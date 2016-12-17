@@ -2,6 +2,13 @@
 using System.Collections;
 
 public class PlayerItemUser : MonoBehaviour {
+    public delegate void useItem();
+    public event useItem healroot,
+                        triangle,
+                        ghost,
+                        bomb,
+                        mushroom;
+    
 	ItemSpawner item_spawner;
 	Player player;
 
@@ -14,18 +21,23 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_item(ItemData item_data) {
          switch (item_data.type) {
             case ItemType.HERBALIFE:
+                healroot();
                 use_herbalife();
                 break;
             case ItemType.TRIANGLE:
+                //triangle();
                 use_triangle_(item_data.cooldown);
                 break;
             case ItemType.GHOST:
+                //ghost();
                 use_ghost_(item_data.cooldown);
                 break;
             case ItemType.BOMB:
+                //bomb();
                 use_bomb();
                 break;
             case ItemType.MUSHROOM:
+                //mushroom();
                 use_mushroom(item_data.cooldown);
                 break;
             default:
@@ -47,7 +59,7 @@ public class PlayerItemUser : MonoBehaviour {
     }
 
     //fantasma
-	void use_ghost_(float duration) { StartCoroutine(use_triangle(duration)); }
+	void use_ghost_(float duration) { StartCoroutine(use_ghost(duration)); }
 	IEnumerator use_ghost(float duration) {
 		yield return new WaitForSeconds(duration);
 	}

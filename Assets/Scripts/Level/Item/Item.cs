@@ -37,7 +37,7 @@ public class Item : MonoBehaviour {
             box1.Rotate(new Vector3(0f, 0f, speed));
             box2.Rotate(new Vector3(0f, 0f, -speed));
         } else {
-            sprite.transform.Rotate(new Vector3(0f, 0f, 0.3f));
+            //sprite.transform.Rotate(new Vector3(0f, 0f, 0.3f));
         }
     }
 

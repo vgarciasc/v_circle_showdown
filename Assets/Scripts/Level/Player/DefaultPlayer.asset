@@ -15,12 +15,12 @@ MonoBehaviour:
   maxSecondsOutOfScreen: 3
   maxTackleBuildup: 100
   tackleWeight: 0.5
-  maxSize: 15
+  maxSize: 7
   minSize: 0.6
   mass: 0.5
   scale: {x: 1, y: 1, z: 1}
   tackleForce: 80
-  jumpForce: 300
+  jumpForce: 450
   speed: 0.3
   hitSizeIncrement: 0.2
   timeSizeIncrement: 0.02

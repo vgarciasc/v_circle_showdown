@@ -108,10 +108,10 @@ Material:
       second: 113
     - first:
         name: _DistortionScale
-      second: 0.034
+      second: 0.011
     - first:
         name: _DistortionSpeed
-      second: 0.29
+      second: 0.12
     - first:
         name: _DistortionSpreader
       second: 50

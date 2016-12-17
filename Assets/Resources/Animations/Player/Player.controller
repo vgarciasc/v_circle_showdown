@@ -14,9 +14,15 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: heal
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
-    m_Name: Base Layer
+    m_Name: Death
     m_StateMachine: {fileID: 1107000010826936204}
     m_Mask: {fileID: 0}
     m_Motions: []
@@ -102,7 +108,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Idle
+  m_Name: null
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -126,14 +132,14 @@ AnimatorStateMachine:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Base Layer
+  m_Name: Death
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102000011556266498}
-    m_Position: {x: 330, y: 132, z: 0}
+    m_Position: {x: 360, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102000011980072238}
-    m_Position: {x: 359, y: 46, z: 0}
+    m_Position: {x: 360, y: 48, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

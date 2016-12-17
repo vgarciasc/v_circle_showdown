@@ -29,6 +29,7 @@ public class TimeDestroyer : MonoBehaviour {
 
     IEnumerator destroy() {
         yield return new WaitForSeconds(delayUntilFade);
+        startTime = Time.time;
         canFade = true;
     }	
 }

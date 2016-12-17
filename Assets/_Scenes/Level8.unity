@@ -135,7 +135,7 @@ Prefab:
     - target: {fileID: 224000012456805946, guid: 90251922f1e6ed74394c8904abd43aa0,
         type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224000012456805946, guid: 90251922f1e6ed74394c8904abd43aa0,
         type: 2}
@@ -192,17 +192,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1463078603}
-    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
-        type: 2}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c6041c8a64bb8e447b71a63d75d2f7d0,
-        type: 3}
-    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
-        type: 2}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: d151a8a47aaee614283359ba509a2ed7, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 90251922f1e6ed74394c8904abd43aa0, type: 2}
   m_IsPrefabParent: 0
@@ -256,7 +245,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &86398290
 MonoBehaviour:
@@ -323,7 +312,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &414127825
@@ -363,7 +352,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000010094280156, guid: b08d13bd79238944284310e516ea5291, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b08d13bd79238944284310e516ea5291, type: 2}
@@ -423,7 +412,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &445937349
 MonoBehaviour:
@@ -490,7 +479,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1 &508923927
@@ -543,7 +532,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &508923930
 MonoBehaviour:
@@ -610,7 +599,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &558091702
@@ -664,6 +653,21 @@ Prefab:
       propertyPath: m_Name
       value: Spike Platform (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.5588235
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.09039791
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.09039791
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
   m_IsPrefabParent: 0
@@ -702,6 +706,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clockwise: 1
+  x_rotation: 0
+  y_rotation: 0
+  z_rotation: 1
   speed: 0.3
 --- !u!4 &694999661
 Transform:
@@ -725,7 +732,7 @@ Transform:
   - {fileID: 876680690}
   - {fileID: 1929260660}
   m_Father: {fileID: 1474405035}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!1001 &774499497
 Prefab:
   m_ObjectHideFlags: 0
@@ -763,7 +770,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000012123712680, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4000012123712680, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
       propertyPath: m_LocalScale.x
@@ -772,6 +779,21 @@ Prefab:
     - target: {fileID: 4000012123712680, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
       propertyPath: m_LocalScale.y
       value: -0.8153595
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.5588235
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.09039791
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.09039791
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
@@ -831,7 +853,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &876680692
 MonoBehaviour:
@@ -898,7 +920,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &891967197
@@ -951,6 +973,21 @@ Prefab:
     - target: {fileID: 1000012830413828, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
       propertyPath: m_Name
       value: Spike Platform (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.5588235
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.09039791
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.09039791
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
@@ -1011,6 +1048,21 @@ Prefab:
       propertyPath: m_Name
       value: Spike Platform (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.5588235
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.09039791
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000012924116502, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.09039791
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7a3c3dd4f92378c42a81a73e2a7d6d61, type: 2}
   m_IsPrefabParent: 0
@@ -1069,7 +1121,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &1361422301
 MonoBehaviour:
@@ -1136,7 +1188,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1 &1436147244
@@ -1189,7 +1241,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &1436147247
 MonoBehaviour:
@@ -1256,7 +1308,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &1463078602
@@ -1372,15 +1424,15 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 774499498}
   - {fileID: 694999661}
   - {fileID: 414127826}
   - {fileID: 1573956630}
+  - {fileID: 774499498}
   - {fileID: 558091703}
   - {fileID: 891967198}
   - {fileID: 1051185129}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1001 &1573956629
 Prefab:
   m_ObjectHideFlags: 0
@@ -1418,7 +1470,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000010313136928, guid: f206964fa3d988c4c81289d73ff45a18, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f206964fa3d988c4c81289d73ff45a18, type: 2}
@@ -1478,7 +1530,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &1727207744
 MonoBehaviour:
@@ -1545,7 +1597,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1 &1929260659
@@ -1598,7 +1650,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &1929260662
 MonoBehaviour:
@@ -1665,7 +1717,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1 &2048697911
@@ -1718,7 +1770,7 @@ Rigidbody2D:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 7
 --- !u!114 &2048697914
 MonoBehaviour:
@@ -1785,6 +1837,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.8455882, g: 0.74267685, b: 0.4725346, a: 1}
+  m_Color: {r: 0.625, g: 0.46507353, b: 0.22518381, a: 1}
   m_FlipX: 0
   m_FlipY: 0

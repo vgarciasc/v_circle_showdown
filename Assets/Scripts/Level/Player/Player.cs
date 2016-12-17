@@ -5,8 +5,6 @@ public class Player : MonoBehaviour, ISmashable {
     /*Reference to objects in scene*/
     [Header("Prefabs and References")]
     [SerializeField]
-    ParticleSystem explosionParticleSystem;
-    [SerializeField]
     GameObject circleTrappedDetector;
     [SerializeField]
     GameObject triangleTrappedDetector;
@@ -35,11 +33,17 @@ public class Player : MonoBehaviour, ISmashable {
 
     public Color color;
     public bool isTriangle;
-    public delegate void UIDelegate();
-    public event UIDelegate death_event;
+    
+    #region EVENTS
+    public delegate void DeathDelegate();
+    public event DeathDelegate death_event,
+                            bomb_event;
+    public delegate void BombTriangleEvent(Vector3 bomb_position);
+    public event BombTriangleEvent bomb_triangle_event;
     public delegate void ItemDelegate(ItemData item_data);
     public event ItemDelegate get_item_event, 
                             use_item_event;    
+    #endregion
 
     Rigidbody2D rb;
     Animator anim;
@@ -66,7 +70,7 @@ public class Player : MonoBehaviour, ISmashable {
     public float tackleBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
-        ghostSwallow = false,
+        is_dead = false,
         almostExploding = false;
 
     /*Blockers*/
@@ -90,8 +94,6 @@ public class Player : MonoBehaviour, ISmashable {
         circleCollider = GetComponent<CircleCollider2D>();
 
         /*Init functions*/
-        startPsystem();
-        startAnimator();
         createJoystickInput();
         changeSprite(circleBorder, circleBackground);
         toggleTriangleDetection(false);
@@ -108,6 +110,7 @@ public class Player : MonoBehaviour, ISmashable {
     void Update() {
         //DEBUG
         forceField.SetActive(false);
+
 
         handleInput();
     }
@@ -173,7 +176,7 @@ public class Player : MonoBehaviour, ISmashable {
     public void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Spikes")
             hitSpikes();
-
+            
         if (target.gameObject.tag == "Charger")
             hitCharger(target.gameObject.GetComponent<Rigidbody2D>().velocity);
 
@@ -187,14 +190,15 @@ public class Player : MonoBehaviour, ISmashable {
             this.giveHit(data.hitSizeIncrement + hitStrength);
             enemy.takeHit(data.hitSizeIncrement + hitStrength);
         }
-
-        else if (ghostSwallow && target.gameObject.tag == "Player") {
-            swallowPlayer(target.gameObject.GetComponent<Player>());
-        }
     }
 
     public void OnTriggerEnter2D(Collider2D target) {
         switch (target.gameObject.tag) {
+            case "BombExplosion":
+                if (isTriangle) bomb_triangle_event(target.gameObject.transform.position);
+                //bomb_event();
+                hitSpikes();
+                break;
             case "Item":
                 getItem(target.gameObject.GetComponent<Item>());
                 break;
@@ -264,9 +268,14 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void killPlayer() {
+        if (is_dead) return;
+        
         anim.enabled = true;
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
+        scamera.screenShake_(2f);
+        is_dead = true;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
         death_event();
         anim.SetTrigger("explode");
@@ -289,10 +298,6 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region Animation
-    void startAnimator() {
-        anim.enabled = false;
-    }
-
     //to be used only by animation
     void AnimationKillPlayer() {
         Destroy(this.gameObject);
@@ -460,22 +465,6 @@ public class Player : MonoBehaviour, ISmashable {
     }
     #endregion
 
-    #region Particle System
-    void startPsystem() {
-        Color aux = color;
-        aux += new Color(0.3f, 0.3f, 0.3f);
-        explosionParticleSystem.startColor = aux;
-    }
-
-    void startEmission() {
-        float scale = this.transform.localScale.x * 0.15f + 0.15f;
-        explosionParticleSystem.gameObject.transform.localScale = new Vector3(scale, scale, scale);
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        scamera.screenShake_(2f);
-        explosionParticleSystem.gameObject.SetActive(true);
-    }
-    #endregion
-
     #region Item
     void getItem(Item item) {
         if (item.data.type == ItemType.BLACK_HOLE) {
@@ -541,17 +530,6 @@ public class Player : MonoBehaviour, ISmashable {
         toggleChargeIndicator(true);
         blockCharge = false;
         blockGrowth = false;
-
-        StartCoroutine(ghostSwallowActivate());
-    }
-
-    IEnumerator ghostSwallowActivate() {
-        ghostSwallow = true;
-
-        for (int i = 0; i < 3; i++)
-            yield return new WaitForEndOfFrame();
-
-        ghostSwallow = false;
     }
 
     IEnumerator useGhostPotion_blink(Color original, Color transparent) {

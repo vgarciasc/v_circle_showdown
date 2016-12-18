@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000011243711160}
   - 114: {fileID: 114000013094801548}
+  - 114: {fileID: 114000012437884630}
   m_Layer: 0
   m_Name: Player Select Manager
   m_TagString: PlayerDatabase
@@ -40,6 +41,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &114000012437884630
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014010993922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7262bc8cf4dfcf645a8ffcb4e3a4497b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114000013094801548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,16 +68,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4f3d55aeb5699a4386c771d07f62ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  victoriesNeeded: 1
   winnerID: -1
   playerColors:
-  - {r: 0.8455882, g: 0.41657653, b: 0.41657653, a: 1}
-  - {r: 0.9044118, g: 0.7374717, b: 0.2992539, a: 1}
-  - {r: 0.6014814, g: 0.9191176, b: 0.6299591, a: 1}
-  - {r: 0.33115265, g: 0.8217992, b: 0.9191176, a: 1}
-  - {r: 0.41841477, g: 0.4844589, b: 0.8014706, a: 1}
+  - {r: 0.6911765, g: 0.31509516, b: 0.31509516, a: 1}
+  - {r: 0.3036332, g: 0.42879122, b: 0.7941176, a: 1}
+  - {r: 0.85294116, g: 0.74922144, b: 0.16933392, a: 1}
+  - {r: 0.28114188, g: 0.7647059, b: 0.28447676, a: 1}
+  - {r: 0.875, g: 0.5704361, b: 0.025735319, a: 1}
   - {r: 0.8776996, g: 0.5449827, b: 0.88235295, a: 1}
-  - {r: 0.46550608, g: 0.9044118, b: 0.7591189, a: 1}
-  - {r: 0.7252536, g: 0.53676474, b: 1, a: 1}
-  - {r: 1, g: 0.85770786, b: 0.5514706, a: 1}
-  - {r: 0.9191176, g: 0.7704368, b: 0.8904068, a: 1}
+  - {r: 0.8088235, g: 0.8088235, b: 0.8088235, a: 1}
   playerTexts: {fileID: 0}

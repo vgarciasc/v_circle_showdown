@@ -21,7 +21,7 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_item(ItemData item_data) {
          switch (item_data.type) {
             case ItemType.HERBALIFE:
-                healroot();
+                //healroot();
                 use_herbalife();
                 break;
             case ItemType.TRIANGLE:

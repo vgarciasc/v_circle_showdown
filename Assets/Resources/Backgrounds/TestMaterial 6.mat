@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TestMaterial 6
-  m_Shader: {fileID: 4800000, guid: f7cae97e017d6de4e9b5950defa25506, type: 3}
+  m_Shader: {fileID: 4800000, guid: 36069e521e294bd49b7f284dae401f46, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -105,7 +105,7 @@ Material:
       second: 1
     - first:
         name: _DistortionFrequency
-      second: 113
+      second: 90
     - first:
         name: _DistortionScale
       second: 0.011

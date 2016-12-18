@@ -1,4 +1,4 @@
-﻿Shader "Custom/Test UI Shader"
+﻿Shader "Custom/HeatWaveShader"
 {
 	Properties
 	{
@@ -14,9 +14,9 @@
 
 		_ColorMask ("Color Mask", Float) = 15
 		
-		_WaveQuantity ("Wave Quantity", Float) = 5
-		_HorizontalWaveVelocity ("Horizontal Wave Velocity", Float) = 10
-		_VerticalWaveVelocity ("Vertical Wave Velocity", Float) = 10
+		_DistortionFrequency ("Distortion frequency", Range(1,256)) = 50
+		_DistortionScale ("Distortion scale", Range(0,1)) = 0.1
+		_DistortionSpeed ("Distortion speed", Range(0,10)) = 1
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 	}
@@ -97,19 +97,20 @@
 			}
 
 			sampler2D _MainTex;
-			sampler2D _NoiseTex;
-			float _WaveQuantity;
-			float _HorizontalWaveVelocity;
-			float _VerticalWaveVelocity;
+			float _DistortionFrequency;
+			float _DistortionScale;
+			float _DistortionSpeed;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				float2 offset = float2(
-					sin(IN.vertex.x * _WaveQuantity/200 + _Time[0] * _HorizontalWaveVelocity) / 100,
-					sin(IN.vertex.y * _WaveQuantity/200 + _Time[0] * _VerticalWaveVelocity) / 100);
+				float2 offset = float2(_DistortionScale,0) * 
+					sin((_Time * _DistortionSpeed + IN.vertex.y) * _DistortionFrequency);
+
+				// float2 offset = float2(0, 0);
 				
 				half4 color = (tex2D(_MainTex, IN.texcoord + offset) + _TextureSampleAdd) * IN.color;
-
+				// half4 c = tex2D (_MainTex, IN.uv_MainTex + float2(_DistortionScale,0)*sin((_Time*_DistortionSpeed+IN.uv_MainTex.y)*_DistortionFrequency));
+			
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
 				
 				#ifdef UNITY_UI_ALPHACLIP

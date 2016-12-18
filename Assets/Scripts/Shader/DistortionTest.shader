@@ -1,4 +1,4 @@
-Shader "Custom/Test UI Shader"
+﻿Shader "Custom/Distortion Test"
 {
 	Properties
 	{
@@ -14,9 +14,11 @@ Shader "Custom/Test UI Shader"
 
 		_ColorMask ("Color Mask", Float) = 15
 		
-		_WaveQuantity ("Wave Quantity", Float) = 5
-		_HorizontalWaveVelocity ("Horizontal Wave Velocity", Float) = 10
-		_VerticalWaveVelocity ("Vertical Wave Velocity", Float) = 10
+		_Amplitude ("Amplitude", Float) = 50
+		_Frequency ("Frequency", Float) = 50
+		_Frameskip ("Frameskip", Float) = 50
+		_Modulo ("Modulo", Float) = 50000
+		_Lineskip ("Lineskip", Float) = 10
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 	}
@@ -98,17 +100,35 @@ Shader "Custom/Test UI Shader"
 
 			sampler2D _MainTex;
 			sampler2D _NoiseTex;
-			float _WaveQuantity;
-			float _HorizontalWaveVelocity;
-			float _VerticalWaveVelocity;
+			float _Amplitude;
+			float _Frequency;
+			float _Frameskip;
+			float _Modulo;
+			float _Lineskip;
+			uniform float4 _MainTex_TexelSize;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				float2 offset = float2(
-					sin(IN.vertex.x * _WaveQuantity/200 + _Time[0] * _HorizontalWaveVelocity) / 100,
-					sin(IN.vertex.y * _WaveQuantity/200 + _Time[0] * _VerticalWaveVelocity) / 100);
+				float amplitude = _Amplitude / 1000;
+
+				float offset = amplitude * sin(IN.texcoord.y * _Frequency + _Time[0] * _Frameskip);
+				//float2 pos = float2(IN.vertex.x, IN.vertex.y);
 				
-				half4 color = (tex2D(_MainTex, IN.texcoord + offset) + _TextureSampleAdd) * IN.color;
+				//horizontal translation
+				//float2 pos = float2(IN.vertex.x - offset, IN.vertex.y);
+
+				float aux = sign(floor(fmod((IN.texcoord.y + 2) * 5000000, 2)) - 0.5);
+				//horizontal interlaced translation
+				float2 pos = float2(IN.texcoord.x + offset * aux,
+									IN.texcoord.y);
+				
+				// float aux = IN.texcoord.x + 1 * _Time[0];
+				// if (aux > 1)
+				// 	aux = aux - 1;
+
+				// float2 pos = float2(aux, IN.texcoord.y);
+
+				half4 color = (tex2D(_MainTex, pos) + _TextureSampleAdd) * IN.color;
 
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
 				

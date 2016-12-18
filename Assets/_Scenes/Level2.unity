@@ -1256,6 +1256,27 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 944336807}
+    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: aa6c6cccb1b0005499ee19e3187575c4,
+        type: 3}
+    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0.27205884
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0.23405062
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012314423764, guid: 90251922f1e6ed74394c8904abd43aa0,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0.23405062
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 90251922f1e6ed74394c8904abd43aa0, type: 2}
   m_IsPrefabParent: 0

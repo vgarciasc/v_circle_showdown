@@ -26,11 +26,12 @@ public class Player : MonoBehaviour, ISmashable {
     GameObject forceField;
     [SerializeField]
     GameObject chargeIndicator;
-    
+
     public GameObject cannonPosition;
-
-    public PlayerData data;
-
+    [HideInInspector]
+    public PlayerData data; //playerdata to be modified by other classes
+    public PlayerData originalData;
+    public PlayerInstance instance;
     public Color color;
     public bool isTriangle;
     
@@ -50,6 +51,7 @@ public class Player : MonoBehaviour, ISmashable {
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
+    TrailRenderer trenderer;
 
     /*Reset variables*/
     Color border_color;
@@ -82,7 +84,8 @@ public class Player : MonoBehaviour, ISmashable {
         this.ID = instance.playerID;
         this.joystick = instance.joystick;
         this.color = instance.color;
-        startColors();
+        this.instance = instance;
+        reset_colors();
     }
 
     void Start() {
@@ -92,6 +95,7 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
+        trenderer = GetComponent<TrailRenderer>();
 
         /*Init functions*/
         createJoystickInput();
@@ -100,6 +104,7 @@ public class Player : MonoBehaviour, ISmashable {
         resetTackle();
         StartCoroutine(handleAlmostMaxSize());
         StartCoroutine(grow());
+        initPlayerData();
     }
 
     void FixedUpdate() {
@@ -111,8 +116,11 @@ public class Player : MonoBehaviour, ISmashable {
         //DEBUG
         forceField.SetActive(false);
 
-
         handleInput();
+    }
+
+    void initPlayerData() {
+        data = (PlayerData) Instantiate(originalData);
     }
 
     #region Spritefest
@@ -169,6 +177,10 @@ public class Player : MonoBehaviour, ISmashable {
     void move(float movement) {
         if (blockInput) return;
         rb.velocity += new Vector2(movement, 0);
+    }
+
+    public void toggle_block_all_input(bool value) {
+        blockInput = value;
     }
     #endregion
 
@@ -259,7 +271,7 @@ public class Player : MonoBehaviour, ISmashable {
         lastVelocity.x = rb.velocity.magnitude;
     }
 
-    float velocityHitMagnitude() {
+    public float velocityHitMagnitude() {
         float aux = lastVelocity.x;
         if (lastVelocity.y > aux) aux = lastVelocity.y;
         if (lastVelocity.z > aux) aux = lastVelocity.z;
@@ -305,12 +317,16 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region Colors
-    void startColors() {
+    void reset_colors() {
         border_color = Color.black;
         spriteBackground.GetComponent<SpriteRenderer>().color = color;
         forceField.GetComponent<SpriteRenderer>().color = color;
         this.GetComponent<SpriteRenderer>().color = border_color;
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
+    }
+
+    public void change_player_opacity(float opacity) {
+        spriteBackground.GetComponent<SpriteRenderer>().color = HushPuppy.getColorWithOpacity(color, opacity);
     }
     #endregion
 
@@ -502,7 +518,29 @@ public class Player : MonoBehaviour, ISmashable {
         toggleChargeIndicator(!value);
         toggleTriangleDetection(value);
         circleCollider.enabled = !value;
+        trenderer.enabled = !value;
         triangleCollider.enabled = value;
+        resetTackle();
+    }
+
+    public void toggle_colliders(bool value) {
+        if (isTriangle && value == true) {
+            circleCollider.enabled = false;
+            triangleCollider.enabled = true;
+        }
+        else if (!isTriangle && value == true) {
+            circleCollider.enabled = true;
+            triangleCollider.enabled = false;
+        }
+        else if (value == false) { // value == false
+            circleCollider.enabled = false;
+            triangleCollider.enabled = false;
+        }
+        
+        toggleStuckDetection(value);
+        toggleChargeIndicator(value);
+        blockCharge = !value;
+        blockGrowth = !value;
         resetTackle();
     }
 
@@ -519,9 +557,9 @@ public class Player : MonoBehaviour, ISmashable {
         spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
 
         yield return new WaitForSeconds(duration * 3 / 5);
-        Coroutine cr = StartCoroutine(useGhostPotion_blink(color, transparent));
+        // Coroutine cr = StartCoroutine(useGhostPotion_blink(color, transparent));
         yield return new WaitForSeconds(duration * 2 / 5);
-        StopCoroutine(cr);
+        // StopCoroutine(cr);
 
         spriteBackground.GetComponent<SpriteRenderer>().color = color;
 
@@ -532,7 +570,10 @@ public class Player : MonoBehaviour, ISmashable {
         blockGrowth = false;
     }
 
-    IEnumerator useGhostPotion_blink(Color original, Color transparent) {
+    public IEnumerator start_blink() {
+        Color original = color;
+        Color transparent = HushPuppy.getColorWithOpacity(color, 0.5f);
+        
         bool toggle = true;
         while (true) {
             toggle = !toggle;

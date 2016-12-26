@@ -60,10 +60,10 @@ public class PlayerUIManager : MonoBehaviour {
 
 	IEnumerator checkOutOfScreen() {
 		yield return new WaitForSeconds(1f);
-		float timeLeft = player.data.maxSecondsOutOfScreen;
+		float timeLeft = player.originalData.maxSecondsOutOfScreen;
 		while (SceneManager.GetActiveScene().name != "GameOver") {
 			if (this.GetComponent<SpriteRenderer>().isVisible) {
-				timeLeft = player.data.maxSecondsOutOfScreen;
+				timeLeft = player.originalData.maxSecondsOutOfScreen;
 				status.setTime(false);
 			} else {
 				status.setTime(timeLeft--);

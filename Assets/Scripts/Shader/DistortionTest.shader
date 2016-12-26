@@ -117,11 +117,23 @@
 				//horizontal translation
 				//float2 pos = float2(IN.vertex.x - offset, IN.vertex.y);
 
-				float aux = sign(floor(fmod((IN.texcoord.y + 2) * 5000000, 2)) - 0.5);
-				//horizontal interlaced translation
-				float2 pos = float2(IN.texcoord.x + offset * aux,
+				//float aux = sign(floor(fmod((IN.texcoord.y + 2) * 5000000, 2)) - 0.5);
+				// float aux = tex2D(_NoiseTex, IN.texcoord).r;
+				// if (aux == 0) IN.color.r = 0;
+
+				// //horizontal interlaced translation
+
+				// float offset = 0.2;
+				// float aux = tex2D(_NoiseTex, float2(IN.texcoord.x, 0)).r;
+				// aux = saturate(aux);
+				// aux -= 0.5;
+				// aux = sign(aux);
+				float aux = tex2D(_NoiseTex, float2(0, IN.texcoord.y)).r ;
+				float pos_y = IN.texcoord.x + aux * offset;
+
+				float2 pos = float2(pos_y,
 									IN.texcoord.y);
-				
+
 				// float aux = IN.texcoord.x + 1 * _Time[0];
 				// if (aux > 1)
 				// 	aux = aux - 1;
@@ -129,6 +141,7 @@
 				// float2 pos = float2(aux, IN.texcoord.y);
 
 				half4 color = (tex2D(_MainTex, pos) + _TextureSampleAdd) * IN.color;
+				color.a = color.r;
 
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
 				

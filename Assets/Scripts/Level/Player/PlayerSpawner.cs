@@ -35,6 +35,16 @@ public class PlayerSpawner : MonoBehaviour {
         return aux;
     }
 
+    public Player spawnGhostShell(PlayerInstance data, Vector3 location) {
+        Player aux = Instantiate(playerPrefab).GetComponent<Player>();
+        aux.setPlayer(data);
+        aux.transform.position = location;
+        aux.name = "Player Ghost #" + (data.playerID + 1);
+        aux.toggle_block_all_input(true);
+
+        return aux;
+    }
+
     void startDefaultGame() {
         PlayerInstance aux = new PlayerInstance("_J0", 0, 0, Color.grey);
         spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());

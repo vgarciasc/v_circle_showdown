@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TestMaterial 4
-  m_Shader: {fileID: 4800000, guid: 3253ef2dfa1fd004b814280f2f0df2b0, type: 3}
+  m_Shader: {fileID: 4800000, guid: 36069e521e294bd49b7f284dae401f46, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -77,6 +77,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
+        name: _Amplitude
+      second: 50
+    - first:
         name: _BumpScale
       second: 1
     - first:
@@ -105,19 +108,25 @@ Material:
       second: 1
     - first:
         name: _DistortionFrequency
-      second: 104
+      second: 119
     - first:
         name: _DistortionScale
-      second: 0.031
+      second: 0.005
     - first:
         name: _DistortionSpeed
-      second: 4.7
+      second: 0.47
     - first:
         name: _DistortionSpreader
       second: 50
     - first:
         name: _DstBlend
       second: 0
+    - first:
+        name: _Frameskip
+      second: 50
+    - first:
+        name: _Frequency
+      second: 50
     - first:
         name: _GlossMapScale
       second: 1
@@ -131,11 +140,17 @@ Material:
         name: _HorizontalWaveVelocity
       second: 0
     - first:
+        name: _Lineskip
+      second: 10
+    - first:
         name: _Metallic
       second: 0
     - first:
         name: _Mode
       second: 0
+    - first:
+        name: _Modulo
+      second: 50000
     - first:
         name: _OcclusionStrength
       second: 1

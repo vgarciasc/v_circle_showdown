@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TestMaterial 3
-  m_Shader: {fileID: 4800000, guid: 3253ef2dfa1fd004b814280f2f0df2b0, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5936d740447c4144a9f1c647342f3278, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -77,11 +77,26 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
+        name: _Amplitude
+      second: 50
+    - first:
         name: _BumpScale
       second: 1
     - first:
+        name: _ColorChangingSpeed
+      second: 15
+    - first:
         name: _ColorMask
       second: 15.03
+    - first:
+        name: _ColorStartTime_BLUE
+      second: 20
+    - first:
+        name: _ColorStartTime_GREEN
+      second: 40
+    - first:
+        name: _ColorStartTime_RED
+      second: 2
     - first:
         name: _Cutoff
       second: 0.5
@@ -92,11 +107,26 @@ Material:
         name: _DistortionDamper
       second: 1
     - first:
+        name: _DistortionFrequency
+      second: 6
+    - first:
+        name: _DistortionScale
+      second: 0.004
+    - first:
+        name: _DistortionSpeed
+      second: 10
+    - first:
         name: _DistortionSpreader
       second: 50
     - first:
         name: _DstBlend
       second: 0
+    - first:
+        name: _Frameskip
+      second: 50
+    - first:
+        name: _Frequency
+      second: 50
     - first:
         name: _GlossMapScale
       second: 1
@@ -108,13 +138,19 @@ Material:
       second: 1
     - first:
         name: _HorizontalWaveVelocity
-      second: 0
+      second: 10
+    - first:
+        name: _Lineskip
+      second: 10
     - first:
         name: _Metallic
       second: 0
     - first:
         name: _Mode
       second: 0
+    - first:
+        name: _Modulo
+      second: 50000
     - first:
         name: _OcclusionStrength
       second: 1
@@ -153,13 +189,13 @@ Material:
       second: 0
     - first:
         name: _VerticalWaveVelocity
-      second: 50
+      second: 0
     - first:
         name: _WaveAmplitude
       second: 54.6
     - first:
         name: _WaveQuantity
-      second: 130.6
+      second: 10
     - first:
         name: _Waves
       second: 6.14

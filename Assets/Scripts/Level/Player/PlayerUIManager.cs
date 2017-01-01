@@ -16,7 +16,7 @@ public class PlayerUIManager : MonoBehaviour {
 
 	void Start() {
 		player = (Player) HushPuppy.safeComponent(this.gameObject, "Player");
-		
+
 		this.player_color = player.color;
 		this.player_ID = player.ID;
 		player.death_event += on_player_death;
@@ -31,6 +31,7 @@ public class PlayerUIManager : MonoBehaviour {
 
 	void startUI() {
         GameObject playerUI_container = HushPuppy.safeFind("PlayerUIContainer");
+		if (playerAlreadyHasUI(playerUI_container)) return;
 
         status = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
         status.name = "Player #" + (player_ID + 1) + " Status";
@@ -43,6 +44,19 @@ public class PlayerUIManager : MonoBehaviour {
         marker.setMarker(player_color);
 		
 		StartCoroutine(checkOutOfScreen());
+	}
+
+	bool playerAlreadyHasUI(GameObject container) {
+		foreach (Transform go in container.transform.GetChild(0)) {
+			if (go.name == "Player #" + (player_ID + 1) + " Status") {
+				status = go.GetComponent<PlayerUIStatus>();
+				status.reset();
+				marker = GameObject.Find("Player #" + (player_ID + 1) + " Marker").GetComponent<PlayerUIMarker>();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	void on_player_death() {
@@ -59,7 +73,7 @@ public class PlayerUIManager : MonoBehaviour {
 	}
 
 	IEnumerator checkOutOfScreen() {
-		yield return new WaitForSeconds(1f);
+		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
 		float timeLeft = player.originalData.maxSecondsOutOfScreen;
 		while (SceneManager.GetActiveScene().name != "GameOver") {
 			if (this.GetComponent<SpriteRenderer>().isVisible) {
@@ -71,7 +85,7 @@ public class PlayerUIManager : MonoBehaviour {
 
 			if (timeLeft < 0) player.timeOut();
 
-			yield return new WaitForSeconds(1f);
+			yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
 		}
 	}
 }

@@ -24,6 +24,11 @@ public class PlayerUIStatus : MonoBehaviour {
 
     void Awake() {
         pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        reset();
+    }
+
+    public void reset() {
+        redCross.enabled = false;
         setTime(false);
         unshowItem();
     }

@@ -17,7 +17,7 @@ public class PlayerUIMarker : MonoBehaviour{
 
     public void playerKilled_() { StartCoroutine(playerKilled()); }
     IEnumerator playerKilled() {
-        yield return new WaitForSeconds(1.0f);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1.0f);
         HushPuppy.fadeImgOut(this.gameObject, 0.5f);
     }
 

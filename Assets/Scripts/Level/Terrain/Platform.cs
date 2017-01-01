@@ -53,7 +53,7 @@ public class Platform : MonoBehaviour {
     }
 
     IEnumerator wait(float duration) {
-        yield return new WaitForSeconds(duration);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(duration);
     }
 
     IEnumerator rumble() {

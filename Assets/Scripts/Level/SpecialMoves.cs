@@ -9,7 +9,7 @@ public class SpecialMoves : MonoBehaviour {
     IEnumerator showcaseText(string text) {
         mainText.text = text;
         mainText.color = HushPuppy.getColorWithOpacity(mainText.color, 1f);
-        yield return new WaitForSeconds(1f);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
         mainText.CrossFadeAlpha(0f, 1f, false);
     }
 }

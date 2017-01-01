@@ -19,6 +19,8 @@ TagManager:
   - Charger
   - Inverse Nebula
   - BombExplosion
+  - PauseMenu
+  - Soccerball
   layers:
   - Default
   - TransparentFX

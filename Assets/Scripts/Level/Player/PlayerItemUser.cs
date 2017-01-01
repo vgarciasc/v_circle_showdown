@@ -3,13 +3,13 @@ using System.Collections;
 
 public class PlayerItemUser : MonoBehaviour {
     public delegate void useItem();
-    public event useItem healroot,
-                        triangle,
+    public event useItem triangle,
                         ghost,
                         bomb,
                         mushroom,
                         coffee;
-    
+    public event useItem healStart, healEnd;
+
 	ItemSpawner item_spawner;
     PlayerSpawner player_spawner;
 	Player player;
@@ -21,13 +21,12 @@ public class PlayerItemUser : MonoBehaviour {
 		player.use_item_event += use_item;
 		item_spawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
 		player_spawner = (PlayerSpawner) HushPuppy.safeFindComponent("GameController", "PlayerSpawner");
-	}
+    }
 
 	void use_item(ItemData item_data) {
          switch (item_data.type) {
-            case ItemType.HERBALIFE:
-                //healroot();
-                use_herbalife();
+            case ItemType.HEAL:
+                use_heal(item_data);
                 break;
             case ItemType.TRIANGLE:
                 //triangle();
@@ -54,16 +53,22 @@ public class PlayerItemUser : MonoBehaviour {
         }
 	}
 
-    //herbalife
-	void use_herbalife() {
-		transform.localScale = player.originalData.scale;
+    //heal
+    void use_heal(ItemData data) { StartCoroutine(use_heal_(data)); }
+    IEnumerator use_heal_(ItemData data) {
+        healStart();
+        while (transform.localScale.x > player.originalData.scale.x) {
+            player.changeSize(-0.05f);
+            yield return HushPuppy.WaitForEndOfFrames(1);
+        }
+        healEnd();
 	}
 
     //triangulo
 	void use_triangle(ItemData data) { StartCoroutine(use_triangle_(data)); }
     IEnumerator use_triangle_(ItemData data) {
         player.toggleTriangle(true);
-        yield return new WaitForSeconds(data.cooldown);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
         player.toggleTriangle(false);
     }
 
@@ -81,9 +86,9 @@ public class PlayerItemUser : MonoBehaviour {
 
         Ray r = ghost_create_ray(ghost_shell.transform, player.gameObject.transform);
 
-		yield return new WaitForSeconds(data.cooldown * 3 / 5f);
+		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 3 / 5f);
         Coroutine blink = StartCoroutine(player.start_blink());
-		yield return new WaitForSeconds(data.cooldown * 2 / 5f);
+		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
         StopCoroutine(blink);
 
         player.change_player_opacity(1f);
@@ -117,9 +122,11 @@ public class PlayerItemUser : MonoBehaviour {
     IEnumerator use_coffee_(ItemData data) {
         player.data.speed *= 3;
         player.data.tackleForce *= 3;
+        player.GetComponent<PlayerParticleSystems>().trail_length_modifier *= 20;
 
-        yield return new WaitForSeconds(data.cooldown);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
 
+        player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
         player.data.speed /= 3;
         player.data.tackleForce /= 3;        
     }

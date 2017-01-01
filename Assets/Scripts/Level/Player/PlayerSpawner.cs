@@ -5,6 +5,8 @@ public class PlayerSpawner : MonoBehaviour {
     [Header("Prefabs & References")]
     [SerializeField]
     GameObject playerPrefab;
+    [SerializeField]
+    PlayerData playerData;
 
     SpawnLocations playerSpawnLocations;
     PlayerDatabase playerDatabase;
@@ -26,11 +28,12 @@ public class PlayerSpawner : MonoBehaviour {
                         playerSpawnLocations.getLocationByIndex(i));
     }
 
-    Player spawnPlayer(PlayerInstance data, Vector3 location) {
+    public Player spawnPlayer(PlayerInstance data, Vector3 location) {
         Player aux = Instantiate(playerPrefab).GetComponent<Player>();
         aux.setPlayer(data);
         aux.transform.position = location;
         aux.name = "Player #" + (data.playerID + 1);
+        aux.originalData = playerData;
 
         return aux;
     }

@@ -13,28 +13,45 @@ public class ColorComponent : MonoBehaviour {
 
 	void Start () {
 		controller = (ColorController) HushPuppy.safeFindComponent("GameController", "ColorController");
-		set_color();
+		if (controller != null) {
+			set_color();
+		}
 	}
 
 	void Update() {
-		set_color();
+		//DEBUG, PODE SER RETIRADO
+		if (controller != null) {
+			set_color();
+		}
 	}
 
 	void set_color() {
 		if (is_sprite_renderer) {
 			if (image_is_self) {
-				this.GetComponent<SpriteRenderer>().color = controller.get_color(my_type);
+				SpriteRenderer sr = this.GetComponent<SpriteRenderer>();
+				if (sr != null) {
+					sr.color = controller.get_color(my_type);
+				}
 			}
 			else {
-				image.GetComponent<SpriteRenderer>().color = controller.get_color(my_type);
+				SpriteRenderer sr = image.GetComponent<SpriteRenderer>();
+				if (sr != null) {
+					sr.color = controller.get_color(my_type);
+				}
 			}
 		}
 		else {
 			if (image_is_self) {
-				this.GetComponent<Image>().color = controller.get_color(my_type);
+				Image img = this.GetComponent<Image>();
+				if (img != null) {
+					img.color = controller.get_color(my_type);
+				}
 			}
 			else {
-				image.GetComponent<Image>().color = controller.get_color(my_type);
+				Image img = image.GetComponent<Image>();
+				if (img != null) {
+					img.color = controller.get_color(my_type);
+				}
 			}
 		}
 	}

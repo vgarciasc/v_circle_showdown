@@ -15,11 +15,11 @@ public class MushroomCloud : MonoBehaviour {
     }
 
     IEnumerator kill(float duration) {
-        yield return new WaitForSeconds(duration);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(duration);
 
         partSystem.Stop();
 
-        yield return new WaitForSeconds(partSystem.startLifetime);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(partSystem.startLifetime);
 
         Destroy(this.gameObject);
     }

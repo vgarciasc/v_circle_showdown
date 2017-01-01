@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour {
 
     void Start() {
         pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        
         foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
             Player player = (Player) HushPuppy.safeComponent(go, "Player");
             player.death_event += checkGameOver_;
@@ -22,7 +23,7 @@ public class GameController : MonoBehaviour {
 
     public void checkGameOver_() { StartCoroutine(checkGameOver()); }
     IEnumerator checkGameOver() {
-        yield return new WaitForSeconds(2.0f);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
         GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
 
         if (go.Length == 1) { //apenas um jogador vivo (vitorioso)

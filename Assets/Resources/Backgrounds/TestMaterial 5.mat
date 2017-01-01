@@ -129,7 +129,7 @@ Material:
       second: 1
     - first:
         name: _HorizontalWaveVelocity
-      second: 10
+      second: 30
     - first:
         name: _Metallic
       second: 0

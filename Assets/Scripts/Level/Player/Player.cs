@@ -39,6 +39,8 @@ public class Player : MonoBehaviour, ISmashable {
     public delegate void DeathDelegate();
     public event DeathDelegate death_event,
                             bomb_event;
+    public delegate void IdentifiedDeathDelegate(PlayerInstance instance);
+    public event IdentifiedDeathDelegate id_death_event;
     public delegate void BombTriangleEvent(Vector3 bomb_position);
     public event BombTriangleEvent bomb_triangle_event;
     public delegate void ItemDelegate(ItemData item_data);
@@ -269,6 +271,28 @@ public class Player : MonoBehaviour, ISmashable {
         lastVelocity.z = lastVelocity.y;
         lastVelocity.y = lastVelocity.x;
         lastVelocity.x = rb.velocity.magnitude;
+
+        if (Input.GetKeyDown(KeyCode.Y)) {
+            StartCoroutine(boink());
+        }
+    }
+
+    IEnumerator boink() {
+        for (int i = 0; i < 5; i++) {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y - 0.05f, transform.localScale.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y - 0.025f, transform.position.z);
+            yield return new WaitForEndOfFrame();
+        }
+
+        for (int i = 0; i < 5; i++) {
+            yield return new WaitForEndOfFrame();
+        }
+
+        for (int i = 0; i < 5; i++) {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + 0.05f, transform.localScale.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y + 0.025f, transform.position.z);
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public float velocityHitMagnitude() {
@@ -289,7 +313,8 @@ public class Player : MonoBehaviour, ISmashable {
         is_dead = true;
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
-        death_event();
+        if (death_event != null) death_event();
+        if (id_death_event != null) id_death_event(instance);
         anim.SetTrigger("explode");
     }
 
@@ -340,12 +365,12 @@ public class Player : MonoBehaviour, ISmashable {
 
         /*'Spurts' Growth */
         while (true) {
-            yield return new WaitForSeconds(data.timeBetweenSpurts);
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.timeBetweenSpurts);
             if (!blockGrowth) changeSize(data.timeSizeIncrement);
         }
     }
 
-    void changeSize(float sizeIncrement) {
+    public void changeSize(float sizeIncrement) {
         this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
         checkSize();
     }
@@ -446,6 +471,29 @@ public class Player : MonoBehaviour, ISmashable {
         rb.velocity += direction;
         //rb.velocity += new Vector2(Mathf.Sign(rb.velocity.x) * 10f, 0);
         resetTackle();
+    }
+    #endregion
+
+    #region Pause
+    bool saveBlockInput, saveBlockCharge, saveBlockGrowth;
+
+    public void OnPause() {
+        saveBlockInput = blockInput;
+        saveBlockCharge = blockCharge;        
+        saveBlockGrowth = blockGrowth;
+        
+        blockInput = true;
+        blockCharge = true;
+        blockGrowth = true;
+    }
+
+    public void OnUnPause() {
+        blockInput = saveBlockInput;
+        blockCharge = saveBlockCharge;
+        blockGrowth = saveBlockGrowth;
+        
+        if (Input.GetButtonUp(jsFire1))
+            releaseTackle(1f);
     }
     #endregion
 
@@ -556,9 +604,9 @@ public class Player : MonoBehaviour, ISmashable {
         Color transparent = HushPuppy.getColorWithOpacity(spriteBackground.GetComponent<SpriteRenderer>().color, 0.5f);
         spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
 
-        yield return new WaitForSeconds(duration * 3 / 5);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(duration * 3 / 5);
         // Coroutine cr = StartCoroutine(useGhostPotion_blink(color, transparent));
-        yield return new WaitForSeconds(duration * 2 / 5);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(duration * 2 / 5);
         // StopCoroutine(cr);
 
         spriteBackground.GetComponent<SpriteRenderer>().color = color;

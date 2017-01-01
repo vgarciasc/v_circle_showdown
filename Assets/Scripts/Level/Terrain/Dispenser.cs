@@ -46,7 +46,7 @@ public class Dispenser : MonoBehaviour {
         cooldownOn = true;
         toggleButton(false);
 
-        yield return new WaitForSeconds(cooldownDuration);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(cooldownDuration);
 
         cooldownOn = false;
         toggleButton(true);

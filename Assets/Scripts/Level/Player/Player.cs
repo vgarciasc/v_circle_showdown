@@ -33,6 +33,7 @@ public class Player : MonoBehaviour, ISmashable {
     public PlayerData originalData;
     public PlayerInstance instance;
     public Color color;
+    public string playername;
     public bool isTriangle;
     
     #region EVENTS
@@ -46,6 +47,8 @@ public class Player : MonoBehaviour, ISmashable {
     public delegate void ItemDelegate(ItemData item_data);
     public event ItemDelegate get_item_event, 
                             use_item_event;    
+    public delegate void ChargeDelegate(int currentCharge);
+    public event ChargeDelegate charge_event;
     #endregion
 
     Rigidbody2D rb;
@@ -87,6 +90,7 @@ public class Player : MonoBehaviour, ISmashable {
         this.ID = instance.playerID;
         this.joystick = instance.joystick;
         this.color = instance.color;
+        this.playername = instance.name;
         this.instance = instance;
         reset_colors();
     }
@@ -113,6 +117,7 @@ public class Player : MonoBehaviour, ISmashable {
     void FixedUpdate() {
         checkGround();
         manageTackle();
+
         updateLastVelocity();
     }
 
@@ -366,6 +371,10 @@ public class Player : MonoBehaviour, ISmashable {
         spriteBackground.GetComponent<SpriteRenderer>().color = color;
         forceField.GetComponent<SpriteRenderer>().color = color;
         this.GetComponent<SpriteRenderer>().color = border_color;
+        reset_charge_indicator();    
+    }
+
+    void reset_charge_indicator() {
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
     }
 
@@ -390,7 +399,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     public void changeSize(float sizeIncrement) {
-        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
+        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement, sizeIncrement);
         checkSize();
     }
 
@@ -453,11 +462,28 @@ public class Player : MonoBehaviour, ISmashable {
     float white = 0;
     bool whiteOut = false;
 
+    Coroutine pulse;
     void manageTackle() {
+        if (charge_event != null) {
+            charge_event((int) tackleBuildup);
+        }
+        
         if (blockCharge) return;
 
-        if (tackleBuildup >= data.maxTackleBuildup)
+        if (tackleBuildup >= data.maxTackleBuildup) {
             tackleBuildup = data.maxTackleBuildup;
+            if (pulse == null) {
+                //pulse = StartCoroutine(pulsate_charge());
+            }
+            return;
+        }
+        else {
+            if (pulse != null) {
+                reset_charge_indicator();
+                StopCoroutine(pulse);
+                pulse = null;
+            }
+        }
 
         float perc = tackleBuildup / data.maxTackleBuildup;
         perc /= 1f;
@@ -482,6 +508,27 @@ public class Player : MonoBehaviour, ISmashable {
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, multiplier);
 
         rb.mass = data.mass + data.tackleWeight * perc;
+    }
+
+    IEnumerator pulsate_charge() {
+        Vector3 initial = chargeIndicator.transform.localScale;
+        Color initial_color = chargeIndicator.GetComponent<SpriteRenderer>().color;
+        int i = 0;
+        while (true) {
+            Vector3 vec = initial;
+
+            float multiplier = (- Mathf.Cos((i/20f * Mathf.PI) / 2) + 1) / 8f;
+            Color col = Color.Lerp(initial_color,
+                                    Color.white, 
+                                    (- Mathf.Cos((i/5f * Mathf.PI) / 2) + 1) / 4f);
+
+            vec += new Vector3(multiplier, multiplier, multiplier);
+
+            chargeIndicator.GetComponent<SpriteRenderer>().color = col;
+            chargeIndicator.transform.localScale = vec;
+            i++;
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     void releaseTackle(float power) {

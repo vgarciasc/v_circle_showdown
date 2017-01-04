@@ -70,9 +70,11 @@ public class PlayerDatabase : MonoBehaviour {
             if (Input.GetButtonDown("Fire1_J" + i.ToString()) && !playersIn.Contains(i)) {
                 Debug.Log("Joystick #" + i + " entrou no jogo!");
 
+                string generated_ID_name = "Player #" + Random.Range(0, 200);
                 PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
                                                 i,
                                                 currentID,
+                                                generated_ID_name,
                                                 getRandomPlayerColor(Color.clear));
 
                 players.Add(aux);
@@ -81,7 +83,7 @@ public class PlayerDatabase : MonoBehaviour {
                 spawner.setPlayer(currentID, aux);
                 spawner.activatePlayer(currentID);
                 playerTexts.GetChild(currentID).gameObject.SetActive(true);
-                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = "Player #" + (currentID + 1) + " has entered the game." +
+                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = generated_ID_name + " has entered the game." +
                 "\n <color=grey> (" + joystickNames[i] + ") </color>";
                 // playerTexts.transform.GetChild(currentID).GetComponentInChildren<Image>().color = aux.color;
 

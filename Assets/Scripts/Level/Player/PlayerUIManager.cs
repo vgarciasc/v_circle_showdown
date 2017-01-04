@@ -11,6 +11,7 @@ public class PlayerUIManager : MonoBehaviour {
 	Player player;
 	Color player_color;
 	int player_ID;
+	string player_name;
 	PlayerUIMarker marker;
 	PlayerUIStatus status;
 
@@ -19,6 +20,8 @@ public class PlayerUIManager : MonoBehaviour {
 
 		this.player_color = player.color;
 		this.player_ID = player.ID;
+		this.player_name = player.playername;
+		
 		player.death_event += on_player_death;
 		player.get_item_event += on_item_get;
 		player.use_item_event += on_item_use;
@@ -34,12 +37,12 @@ public class PlayerUIManager : MonoBehaviour {
 		if (playerAlreadyHasUI(playerUI_container)) return;
 
         status = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
-        status.name = "Player #" + (player_ID + 1) + " Status";
+        status.name = player_name + " Status";
         status.transform.SetParent(playerUI_container.transform.GetChild(0), false);
-        status.setUI(player_ID, player_color);
+        status.setUI(player_name, player_ID, player_color);
 
         marker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
-        marker.name = "Player #" + (player_ID + 1) + " Marker";
+        marker.name = player_name + " Marker";
         marker.transform.SetParent(playerUI_container.transform.GetChild(1), false);
         marker.setMarker(player_color);
 		
@@ -48,10 +51,10 @@ public class PlayerUIManager : MonoBehaviour {
 
 	bool playerAlreadyHasUI(GameObject container) {
 		foreach (Transform go in container.transform.GetChild(0)) {
-			if (go.name == "Player #" + (player_ID + 1) + " Status") {
+			if (go.name == player.playername + " Status") {
 				status = go.GetComponent<PlayerUIStatus>();
 				status.reset();
-				marker = GameObject.Find("Player #" + (player_ID + 1) + " Marker").GetComponent<PlayerUIMarker>();
+				marker = GameObject.Find(player.playername + " Marker").GetComponent<PlayerUIMarker>();
 				return true;
 			}
 		}

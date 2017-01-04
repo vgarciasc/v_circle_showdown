@@ -6,6 +6,8 @@ public class PlayerParticleSystems : MonoBehaviour {
     ParticleSystem explosion;
     [SerializeField]
     ParticleSystem heal;
+	[SerializeField]
+    ParticleSystem full_charge;
 
 	Player player;
 	Animator animator;
@@ -21,10 +23,13 @@ public class PlayerParticleSystems : MonoBehaviour {
 		tr = (TrailRenderer) HushPuppy.safeComponent(this.gameObject, "TrailRenderer");
 
 		player.death_event += death;
+		player.charge_event += chargeParticles;
 		item_user.healStart += heal_explosion_start;
 		item_user.healEnd += heal_explosion_end;
 		
 		explosion.startColor = player.color + new Color(0.3f, 0.3f, 0.3f);
+		full_charge.startColor = player.color - new Color(0.15f, 0.15f, 0.15f);
+		full_charge.startColor = HushPuppy.getColorWithOpacity(full_charge.startColor, 0.3f);
 		init_trail_renderer_color(player.color);
 	}
 	
@@ -59,8 +64,20 @@ public class PlayerParticleSystems : MonoBehaviour {
         heal.gameObject.SetActive(false);
 
 		//bug da unity?
-		tr.time = 0;	
+		set_trail_renderer_width();
+		tr.time = 2;	
 	}
+
+	#region charge
+	void chargeParticles(int perc) {
+		if (perc > 70) {
+			full_charge.emissionRate = -1/3f * Mathf.Pow(perc, 2) + (175/3f) * perc - 2450;
+		}
+		else {
+			full_charge.emissionRate = 0;
+		}
+	}
+	#endregion
 
 	void init_trail_renderer_color(Color target) {
 		Gradient g;

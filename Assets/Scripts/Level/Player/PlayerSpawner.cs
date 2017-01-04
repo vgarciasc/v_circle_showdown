@@ -49,7 +49,7 @@ public class PlayerSpawner : MonoBehaviour {
     }
 
     void startDefaultGame() {
-        PlayerInstance aux = new PlayerInstance("_J0", 0, 0, Color.grey);
+        PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", Color.grey);
         spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());
     }
 }

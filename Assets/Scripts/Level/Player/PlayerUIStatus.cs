@@ -17,9 +17,11 @@ public class PlayerUIStatus : MonoBehaviour {
     [SerializeField]
     GameObject victoryIcon;
 
+    Animator animator;
     Coroutine countCoroutine;
     PlayerDatabase pdatabase;
     Color playerColor;
+    string playerName;
     int playerID;
 
     void Awake() {
@@ -33,11 +35,13 @@ public class PlayerUIStatus : MonoBehaviour {
         unshowItem();
     }
 
-    public void setUI(int playerID, Color playerColor) {
+    public void setUI(string playerName, int playerID, Color playerColor) {
         this.playerColor = playerColor;
         this.playerID = playerID;
+        this.playerName = playerName;
+        this.animator = GetComponentInParent<Animator>();
 
-        this.GetComponentsInChildren<Text>()[0].text = "Player #" + (playerID + 1).ToString();
+        this.GetComponentsInChildren<Text>()[0].text = playerName.ToString();
         this.GetComponentsInChildren<Image>()[1].color = playerColor;
         if (pdatabase != null) setVictories(playerID);
     }
@@ -74,6 +78,7 @@ public class PlayerUIStatus : MonoBehaviour {
     public void showItem(ItemData item) {
         carriedItem.enabled = true;
         carriedItem.sprite = item.sprite;
+        animator.SetTrigger("get_item");
     }
 
     public void unshowItem() {

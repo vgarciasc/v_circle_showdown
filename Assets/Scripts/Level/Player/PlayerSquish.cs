@@ -33,7 +33,8 @@ public class PlayerSquish : MonoBehaviour {
 
 		for (int i = 0; i < times; i++) {
 			this.transform.localScale = new Vector3(this.transform.localScale.x,
-													this.transform.localScale.y - increment);
+													this.transform.localScale.y - increment,
+													this.transform.localScale.z);
 			yield return new WaitForEndOfFrame();
 		}
 
@@ -43,7 +44,8 @@ public class PlayerSquish : MonoBehaviour {
 
 		for (int i = 0; i < times; i++) {
 			this.transform.localScale = new Vector3(this.transform.localScale.x,
-													this.transform.localScale.y + increment);	
+													this.transform.localScale.y + increment,
+													this.transform.localScale.z);	
 			yield return new WaitForEndOfFrame();
 		}
 	}

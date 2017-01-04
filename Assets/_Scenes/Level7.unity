@@ -562,7 +562,7 @@ Prefab:
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: levelItems.Array.data[0].probability
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}

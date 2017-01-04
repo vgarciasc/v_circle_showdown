@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 114000014172046132}
   - component: {fileID: 96000013025404330}
   - component: {fileID: 114405102397726100}
+  - component: {fileID: 114500827835236268}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -500,7 +501,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012718447864}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.01, y: -0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4000012262739810}
@@ -513,7 +514,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010936603834}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.07, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4000012262739810}
@@ -526,7 +527,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014042269632}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.33055, y: -2.7990398, z: 0}
+  m_LocalPosition: {x: 5.3495226, y: -3.6027536, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4000012181947628}
@@ -560,7 +561,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011668831744}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.02, y: -0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4000012262739810}
@@ -684,9 +685,9 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Points:
     m_Paths:
-    - - {x: -0.5151961, y: -0.4482378}
-      - {x: 0.004085965, y: 0.45295745}
-      - {x: 0.51483583, y: -0.44708332}
+    - - {x: -0.46087056, y: -0.50338984}
+      - {x: 0.004085965, y: 0.30777508}
+      - {x: 0.46598253, y: -0.50877017}
 --- !u!60 &60000013718852796
 PolygonCollider2D:
   m_ObjectHideFlags: 1
@@ -701,9 +702,9 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Points:
     m_Paths:
-    - - {x: -0.5493679, y: -0.4606638}
-      - {x: 0.0009784698, y: 0.49644756}
-      - {x: 0.5490074, y: -0.44708347}
+    - - {x: -0.49870372, y: -0.49573898}
+      - {x: 0.0009784698, y: 0.3639412}
+      - {x: 0.50224054, y: -0.50164497}
 --- !u!61 &61000010241683414
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -881,12 +882,12 @@ MonoBehaviour:
   circleTrappedDetector: {fileID: 1000012588943430}
   triangleTrappedDetector: {fileID: 1000012542891840}
   triangleSpikes: {fileID: 1000011600119476}
-  circleBorder: {fileID: 21300000, guid: 46fff30e1de6b9443873d827ac8341ef, type: 3}
+  circleBorder: {fileID: 21300000, guid: 6c3379fd4ecca9d40b4756f2993a0f8d, type: 3}
   circleBorderAlmostExploding: {fileID: 21300000, guid: 5f4cf553ce63e1c4f8fbe3dc12b80ea4,
     type: 3}
   circleBackground: {fileID: 21300000, guid: 3dc18d90c65b61748a2f2523a90ba7f3, type: 3}
-  triangleBorder: {fileID: 21300000, guid: 61f0d57f68e790648ab6641a600eedbf, type: 3}
-  triangleBackground: {fileID: 21300000, guid: 515651563e623204aa01aac0fa19c9ef, type: 3}
+  triangleBorder: {fileID: 21300000, guid: f07efc043a044494cbbff8086a414344, type: 3}
+  triangleBackground: {fileID: 21300000, guid: 6def24ccc2166674ea494ae82f3cdadb, type: 3}
   spriteBackground: {fileID: 1000011822903328}
   forceField: {fileID: 1000013920249444}
   chargeIndicator: {fileID: 1000013188220940}
@@ -898,6 +899,7 @@ MonoBehaviour:
   ID: -1
   joystick: 
   tackleBuildup: 0
+  is_on_ground: 0
 --- !u!114 &114000010766433394
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1017,6 +1019,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1178d2c531431974f8eede77b8d5348a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114500827835236268
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014042269632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da65258509d6a3c4886798ede7befa90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!198 &198000010217548062
@@ -9134,7 +9147,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 46fff30e1de6b9443873d827ac8341ef, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d5a2a9f35fd40f41bdd54422d345c3b, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9204,7 +9217,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 0d5a2a9f35fd40f41bdd54422d345c3b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3edacb266f289e54ba278a939de1f70f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.316}
   m_FlipX: 0
   m_FlipY: 0

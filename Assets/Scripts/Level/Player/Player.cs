@@ -76,6 +76,7 @@ public class Player : MonoBehaviour, ISmashable {
     bool invincible = false,
         is_dead = false,
         almostExploding = false;
+    public bool is_on_ground = false;
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -110,6 +111,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void FixedUpdate() {
+        checkGround();
         manageTackle();
         updateLastVelocity();
     }
@@ -267,32 +269,25 @@ public class Player : MonoBehaviour, ISmashable {
         invincible = false;
     }
 
+    void checkGround() {
+        Vector2 start = new Vector2(transform.position.x,
+                                    transform.position.y - transform.localScale.x / 2f);
+
+        is_on_ground = Physics2D.Raycast(start,
+                                        Vector3.down * 0.2f,
+                                        0.2f,
+                                        1 << LayerMask.NameToLayer("CommonTerrain"));
+
+        // Debug.DrawRay(start, Vector2.down * 0.2f, Color.blue);
+
+
+        // Debug.Log("Is on ground? " + is_on_ground);
+    }
+
     void updateLastVelocity() {
         lastVelocity.z = lastVelocity.y;
         lastVelocity.y = lastVelocity.x;
         lastVelocity.x = rb.velocity.magnitude;
-
-        if (Input.GetKeyDown(KeyCode.Y)) {
-            StartCoroutine(boink());
-        }
-    }
-
-    IEnumerator boink() {
-        for (int i = 0; i < 5; i++) {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y - 0.05f, transform.localScale.z);
-            transform.position = new Vector3(transform.position.x, transform.position.y - 0.025f, transform.position.z);
-            yield return new WaitForEndOfFrame();
-        }
-
-        for (int i = 0; i < 5; i++) {
-            yield return new WaitForEndOfFrame();
-        }
-
-        for (int i = 0; i < 5; i++) {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + 0.05f, transform.localScale.z);
-            transform.position = new Vector3(transform.position.x, transform.position.y + 0.025f, transform.position.z);
-            yield return new WaitForEndOfFrame();
-        }
     }
 
     public float velocityHitMagnitude() {
@@ -305,6 +300,12 @@ public class Player : MonoBehaviour, ISmashable {
 
     void killPlayer() {
         if (is_dead) return;
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length == 2) {
+            //this will be the last player to die
+            StartCoroutine(slowmo(2.0f));
+        }
         
         anim.enabled = true;
         circleCollider.enabled = false;
@@ -316,6 +317,24 @@ public class Player : MonoBehaviour, ISmashable {
         if (death_event != null) death_event();
         if (id_death_event != null) id_death_event(instance);
         anim.SetTrigger("explode");
+    }
+
+    IEnumerator slowmo(float duration) {
+        float timescale = 1f;
+        float slow = 0.2f;
+
+        Time.timeScale = slow;
+        yield return new WaitForSeconds(duration * slow);
+
+        int aux = 20;
+        Debug.Log("A");
+        for (int i = 0; i < aux; i++) {
+            Time.timeScale += (timescale - slow) / aux;
+            Debug.Log(Time.timeScale);
+            yield return new WaitForEndOfFrame();
+        }
+        
+        Time.timeScale = timescale;
     }
 
     void swallowPlayer(Player enemy) {

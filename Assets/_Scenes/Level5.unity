@@ -100,7 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 83874674}
   - component: {fileID: 83874675}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,17 +209,17 @@ Prefab:
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.r
-      value: 0.8588236
+      value: 0.8308824
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.g
-      value: 0.7137255
+      value: 0.7260674
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.b
-      value: 0.454902
+      value: 0.4582072
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f397e3cad7f41f47a7a8853bb1aa835, type: 2}
@@ -539,7 +539,7 @@ GameObject:
   m_Component:
   - component: {fileID: 340216797}
   - component: {fileID: 340216798}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -932,7 +932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 728994598}
   - component: {fileID: 728994599}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,7 +996,7 @@ GameObject:
   m_Component:
   - component: {fileID: 739708368}
   - component: {fileID: 739708369}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1124,7 +1124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 761832945}
   - component: {fileID: 761832946}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1500,17 +1500,17 @@ Prefab:
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.r
-      value: 0.8588236
+      value: 0.8308824
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.g
-      value: 0.7137255
+      value: 0.7260674
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.b
-      value: 0.454902
+      value: 0.4582072
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f397e3cad7f41f47a7a8853bb1aa835, type: 2}
@@ -1529,7 +1529,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1150623280}
   - component: {fileID: 1150623281}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1617,7 +1617,7 @@ Transform:
   - {fileID: 296002488}
   - {fileID: 1531258881}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1219087650
 GameObject:
@@ -1657,7 +1657,7 @@ Transform:
   - {fileID: 971632029}
   - {fileID: 1699439553}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1226332128
 GameObject:
@@ -1869,7 +1869,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1334972129}
   - component: {fileID: 1334972130}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1933,7 +1933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1350048264}
   - component: {fileID: 1350048265}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2124,17 +2124,17 @@ Prefab:
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.r
-      value: 0.8588236
+      value: 0.8308824
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.g
-      value: 0.7137255
+      value: 0.7260674
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.b
-      value: 0.454902
+      value: 0.4582072
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f397e3cad7f41f47a7a8853bb1aa835, type: 2}
@@ -2153,7 +2153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1430194921}
   - component: {fileID: 1430194922}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2282,7 +2282,7 @@ GameObject:
   - component: {fileID: 1531258881}
   - component: {fileID: 1531258883}
   - component: {fileID: 1531258882}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2479,23 +2479,39 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 224000010041807320, guid: df92dd8f690042449a77daa2ec7ea7b8,
+    - target: {fileID: 114000011707734896, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -9.81
-      objectReference: {fileID: 0}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 1000014042269632, guid: e46618075af821c4a88524598abc2754,
+        type: 2}
     - target: {fileID: 4000010221766498, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 17.5
+      value: 8.54
       objectReference: {fileID: 0}
     - target: {fileID: 4000010221766498, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 7.03
+      value: -8.3
       objectReference: {fileID: 0}
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: itemSpawnInterval
-      value: 2
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: colors.Array.data[3].color.r
+      value: 0.41911763
+      objectReference: {fileID: 0}
+    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: colors.Array.data[3].color.g
+      value: 0.3340614
+      objectReference: {fileID: 0}
+    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: colors.Array.data[3].color.b
+      value: 0.20647706
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
@@ -2717,7 +2733,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1961714452}
   - component: {fileID: 1961714453}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2875,6 +2891,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1178d2c531431974f8eede77b8d5348a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &1990618149
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.13137698
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -7.4456835
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013157179326, guid: 663d239c849a0a04da7709406d47f008,
+        type: 2}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: 2f843cd64639df749b43b5a80f1e3a50,
+        type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 663d239c849a0a04da7709406d47f008, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &2026849932
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,7 +2948,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2026849933}
   - component: {fileID: 2026849934}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3264,17 +3328,17 @@ Prefab:
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.r
-      value: 0.8588236
+      value: 0.8308824
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.g
-      value: 0.7137255
+      value: 0.7260674
       objectReference: {fileID: 0}
     - target: {fileID: 212000011700135342, guid: 1f397e3cad7f41f47a7a8853bb1aa835,
         type: 2}
       propertyPath: m_Color.b
-      value: 0.454902
+      value: 0.4582072
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f397e3cad7f41f47a7a8853bb1aa835, type: 2}
@@ -3293,7 +3357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2127704472}
   - component: {fileID: 2127704473}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

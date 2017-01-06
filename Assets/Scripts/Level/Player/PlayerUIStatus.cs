@@ -20,12 +20,14 @@ public class PlayerUIStatus : MonoBehaviour {
     Animator animator;
     Coroutine countCoroutine;
     PlayerDatabase pdatabase;
+    VictoriesManager vmanager;
     Color playerColor;
     string playerName;
     int playerID;
 
     void Awake() {
-        pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        pdatabase = PlayerDatabase.getPlayerDatabase();
+        vmanager = VictoriesManager.getVictoriesManager();
         reset();
     }
 
@@ -48,12 +50,14 @@ public class PlayerUIStatus : MonoBehaviour {
 
     #region Victories
     void setVictories(int playerID) {
-        for (int i = 0; i < pdatabase.victoriesNeeded; i++) {
+        for (int i = 0; i < vmanager.get_victories_needed(); i++) {
             GameObject aux = (GameObject) Instantiate(victoryIcon, victoriesContainer, false);
-            if (pdatabase.players[playerID].victories > i)
+            if (vmanager.get_player_victories(playerID) > i) {
                 aux.GetComponent<Image>().color = playerColor;
-            else
+            }
+            else {
                 aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.5f);
+            }
         }
     }
     #endregion

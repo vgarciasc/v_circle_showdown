@@ -4,15 +4,15 @@
 public class PlayerData : ScriptableObject {
     public float maxVelocity = 10f;
     public float maxSecondsOutOfScreen = 3f;
-    public float maxTackleBuildup = 100f;
-    public float tackleWeight = 0.5f;
+    public float maxChargeBuildup = 100f;
+    public float chargeWeight = 0.5f;
     public float maxSize = 15f;
     public float minSize = 0.6f;
     public float mass = 0.5f;
     public Vector3 scale = new Vector3(1f, 1f, 1f);
     
     [Range(0, 300f)]
-    public float tackleForce = 50f;
+    public float chargeForce = 50f;
     [Range(0, 900f)]
     public float jumpForce = 300f;
 	[Range(0, 1f)]

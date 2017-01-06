@@ -17,15 +17,12 @@ public class PlayerDatabaseSpawner : MonoBehaviour {
 		player_UI_panels[id].SetActive(true);
 		player.SetActive(true);
 		player.GetComponent<Rigidbody2D>().velocity = new Vector3(20f * Mathf.Pow(-1, id), 0, 0);
-		StartCoroutine(closeDoor(doors[id]));
+		closeDoor(doors[id]);
 		return player;
 	}
 
-	IEnumerator closeDoor(GameObject door) {
-		yield return new WaitForSeconds(0.5f);
-		door.GetComponentInChildren<Rigidbody2D>().velocity = Vector3.up * 3;
-		yield return new WaitForSeconds(1f);
-		door.GetComponentInChildren<Rigidbody2D>().velocity = Vector3.zero;
+	void closeDoor(GameObject door) {
+		door.GetComponent<Platform>().enabled = true;
 	}
 
 	public void setPlayer(int id, PlayerInstance instance) {

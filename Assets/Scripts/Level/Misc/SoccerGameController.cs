@@ -40,28 +40,28 @@ public class SoccerGameController : MonoBehaviour {
 	public void scorePoint(int team) {
 		team_score[team]++;
 		scores[team].text = team_score[team].ToString();
-		StartCoroutine(checkWin(team));
+		// StartCoroutine(checkWin(team));
 		StartCoroutine(destroyBall(currentBall));
 		newBall();
 	}
 
-	IEnumerator checkWin(int team) {
-		if (team_score[team] >= pdatabase.victoriesNeeded) {
-			scores[team].text = "V";
-			scores[(team + 1) % 2].text = "P";
-			yield return new WaitForSeconds(2.0f);
+	// IEnumerator checkWin(int team) {
+	// 	// if (team_score[team] >= VictoriesManager.getVictoriesManager()) {
+	// 	// 	scores[team].text = "V";
+	// 	// 	scores[(team + 1) % 2].text = "P";
+	// 	// 	yield return new WaitForSeconds(2.0f);
 			
-			//nao funciona
-			Color aux = team_markers[team].GetChild(0).GetComponent<Image>().color;
-			GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-			for (int i = 0; i < players.Length; i++) {
-				if (players[i].GetComponent<Player>().color == aux) {
-					pdatabase.giveVictoryTo(players[i].GetComponent<Player>().ID);
-				}
-			}
-			SceneManager.LoadScene("GameOver");
-		}
-	}
+	// 	// 	//nao funciona
+	// 	// 	Color aux = team_markers[team].GetChild(0).GetComponent<Image>().color;
+	// 	// 	GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+	// 	// 	for (int i = 0; i < players.Length; i++) {
+	// 	// 		if (players[i].GetComponent<Player>().color == aux) {
+	// 	// 			pdatabase.giveVictoryTo(players[i].GetComponent<Player>().ID);
+	// 	// 		}
+	// 	// 	}
+	// 	// 	SceneManager.LoadScene("GameOver");
+	// 	// }
+	// }
 
 	IEnumerator destroyBall(GameObject ball) {
 		float currentLerpTime = 0f;

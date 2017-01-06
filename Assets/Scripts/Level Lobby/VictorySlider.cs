@@ -3,18 +3,19 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class VictorySlider : MonoBehaviour {
-    PlayerDatabase pdatabase;
+    VictoriesManager vmanager;
     [SerializeField]
     Text victoriesIndicator;
 
     void Awake() {
-        pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        vmanager = VictoriesManager.getVictoriesManager();
         setText(1);
+        setVictoriesNeeded();
     }
 
     public void setVictoriesNeeded() {
         int victoriesNeeded = (int) this.GetComponent<Slider>().value;
-        pdatabase.victoriesNeeded = victoriesNeeded;
+        vmanager.set_victories_needed(victoriesNeeded);
         setText(victoriesNeeded);
     }
 

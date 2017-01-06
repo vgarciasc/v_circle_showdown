@@ -65,7 +65,9 @@ public class PlayerParticleSystems : MonoBehaviour {
 
 		//bug da unity?
 		set_trail_renderer_width();
-		tr.time = 2;	
+		tr.time = 5;
+		tr.time = 0;	
+		set_trail_renderer_width();
 	}
 
 	#region charge

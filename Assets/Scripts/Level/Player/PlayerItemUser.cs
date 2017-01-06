@@ -68,33 +68,36 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_triangle(ItemData data) { StartCoroutine(use_triangle_(data)); }
     IEnumerator use_triangle_(ItemData data) {
         player.toggleTriangle(true);
-        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 3 / 5f);
+        Coroutine blink = StartCoroutine(player.start_blink());
+		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
+        StopCoroutine(blink);
         player.toggleTriangle(false);
     }
 
     //fantasma
 	void use_ghost(ItemData data) { /*StartCoroutine(use_ghost_(data));*/ }
 	IEnumerator use_ghost_(ItemData data) {
-        Player ghost_shell = player_spawner.spawnGhostShell(player.instance,
-                                                            player.transform.position);
-        player.toggle_colliders(false);
-        player.change_player_opacity(0.5f);
+        // Player ghost_shell = player_spawner.spawnGhostShell(player.instance,
+        //                                                     player.transform.position);
+        // player.toggle_colliders(false);
+        // player.change_player_opacity(0.5f);
 
-        PlayerGhostLine pgl = (PlayerGhostLine) HushPuppy.safeComponent(Instantiate(ghost_line_prefab),
-                                                                        "PlayerGhostLine");
-        pgl.init(ghost_shell.transform, player.gameObject.transform);
+        // PlayerGhostLine pgl = (PlayerGhostLine) HushPuppy.safeComponent(Instantiate(ghost_line_prefab),
+        //                                                                 "PlayerGhostLine");
+        // pgl.init(ghost_shell.transform, player.gameObject.transform);
 
-        Ray r = ghost_create_ray(ghost_shell.transform, player.gameObject.transform);
+        // Ray r = ghost_create_ray(ghost_shell.transform, player.gameObject.transform);
 
 		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 3 / 5f);
-        Coroutine blink = StartCoroutine(player.start_blink());
-		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
-        StopCoroutine(blink);
+        // Coroutine blink = StartCoroutine(player.start_blink());
+		// yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
+        // StopCoroutine(blink);
 
-        player.change_player_opacity(1f);
-        player.toggle_colliders(true);
-        Destroy(ghost_shell.gameObject);
-        Destroy(pgl);
+        // player.change_player_opacity(1f);
+        // player.toggle_colliders(true);
+        // Destroy(ghost_shell.gameObject);
+        // Destroy(pgl);
 	}
 
     Ray ghost_create_ray(Transform origin, Transform direction) {
@@ -108,8 +111,8 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_bomb() {
         item_spawner.createBomb(this.transform,
 							player.cannonPosition.transform,
-							player.tackleBuildup);
-        player.resetTackle();
+							player.chargeBuildup);
+        player.reset_charge();
     }
 
     //cogumelo
@@ -121,13 +124,13 @@ public class PlayerItemUser : MonoBehaviour {
     void use_coffee(ItemData data) { StartCoroutine(use_coffee_(data)); }
     IEnumerator use_coffee_(ItemData data) {
         player.data.speed *= 3;
-        player.data.tackleForce *= 3;
+        player.data.chargeForce *= 3;
         player.GetComponent<PlayerParticleSystems>().trail_length_modifier *= 20;
 
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
 
         player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
         player.data.speed /= 3;
-        player.data.tackleForce /= 3;        
+        player.data.chargeForce /= 3;        
     }
 }

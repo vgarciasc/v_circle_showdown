@@ -7,28 +7,30 @@ public class PlayerDatabase : MonoBehaviour {
     int currentID = 0;
     bool hasSeenAGame = false;
     PlayerDatabaseSpawner spawner;
+    VictoriesManager vmanager;
 
-    public int victoriesNeeded = 1;
-    public int winnerID = -1;
-
-    List<int> playersIn = new List<int>();
+    List<int> joysticks_ingame = new List<int>();
     public List<PlayerInstance> players = new List<PlayerInstance>();
-    List<string> joystickNames = new List<string>();
+    List<string> joystick_names = new List<string>();
 
     [SerializeField] 
-    List<Color> playerColors = new List<Color>();
-    List<Color> currentColorArray = new List<Color>();
+    List<Color> original_color_pool = new List<Color>();
+    List<Color> current_color_pool = new List<Color>();
 
     [SerializeField]
     Transform playerTexts; //textos que ficam ativos quando o joystick entra em jogo
 
+    public static PlayerDatabase getPlayerDatabase() {
+        return (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+    }
+
     void Start() {
         deleteNewerCopies();
-        initBaseColors();
+        reset_available_colors();
         spawner = GetComponent<PlayerDatabaseSpawner>();
+        vmanager = VictoriesManager.getVictoriesManager();
 
-        joystickNames.Add("Keyboard");
-        joystickNames.AddRange(Input.GetJoystickNames());
+        init_joysticks();
 
         foreach (Transform t in playerTexts.transform)
             t.gameObject.SetActive(false);
@@ -38,72 +40,10 @@ public class PlayerDatabase : MonoBehaviour {
         if (!hasSeenAGame) handleInput();
 	}
 
-    #region Handle Victories
-    public void resetVictories() {
-        for (int i = 0; i < players.Count; i++)
-            players[i].victories = 0;
-    }
-
-    public void giveVictoryTo(int playerID) {
-        players[playerID].victories++;
-    }
-
-    public int getGameWinner() {
-        for (int i = 0; i < players.Count; i++)
-            if (players[i].victories >= victoriesNeeded)
-                return i;
-
-        return -1; //no winner yet
-    }
-
-    #endregion
-
-    #region Player Select Screen
-    void deleteNewerCopies() {
-        if (!hasSeenAGame) return;
-        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player Data"))
-            if (go != this.gameObject) Destroy(go);
-    }
-        
-    void handleInput() {
-        for (int i = 0; i < 4; i++) {
-            if (Input.GetButtonDown("Fire1_J" + i.ToString()) && !playersIn.Contains(i)) {
-                Debug.Log("Joystick #" + i + " entrou no jogo!");
-
-                string generated_ID_name = "Player #" + Random.Range(0, 200);
-                PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
-                                                i,
-                                                currentID,
-                                                generated_ID_name,
-                                                getRandomPlayerColor(Color.clear));
-
-                players.Add(aux);
-                playersIn.Add(i);
-            
-                spawner.setPlayer(currentID, aux);
-                spawner.activatePlayer(currentID);
-                playerTexts.GetChild(currentID).gameObject.SetActive(true);
-                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = generated_ID_name + " has entered the game." +
-                "\n <color=grey> (" + joystickNames[i] + ") </color>";
-                // playerTexts.transform.GetChild(currentID).GetComponentInChildren<Image>().color = aux.color;
-
-                currentID++;
-
-            } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && playersIn.Contains(i)) {
-                int player_ID = get_player_entry_ID(i);
-                Color aux = getRandomPlayerColor(players[player_ID].color);
-                players[player_ID].color = aux;
-                spawner.setPlayer(player_ID, players[player_ID]);
-
-            } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && playersIn.Contains(i)) {
-                int player_ID = get_player_entry_ID(i);
-                toggleReady(player_ID);
-
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-            goLevelSelect();
+    #region Joysticks
+    void init_joysticks() {
+        joystick_names.Add("Keyboard");
+        joystick_names.AddRange(Input.GetJoystickNames());
     }
 
     int get_player_entry_ID(int joystickNum) {
@@ -112,6 +52,51 @@ public class PlayerDatabase : MonoBehaviour {
                 return j;
 
         return 0;
+    }
+    #endregion
+
+    #region Player Select Screen
+    void deleteNewerCopies() {
+        // if (!hasSeenAGame) return;
+        // foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player Data"))
+        //     if (go != this.gameObject) Destroy(go);
+    }
+        
+    void handleInput() {
+        for (int i = 0; i < 4; i++) {
+            if (Input.GetButtonDown("Fire1_J" + i.ToString()) && !joysticks_ingame.Contains(i)) {
+                //player joins the game
+
+                string generated_ID_name = "Player #" + Random.Range(0, 200);
+                PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
+                                                i,
+                                                currentID,
+                                                generated_ID_name,
+                                                get_first_random_color());
+                players.Add(aux);
+                joysticks_ingame.Add(i);
+            
+                spawner.setPlayer(currentID, aux);
+                spawner.activatePlayer(currentID);
+                playerTexts.GetChild(currentID).gameObject.SetActive(true);
+                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = generated_ID_name + " has entered the game." +
+                "\n <color=grey> (" + joystick_names[i] + ") </color>";
+
+                currentID++;
+
+            } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
+                //get another color
+                int player_ID = get_player_entry_ID(i);
+                Color aux = get_another_random_color(players[player_ID].color);
+                players[player_ID].color = aux;
+                spawner.setPlayer(player_ID, players[player_ID]);
+
+            } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
+                //player is ready
+                int player_ID = get_player_entry_ID(i);
+                toggleReady(player_ID);
+            }
+        }
     }
 
     int ready = 0;
@@ -127,57 +112,35 @@ public class PlayerDatabase : MonoBehaviour {
     }
 
     void goLevelSelect() {
-        resetVictories();
-        DontDestroyOnLoad(this.gameObject);
-        SceneManager.LoadScene("LevelSelect");
         hasSeenAGame = true;
+        DontDestroyOnLoad(this.gameObject);
+        vmanager.set_players(currentID);
+        SceneLoader.getSceneLoader().LevelSelect();
     }
 
     #region Random Color Generator
-    void initBaseColors() {
-        //baseColors = new Dictionary<Color, bool>{
-        //                { Color.green, false },
-        //                { Color.gray, false },
-        //                { Color.cyan, false },
-        //                { Color.blue, false },
-        //                { Color.red, false },
-        //                { Color.magenta, false },
-        //                { Color.yellow, false } };
-
-        /*baseColors = new List<Color> {
-            Color.green, Color.yellow,
-            Color.cyan, Color.blue,
-            Color.red, Color.magenta};*/
-
-        currentColorArray.AddRange(playerColors);
+    void reset_available_colors() {
+        current_color_pool.AddRange(original_color_pool);
     }
 
-    Color getRandomPlayerColor(Color currentColor) {
-        int i = Random.Range(0, currentColorArray.Count);
-        /*Color aux = baseColors[i];
-        float aux_r, aux_g, aux_b;
-        float saturation = Random.Range(0.2f, 0.4f);
+    Color get_first_random_color() {
+        int i = Random.Range(0, current_color_pool.Count);
+        Color output = current_color_pool[i];
+        current_color_pool.Remove(output);
 
-        aux_r = aux.r += (saturation * -Mathf.Sign(aux.r - 0.5f));
-        aux_g = aux.g += (saturation * -Mathf.Sign(aux.g - 0.5f));
-        aux_b = aux.b += (saturation * -Mathf.Sign(aux.b - 0.5f));
-
-        Color output = new Color(aux_r, aux_g, aux_b);
-        baseColors.RemoveAt(i);
-        if (baseColors.Count == 0) {
-            initBaseColors();
+        //pool of colors is empty. fill it with all original colors (may repeat colors)
+        if (current_color_pool.Count == 0) {
+            reset_available_colors();
         }
-        return output;*/
 
-        Color output = currentColorArray[i];
-        currentColorArray.Remove(output);
-        if (currentColor == Color.clear)
-            currentColorArray.Remove(output);
-        else
-            currentColorArray.Add(currentColor);
+        return output;
+    }
 
-        if (currentColorArray.Count == 0)
-            initBaseColors();
+    Color get_another_random_color(Color current_color) {
+        int i = Random.Range(0, current_color_pool.Count);
+        Color output = current_color_pool[i];
+        current_color_pool.Remove(output);
+        current_color_pool.Add(current_color);
         return output;
     }
 

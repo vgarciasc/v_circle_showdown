@@ -721,7 +721,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.41911763, g: 0.37594324, b: 0.29892948, a: 1}
+  m_Color: {r: 0.2236159, g: 0.3455882, b: 0.33542386, a: 0.653}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!114 &485094534 stripped
@@ -791,7 +791,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.41911763, g: 0.37594324, b: 0.29892948, a: 1}
+  m_Color: {r: 0.2236159, g: 0.3455882, b: 0.33542386, a: 0.653}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!114 &512976930 stripped
@@ -913,7 +913,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.41911763, g: 0.37594324, b: 0.29892948, a: 1}
+  m_Color: {r: 0.2236159, g: 0.3455882, b: 0.33542386, a: 0.653}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1 &763573037
@@ -983,7 +983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 16e7f9c984abe5a4898c1d288e143871, type: 2}
-  m_Color: {r: 0.3162846, g: 0.66176474, b: 0.6331733, a: 0.397}
+  m_Color: {r: 0.1418685, g: 0.4705882, b: 0.40257722, a: 0.397}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1294,7 +1294,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 44597f423c4f6434594cc92895574df2, type: 3}
-  m_Color: {r: 0.41911763, g: 0.37594324, b: 0.29892948, a: 1}
+  m_Color: {r: 0.2236159, g: 0.3455882, b: 0.33542386, a: 0.653}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &1351100716
@@ -1882,17 +1882,17 @@ Prefab:
     - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: colors.Array.data[3].color.r
-      value: 0.3162846
+      value: 0.1418685
       objectReference: {fileID: 0}
     - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: colors.Array.data[3].color.g
-      value: 0.66176474
+      value: 0.4705882
       objectReference: {fileID: 0}
     - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: colors.Array.data[3].color.b
-      value: 0.6331733
+      value: 0.40257722
       objectReference: {fileID: 0}
     - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
@@ -2292,7 +2292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 287c2ee0f94bedb42a1d67d61b9bdf7a, type: 2}
-  m_Color: {r: 0.3162846, g: 0.66176474, b: 0.6331733, a: 0.397}
+  m_Color: {r: 0.1418685, g: 0.4705882, b: 0.40257722, a: 0.397}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:

@@ -272,13 +272,6 @@ AnimationClip:
     path: 
     classID: 212
     script: {fileID: 0}
-  - curve:
-    - time: 0.31666666
-      value: {fileID: 21300000, guid: 0d5a2a9f35fd40f41bdd54422d345c3b, type: 3}
-    attribute: m_Sprite
-    path: Animations and Particle Systems/Explosion Ring
-    classID: 212
-    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -340,12 +333,6 @@ AnimationClip:
       classID: 212
       customType: 23
       isPPtrCurve: 1
-    - path: 3192174251
-      attribute: 0
-      script: {fileID: 0}
-      classID: 212
-      customType: 23
-      isPPtrCurve: 1
     - path: 2006157955
       attribute: 304273561
       script: {fileID: 0}
@@ -366,7 +353,6 @@ AnimationClip:
       isPPtrCurve: 0
     pptrCurveMapping:
     - {fileID: 0}
-    - {fileID: 21300000, guid: 0d5a2a9f35fd40f41bdd54422d345c3b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

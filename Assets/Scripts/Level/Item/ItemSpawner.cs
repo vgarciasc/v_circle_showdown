@@ -80,7 +80,10 @@ public class ItemSpawner : MonoBehaviour {
         Bomb bomb = Instantiate(bombPrefab).GetComponent<Bomb>();
         bomb.transform.position = cannon.position;
 
-        bomb.setBomb(player.up, player.localScale, power);
+        Vector3 bomb_scale = new Vector3(player.localScale.x,
+                                        player.localScale.x,
+                                        player.localScale.x);
+        bomb.setBomb(player.up, bomb_scale, power);
     }
     #endregion
 

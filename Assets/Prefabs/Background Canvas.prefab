@@ -16,11 +16,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 224000013833096988}
-  - 222: {fileID: 222000012022995064}
-  - 114: {fileID: 114000012314423764}
+  - component: {fileID: 224000013833096988}
+  - component: {fileID: 222000012022995064}
+  - component: {fileID: 114000012314423764}
+  - component: {fileID: 114347434313314232}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -33,12 +34,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 224000012456805946}
-  - 223: {fileID: 223000010618715990}
-  - 114: {fileID: 114000011702970868}
-  - 114: {fileID: 114000013834978024}
+  - component: {fileID: 224000012456805946}
+  - component: {fileID: 223000010618715990}
+  - component: {fileID: 114000011702970868}
+  - component: {fileID: 114000013834978024}
   m_Layer: 5
   m_Name: Background Canvas
   m_TagString: Untagged
@@ -51,11 +52,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 224000011596220376}
-  - 222: {fileID: 222000010217317500}
-  - 114: {fileID: 114000012771152408}
+  - component: {fileID: 224000011596220376}
+  - component: {fileID: 222000010217317500}
+  - component: {fileID: 114000012771152408}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -154,6 +155,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114347434313314232
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010274531224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb4a8bed93e8a24a8989e4534dea3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  my_type: 0
+  image: {fileID: 0}
+  image_is_self: 1
+  is_sprite_renderer: 0
 --- !u!222 &222000010217317500
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -194,10 +210,10 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 224000012456805946}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 26}
@@ -212,12 +228,12 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 224000011596220376}
   - {fileID: 224000013833096988}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -232,10 +248,10 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 224000012456805946}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 25.999979}

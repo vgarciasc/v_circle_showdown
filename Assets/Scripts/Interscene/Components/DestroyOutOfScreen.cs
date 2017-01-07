@@ -13,9 +13,9 @@ public class DestroyOutOfScreen : MonoBehaviour {
 
 	IEnumerator checkOutOfScreen() {
         while (true) {
-            yield return new WaitForSeconds(2.0f);
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
             if (!srenderer.isVisible) {
-                yield return new WaitForSeconds(2.0f);
+                yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
                 if (!srenderer.isVisible)
                     Destroy(gameObject);
             }

@@ -32,7 +32,7 @@ public class Bomb : MonoBehaviour, ISmashable {
     }
 
     IEnumerator deathCount() {
-        yield return new WaitForSeconds(lifetime);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(lifetime);
         StopCoroutine(blinkCoroutine);
         explode();
     }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Platform : MonoBehaviour {
     [Header("> Movement")]
     [SerializeField]
-    [Range(0f, 3f)]
+    [Range(0f, 6f)]
     float speed = 1f;
     [SerializeField]
     List<Transform> transformArray = new List<Transform>();
@@ -17,6 +17,10 @@ public class Platform : MonoBehaviour {
     [SerializeField]
     [Range(0, 50f)]
     float maxVelocity = 50f;
+    [SerializeField]
+    int maxIterations = 1;
+    [SerializeField]
+    bool repeat = true;
 
     List<Vector3> positions = new List<Vector3>();
     int currentPosition = 0,
@@ -53,7 +57,7 @@ public class Platform : MonoBehaviour {
     }
 
     IEnumerator wait(float duration) {
-        yield return new WaitForSeconds(duration);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(duration);
     }
 
     IEnumerator rumble() {
@@ -72,6 +76,7 @@ public class Platform : MonoBehaviour {
     }
 
     void initPositions() {
+        check_last_iteration();
         if (!enableMovement) return;
 
         positions.Add(this.transform.position);
@@ -82,8 +87,9 @@ public class Platform : MonoBehaviour {
     }
 
     void setNextPosition() {
-        iterations++;
+        check_last_iteration();
         if (!enableMovement) return;
+        iterations++;
 
         lastPosition = positions[currentPosition];
         currentPosition = (currentPosition + 1) % positions.Count;
@@ -96,9 +102,17 @@ public class Platform : MonoBehaviour {
     }
 
     void updatePosition() {
+        check_last_iteration();
         if (!enableMovement) return;
 
         if (Vector3.Distance(this.transform.position, nextPosition) < 0.5f)
             setNextPosition();
+    }
+
+    void check_last_iteration() {
+        if (!repeat && (iterations > maxIterations)) {
+            enableMovement = false; 
+            this.GetComponentInChildren<Rigidbody2D>().velocity = Vector3.zero;
+        }
     }
 }

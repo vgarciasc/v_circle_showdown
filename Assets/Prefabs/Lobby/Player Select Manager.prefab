@@ -16,11 +16,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000011243711160}
-  - 114: {fileID: 114000013094801548}
-  - 114: {fileID: 114000012437884630}
+  - component: {fileID: 4000011243711160}
+  - component: {fileID: 114000013094801548}
+  - component: {fileID: 114000012437884630}
+  - component: {fileID: 114111426031383008}
+  - component: {fileID: 114588158598928264}
   m_Layer: 0
   m_Name: Player Select Manager
   m_TagString: PlayerDatabase
@@ -37,10 +39,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.34243506, y: 0.48419595, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114000012437884630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -57,6 +59,16 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  doors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  player_UI_panels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &114000013094801548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,14 +80,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4f3d55aeb5699a4386c771d07f62ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  victoriesNeeded: 1
-  winnerID: -1
-  playerColors:
-  - {r: 0.6911765, g: 0.31509516, b: 0.31509516, a: 1}
-  - {r: 0.3036332, g: 0.42879122, b: 0.7941176, a: 1}
-  - {r: 0.85294116, g: 0.74922144, b: 0.16933392, a: 1}
-  - {r: 0.28114188, g: 0.7647059, b: 0.28447676, a: 1}
-  - {r: 0.875, g: 0.5704361, b: 0.025735319, a: 1}
-  - {r: 0.8776996, g: 0.5449827, b: 0.88235295, a: 1}
-  - {r: 0.8088235, g: 0.8088235, b: 0.8088235, a: 1}
+  original_color_pool:
+  - {r: 0.72794116, g: 0.15522276, b: 0.15522276, a: 1}
+  - {r: 0.8588236, g: 0.1137255, b: 0.74509805, a: 1}
+  - {r: 0.118728384, g: 0.15630284, b: 0.89705884, a: 1}
+  - {r: 0.16277003, g: 0.7941176, b: 0.110942915, a: 1}
+  - {r: 0.85294116, g: 0.5982699, b: 0.050173007, a: 1}
   playerTexts: {fileID: 0}
+--- !u!114 &114111426031383008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014010993922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3afc0a9472c4a43a7e9ec4d8882d80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114588158598928264
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014010993922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c2c0df40d4d64b44ab66df59b103dd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: TestMaterial 7
-  m_Shader: {fileID: 4800000, guid: f7cae97e017d6de4e9b5950defa25506, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5936d740447c4144a9f1c647342f3278, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -129,7 +129,7 @@ Material:
       second: 1
     - first:
         name: _HorizontalWaveVelocity
-      second: 0
+      second: 2
     - first:
         name: _Metallic
       second: 0
@@ -174,7 +174,7 @@ Material:
       second: 0
     - first:
         name: _VerticalWaveVelocity
-      second: 16.6
+      second: 0
     - first:
         name: _WaveAmplitude
       second: 54.6

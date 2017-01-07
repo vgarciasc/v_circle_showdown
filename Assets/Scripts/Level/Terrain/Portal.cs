@@ -38,7 +38,7 @@ public class Portal : MonoBehaviour {
     }
 
     IEnumerator endCooldown(GameObject target) {
-        yield return new WaitForSeconds(portalCooldown);
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(portalCooldown);
         if (inCooldown.Contains(target)) inCooldown.Remove(target);
     }
 

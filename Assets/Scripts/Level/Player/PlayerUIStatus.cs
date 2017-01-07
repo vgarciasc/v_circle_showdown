@@ -17,35 +17,58 @@ public class PlayerUIStatus : MonoBehaviour {
     [SerializeField]
     GameObject victoryIcon;
 
+    Animator animator;
     Coroutine countCoroutine;
     PlayerDatabase pdatabase;
+    VictoriesManager vmanager;
     Color playerColor;
+    string playerName;
     int playerID;
 
     void Awake() {
-        pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        pdatabase = PlayerDatabase.getPlayerDatabase();
+        vmanager = VictoriesManager.getVictoriesManager();
+        reset();
+    }
+
+    public void reset() {
+        redCross.enabled = false;
         setTime(false);
         unshowItem();
     }
 
-    public void setUI(int playerID, Color playerColor) {
+    public void setUI(string playerName, int playerID, Color playerColor) {
         this.playerColor = playerColor;
         this.playerID = playerID;
+        this.playerName = playerName;
+        this.animator = GetComponentInParent<Animator>();
 
-        this.GetComponentsInChildren<Text>()[0].text = "Player #" + (playerID + 1).ToString();
+        this.GetComponentsInChildren<Text>()[0].text = playerName.ToString();
         this.GetComponentsInChildren<Image>()[1].color = playerColor;
-        if (pdatabase != null) setVictories(playerID);
+        if (pdatabase != null) setVictories();
     }
 
     #region Victories
-    void setVictories(int playerID) {
-        for (int i = 0; i < pdatabase.victoriesNeeded; i++) {
+    void setVictories() {
+        for (int i = 0; i < vmanager.get_victories_needed(); i++) {
             GameObject aux = (GameObject) Instantiate(victoryIcon, victoriesContainer, false);
-            if (pdatabase.players[playerID].victories > i)
+            if (vmanager.get_player_victories(playerID) > i) {
                 aux.GetComponent<Image>().color = playerColor;
-            else
-                aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.5f);
+            }
+            else {
+                aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.7f);
+            }
         }
+    }
+
+    public void get_victory() { StartCoroutine(get_victory_()); }
+    IEnumerator get_victory_() {
+        animator.SetTrigger("popup");
+        yield return new WaitForSeconds(0.5f);
+
+        GameObject victory_icon = victoriesContainer.GetChild(vmanager.get_player_victories(playerID)).gameObject;
+        victory_icon.GetComponent<Image>().color = playerColor;
+        victory_icon.GetComponent<Animator>().SetTrigger("show");
     }
     #endregion
 
@@ -69,6 +92,7 @@ public class PlayerUIStatus : MonoBehaviour {
     public void showItem(ItemData item) {
         carriedItem.enabled = true;
         carriedItem.sprite = item.sprite;
+        animator.SetTrigger("get_item");
     }
 
     public void unshowItem() {

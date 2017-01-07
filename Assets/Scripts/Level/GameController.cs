@@ -4,50 +4,55 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
     PlayerDatabase pdatabase;
+    VictoriesManager vmanager;
 
     void Start() {
-        pdatabase = (PlayerDatabase) HushPuppy.safeFindComponent("PlayerDatabase", "PlayerDatabase");
+        pdatabase = PlayerDatabase.getPlayerDatabase();
+        vmanager = VictoriesManager.getVictoriesManager();
+
+        PlayerSpawner.getPlayerSpawner().spawnAllPlayers();
+
         foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
             Player player = (Player) HushPuppy.safeComponent(go, "Player");
-            player.death_event += checkGameOver_;
+            player.death_event += checkGameOver;
         }
     }
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.L)) {
-            SceneManager.LoadScene("LevelSelect");
-            pdatabase.resetVictories();
+            SceneLoader.getSceneLoader().LevelSelect();
         }
     }
 
-    public void checkGameOver_() { StartCoroutine(checkGameOver()); }
-    IEnumerator checkGameOver() {
-        yield return new WaitForSeconds(2.0f);
-        GameObject[] go = GameObject.FindGameObjectsWithTag("Player");
+    public void checkGameOver() { StartCoroutine(checkGameOver_()); }
+    IEnumerator checkGameOver_() {
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
+        int match_winner = vmanager.get_match_winner();
+        if (match_winner != -1) {
+            Player winning_player = pdatabase.get_player_by_ID(match_winner);
+            winning_player.get_victory();
 
-        if (go.Length == 1) { //apenas um jogador vivo (vitorioso)
-            int winnerID = go[0].GetComponent<Player>().ID;
-            getNextScene(winnerID);
-        } else if (go.Length == 0) { //nenhum jogador vivo (empate)
-            getNextScene(-1);
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
         }
+
+        get_next_scene(match_winner);
     }
 
-    void getNextScene(int matchWinnerID) {
-        if (matchWinnerID == -1) {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    void get_next_scene(int match_winner) {
+        if (match_winner == -1) { //empate
+            SceneLoader.getSceneLoader().ResetLevel();
             return;
         }
 
-        pdatabase.giveVictoryTo(matchWinnerID);
-        int gameWinnerID = pdatabase.getGameWinner();
+        vmanager.give_victory(match_winner);
+        int game_winner = vmanager.get_game_winner();
 
-        if (gameWinnerID == -1) {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (game_winner == -1) {
+            //jogador ganhou partida mas nao o jogo
+            SceneLoader.getSceneLoader().ResetLevel();
         } else {
-            pdatabase.winnerID = gameWinnerID;
-            pdatabase.resetVictories();
-            SceneManager.LoadScene("GameOver");
+            //jogador ganhou o jogo
+            SceneLoader.getSceneLoader().GameOver();
         }
     }
 }

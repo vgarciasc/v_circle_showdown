@@ -12,11 +12,11 @@ public class DeathPinballMachine : MonoBehaviour {
 
 	void Start () {
         StartCoroutine(spawnPinball());
-	}
+    }
 	
     IEnumerator spawnPinball() {
         while (true) {
-            yield return new WaitForSeconds(interval);
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(interval);
             Instantiate(deathPinball, spawnPoint.position, Quaternion.identity);
         }
     }

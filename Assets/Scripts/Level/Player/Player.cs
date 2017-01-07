@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class Player : MonoBehaviour, ISmashable {
     /*Reference to objects in scene*/
@@ -26,23 +27,32 @@ public class Player : MonoBehaviour, ISmashable {
     GameObject forceField;
     [SerializeField]
     GameObject chargeIndicator;
-    
+    [SerializeField]
+    GameObject explosionRing;
+
     public GameObject cannonPosition;
-
-    public PlayerData data;
-
+    [HideInInspector]
+    public PlayerData data; //playerdata to be modified by other classes
+    public PlayerData originalData;
+    public PlayerInstance instance;
     public Color color;
+    public string playername;
     public bool isTriangle;
     
     #region EVENTS
-    public delegate void DeathDelegate();
-    public event DeathDelegate death_event,
-                            bomb_event;
+    public delegate void VoidDelegate();
+    public event VoidDelegate death_event,
+                            bomb_event,
+                            victory_event;
+    public delegate void IdentifiedVoidDelegate(PlayerInstance instance);
+    public event IdentifiedVoidDelegate id_death_event;
     public delegate void BombTriangleEvent(Vector3 bomb_position);
     public event BombTriangleEvent bomb_triangle_event;
     public delegate void ItemDelegate(ItemData item_data);
     public event ItemDelegate get_item_event, 
                             use_item_event;    
+    public delegate void ChargeDelegate(int currentCharge);
+    public event ChargeDelegate charge_event;
     #endregion
 
     Rigidbody2D rb;
@@ -50,6 +60,7 @@ public class Player : MonoBehaviour, ISmashable {
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
+    TrailRenderer trenderer;
 
     /*Reset variables*/
     Color border_color;
@@ -67,11 +78,12 @@ public class Player : MonoBehaviour, ISmashable {
     public int ID = -1;
     public string joystick;
     ItemData currentItem;
-    public float tackleBuildup;
+    public float chargeBuildup;
     Vector3 lastVelocity;
     bool invincible = false,
         is_dead = false,
         almostExploding = false;
+    public bool is_on_ground = false;
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -82,7 +94,9 @@ public class Player : MonoBehaviour, ISmashable {
         this.ID = instance.playerID;
         this.joystick = instance.joystick;
         this.color = instance.color;
-        startColors();
+        this.playername = instance.name;
+        this.instance = instance;
+        reset_colors();
     }
 
     void Start() {
@@ -92,18 +106,21 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
+        trenderer = GetComponent<TrailRenderer>();
 
         /*Init functions*/
         createJoystickInput();
         changeSprite(circleBorder, circleBackground);
         toggleTriangleDetection(false);
-        resetTackle();
+        reset_charge();
         StartCoroutine(handleAlmostMaxSize());
         StartCoroutine(grow());
+        initPlayerData();
     }
 
     void FixedUpdate() {
-        manageTackle();
+        //checkGround();
+        manage_charge();
         updateLastVelocity();
     }
 
@@ -111,12 +128,16 @@ public class Player : MonoBehaviour, ISmashable {
         //DEBUG
         forceField.SetActive(false);
 
-
         handleInput();
+    }
+
+    void initPlayerData() {
+        data = (PlayerData) Instantiate(originalData);
     }
 
     #region Spritefest
     void changeSprite(Sprite border, Sprite background) {
+        explosionRing.GetComponent<SpriteRenderer>().sprite = border;
         GetComponent<SpriteRenderer>().sprite = border;
         spriteBackground.GetComponent<SpriteRenderer>().sprite = background;
     }
@@ -150,13 +171,13 @@ public class Player : MonoBehaviour, ISmashable {
         if (Input.GetButtonDown(jsJump))
             jump();
         if (Input.GetButtonDown(jsFire1))
-            resetTackle();
+            reset_charge();
         if (Input.GetButton(jsFire1))
-            increaseTackleBuildup();
+            increaseChargeBuildup();
         if (Input.GetButtonUp(jsFire1) && Input.GetButton(jsJump))
-            releaseTackle(1.5f);
+            release_charge(1.5f);
         else if (Input.GetButtonUp(jsFire1))
-            releaseTackle(1f);
+            release_charge(1f);
         if (Input.GetButtonDown(jsFire2))
             useItem(currentItem);
     }
@@ -169,6 +190,10 @@ public class Player : MonoBehaviour, ISmashable {
     void move(float movement) {
         if (blockInput) return;
         rb.velocity += new Vector2(movement, 0);
+    }
+
+    public void toggle_block_all_input(bool value) {
+        blockInput = value;
     }
     #endregion
 
@@ -214,10 +239,10 @@ public class Player : MonoBehaviour, ISmashable {
                 getItem(target.gameObject.GetComponent<Item>());
                 break;
             case "Nebula":
-                changeSize(0.005f + 0.01f * tackleBuildup / 100f);
+                changeSize(0.005f + 0.01f * chargeBuildup / 100f);
                 break;
             case "Inverse Nebula":
-                changeSize(-0.005f - 0.01f * tackleBuildup / 100f);
+                changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
                 break;
         }
     }
@@ -253,13 +278,23 @@ public class Player : MonoBehaviour, ISmashable {
         invincible = false;
     }
 
+    void checkGround() {
+        Vector2 start = new Vector2(transform.position.x,
+                                    transform.position.y - transform.localScale.x / 2f);
+
+        is_on_ground = Physics2D.Raycast(start,
+                                        Vector3.down * 0.2f,
+                                        0.2f,
+                                        1 << LayerMask.NameToLayer("CommonTerrain"));
+    }
+
     void updateLastVelocity() {
         lastVelocity.z = lastVelocity.y;
         lastVelocity.y = lastVelocity.x;
         lastVelocity.x = rb.velocity.magnitude;
     }
 
-    float velocityHitMagnitude() {
+    public float velocityHitMagnitude() {
         float aux = lastVelocity.x;
         if (lastVelocity.y > aux) aux = lastVelocity.y;
         if (lastVelocity.z > aux) aux = lastVelocity.z;
@@ -269,6 +304,12 @@ public class Player : MonoBehaviour, ISmashable {
 
     void killPlayer() {
         if (is_dead) return;
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length == 2) {
+            //this will be the last player to die
+            StartCoroutine(slowmo(2.0f));
+        }
         
         anim.enabled = true;
         circleCollider.enabled = false;
@@ -277,17 +318,27 @@ public class Player : MonoBehaviour, ISmashable {
         is_dead = true;
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
 
-        death_event();
+        if (death_event != null) death_event();
+        if (id_death_event != null) id_death_event(instance);
         anim.SetTrigger("explode");
     }
 
-    void swallowPlayer(Player enemy) {
-        changeSize(enemy.transform.localScale.x / 2f);
-        enemy.swallowed();
-    }
+    static IEnumerator slowmo(float duration) {
+        float timescale = 1f;
+        float slow = 0.2f;
 
-    void swallowed() {
-        this.killPlayer();
+        Time.timeScale = slow;
+        yield return new WaitForSeconds(duration * slow);
+
+        int aux = 20;
+        for (int i = 0; i < aux; i++) {
+            if (Time.timeScale < timescale) {
+                Time.timeScale += (timescale - slow) / aux;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        
+        Time.timeScale = timescale;
     }
 
     bool isLookingAtObject(Transform target) {
@@ -305,11 +356,15 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region Colors
-    void startColors() {
+    void reset_colors() {
         border_color = Color.black;
         spriteBackground.GetComponent<SpriteRenderer>().color = color;
         forceField.GetComponent<SpriteRenderer>().color = color;
         this.GetComponent<SpriteRenderer>().color = border_color;
+        reset_charge_indicator();    
+    }
+
+    void reset_charge_indicator() {
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
     }
     #endregion
@@ -324,13 +379,13 @@ public class Player : MonoBehaviour, ISmashable {
 
         /*'Spurts' Growth */
         while (true) {
-            yield return new WaitForSeconds(data.timeBetweenSpurts);
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.timeBetweenSpurts);
             if (!blockGrowth) changeSize(data.timeSizeIncrement);
         }
     }
 
-    void changeSize(float sizeIncrement) {
-        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement);
+    public void changeSize(float sizeIncrement) {
+        this.transform.localScale += new Vector3(sizeIncrement, sizeIncrement, sizeIncrement);
         checkSize();
     }
 
@@ -340,9 +395,11 @@ public class Player : MonoBehaviour, ISmashable {
 
         if (this.transform.localScale.x > data.maxSize)
             killPlayer();
-        if (this.transform.localScale.x < data.minSize)
+        if (this.transform.localScale.x < data.minSize) {
             /*this.transform.localScale = new Vector2(minSize, minSize);*/
-            killPlayer();
+            Debug.Log(playername + " is too small.");
+            // killPlayer();
+        }
     }
 
     IEnumerator handleAlmostMaxSize() {
@@ -375,9 +432,9 @@ public class Player : MonoBehaviour, ISmashable {
     }
     #endregion
 
-    #region Tackle Bell
-    public void resetTackle() {
-        tackleBuildup = 0f;
+    #region Charge Bell
+    public void reset_charge() {
+        chargeBuildup = 0f;
         rb.mass = data.mass;
     }
 
@@ -385,21 +442,38 @@ public class Player : MonoBehaviour, ISmashable {
         chargeIndicator.SetActive(value);
     }
 
-    void increaseTackleBuildup() {
+    void increaseChargeBuildup() {
         if (blockCharge) return;
-        tackleBuildup += 1f;
+        chargeBuildup += 1f;
     }
 
     float white = 0;
     bool whiteOut = false;
 
-    void manageTackle() {
+    Coroutine pulse;
+    void manage_charge() {
+        if (charge_event != null) {
+            charge_event((int) chargeBuildup);
+        }
+        
         if (blockCharge) return;
 
-        if (tackleBuildup >= data.maxTackleBuildup)
-            tackleBuildup = data.maxTackleBuildup;
+        if (chargeBuildup >= data.maxChargeBuildup) {
+            chargeBuildup = data.maxChargeBuildup;
+            if (pulse == null) {
+                //pulse = StartCoroutine(pulsate_charge());
+            }
+            return;
+        }
+        else {
+            if (pulse != null) {
+                reset_charge_indicator();
+                StopCoroutine(pulse);
+                pulse = null;
+            }
+        }
 
-        float perc = tackleBuildup / data.maxTackleBuildup;
+        float perc = chargeBuildup / data.maxChargeBuildup;
         perc /= 1f;
 
         //if (originalColor.r >= originalColor.g && originalColor.r >= originalColor.b)
@@ -421,15 +495,59 @@ public class Player : MonoBehaviour, ISmashable {
         Color aux = chargeIndicator.GetComponent<SpriteRenderer>().color;
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, multiplier);
 
-        rb.mass = data.mass + data.tackleWeight * perc;
+        rb.mass = data.mass + data.chargeWeight * perc;
     }
 
-    void releaseTackle(float power) {
-        float perc = tackleBuildup / data.maxTackleBuildup;
-        Vector2 direction = this.transform.up * data.tackleForce * perc * power;
+    IEnumerator pulsate_charge() {
+        Vector3 initial = chargeIndicator.transform.localScale;
+        Color initial_color = chargeIndicator.GetComponent<SpriteRenderer>().color;
+        int i = 0;
+        while (true) {
+            Vector3 vec = initial;
+
+            float multiplier = (- Mathf.Cos((i/20f * Mathf.PI) / 2) + 1) / 8f;
+            Color col = Color.Lerp(initial_color,
+                                    Color.white, 
+                                    (- Mathf.Cos((i/5f * Mathf.PI) / 2) + 1) / 4f);
+
+            vec += new Vector3(multiplier, multiplier, multiplier);
+
+            chargeIndicator.GetComponent<SpriteRenderer>().color = col;
+            chargeIndicator.transform.localScale = vec;
+            i++;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void release_charge(float power) {
+        float perc = chargeBuildup / data.maxChargeBuildup;
+        Vector2 direction = this.transform.up * data.chargeForce * perc * power;
         rb.velocity += direction;
         //rb.velocity += new Vector2(Mathf.Sign(rb.velocity.x) * 10f, 0);
-        resetTackle();
+        reset_charge();
+    }
+    #endregion
+
+    #region Pause
+    bool saveBlockInput, saveBlockCharge, saveBlockGrowth;
+
+    public void OnPause() {
+        saveBlockInput = blockInput;
+        saveBlockCharge = blockCharge;        
+        saveBlockGrowth = blockGrowth;
+        
+        blockInput = true;
+        blockCharge = true;
+        blockGrowth = true;
+    }
+
+    public void OnUnPause() {
+        blockInput = saveBlockInput;
+        blockCharge = saveBlockCharge;
+        blockGrowth = saveBlockGrowth;
+        
+        if (Input.GetButtonUp(jsFire1))
+            release_charge(1f);
     }
     #endregion
 
@@ -484,10 +602,6 @@ public class Player : MonoBehaviour, ISmashable {
         currentItem = null;
     }
 
-    void useHerbalife() {
-        transform.localScale = data.scale;
-    }
-
     public void toggleTriangle(bool value) {
         if (value)
             changeSprite(triangleBorder, triangleBackground);
@@ -502,44 +616,59 @@ public class Player : MonoBehaviour, ISmashable {
         toggleChargeIndicator(!value);
         toggleTriangleDetection(value);
         circleCollider.enabled = !value;
+        trenderer.enabled = !value;
         triangleCollider.enabled = value;
-        resetTackle();
+        reset_charge();
     }
 
-    IEnumerator useGhostPotion(float duration) {
-        circleCollider.enabled = false;
-        triangleCollider.enabled = false;
-        toggleStuckDetection(false);
-        toggleChargeIndicator(false);
-        blockCharge = true;
-        blockGrowth = true;
-        resetTackle();
-
-        Color transparent = HushPuppy.getColorWithOpacity(spriteBackground.GetComponent<SpriteRenderer>().color, 0.5f);
-        spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
-
-        yield return new WaitForSeconds(duration * 3 / 5);
-        Coroutine cr = StartCoroutine(useGhostPotion_blink(color, transparent));
-        yield return new WaitForSeconds(duration * 2 / 5);
-        StopCoroutine(cr);
-
-        spriteBackground.GetComponent<SpriteRenderer>().color = color;
-
-        circleCollider.enabled = true;
-        toggleCircleDetection(true);
-        toggleChargeIndicator(true);
-        blockCharge = false;
-        blockGrowth = false;
+    public void toggle_colliders(bool value) {
+        if (isTriangle && value == true) {
+            circleCollider.enabled = false;
+            triangleCollider.enabled = true;
+        }
+        else if (!isTriangle && value == true) {
+            circleCollider.enabled = true;
+            triangleCollider.enabled = false;
+        }
+        else if (value == false) { // value == false
+            circleCollider.enabled = false;
+            triangleCollider.enabled = false;
+        }
+        
+        toggleStuckDetection(value);
+        toggleChargeIndicator(value);
+        blockCharge = !value;
+        blockGrowth = !value;
+        reset_charge();
     }
 
-    IEnumerator useGhostPotion_blink(Color original, Color transparent) {
+    public IEnumerator start_blink() {
+        Color original = color;
+        Color original_border = this.GetComponent<SpriteRenderer>().color;
+        Color transparent = HushPuppy.getColorWithOpacity(color, 0.5f);
+        Color border_transparent = HushPuppy.getColorWithOpacity(original_border, 0.5f);
+
         bool toggle = true;
         while (true) {
             toggle = !toggle;
-            if (toggle) spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
-            else spriteBackground.GetComponent<SpriteRenderer>().color = original;
+            if (toggle) { 
+                spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
+                this.GetComponent<SpriteRenderer>().color = border_transparent; 
+            }
+            else {
+                spriteBackground.GetComponent<SpriteRenderer>().color = original;
+                this.GetComponent<SpriteRenderer>().color = original_border;
+            }
             for (int i = 0; i < 5; i++)
                 yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
+
+    #region victory_event
+    public void get_victory() {
+        if (victory_event != null) {
+            victory_event();
         }
     }
     #endregion

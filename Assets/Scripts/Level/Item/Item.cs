@@ -19,6 +19,7 @@ public class Item : MonoBehaviour {
 
     Transform box1, box2;
     ItemSpawner itemSpawner;
+    Animator animator;
 
     public void setItem(ItemSpawner itemSpawner, ItemData itemData) {
         this.itemSpawner = itemSpawner;
@@ -28,7 +29,11 @@ public class Item : MonoBehaviour {
     }
 
     void Start() {
-        if (itemSpawner == null) itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
+        if (itemSpawner == null) {
+            itemSpawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
+        }
+
+        animator = this.GetComponent<Animator>();
     }
 
     void Update() {
@@ -49,6 +54,12 @@ public class Item : MonoBehaviour {
 
     public void destroy() {
         itemSpawner.setItemInGame(false);
+        animator.SetTrigger("destroy");
+        this.GetComponentInChildren<BoxCollider2D>().enabled = false;
+        // Destroy(this.gameObject);
+    }
+
+    public void AnimDestroy() {
         Destroy(this.gameObject);
     }
 

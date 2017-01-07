@@ -49,10 +49,33 @@ static class HushPuppy {
 
     //Static methods that should exist in unity
     #region Unity Methods
+	public static void BroadcastAll(string fun, System.Object msg) {
+		GameObject[] gos = (GameObject[]) GameObject.FindObjectsOfType(typeof(GameObject));
+		foreach (GameObject go in gos) {
+			if (go && go.transform.parent == null) {
+				go.gameObject.BroadcastMessage(fun, msg, SendMessageOptions.DontRequireReceiver);
+			}
+    	}
+	}
+	
+    public static void BroadcastAll(string fun) {
+		GameObject[] gos = (GameObject[]) GameObject.FindObjectsOfType(typeof(GameObject));
+		foreach (GameObject go in gos) {
+			if (go && go.transform.parent == null) {
+				go.gameObject.BroadcastMessage(fun, SendMessageOptions.DontRequireReceiver);
+			}
+    	}
+	}
 
     public static void destroyChildren(GameObject go) {
         foreach (Transform child in go.transform)
             GameObject.Destroy(child.gameObject);
+    }
+
+    public static IEnumerator WaitForEndOfFrames(int frames) {
+        for (int i = 0; i < frames; i++) {
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public static void switchVisibilityOfChildren(GameObject g, bool active) {

@@ -19,6 +19,9 @@ TagManager:
   - Charger
   - Inverse Nebula
   - BombExplosion
+  - PauseMenu
+  - Soccerball
+  - FakePlayer
   layers:
   - Default
   - TransparentFX

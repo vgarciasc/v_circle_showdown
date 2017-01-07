@@ -45,20 +45,30 @@ public class PlayerUIStatus : MonoBehaviour {
 
         this.GetComponentsInChildren<Text>()[0].text = playerName.ToString();
         this.GetComponentsInChildren<Image>()[1].color = playerColor;
-        if (pdatabase != null) setVictories(playerID);
+        if (pdatabase != null) setVictories();
     }
 
     #region Victories
-    void setVictories(int playerID) {
+    void setVictories() {
         for (int i = 0; i < vmanager.get_victories_needed(); i++) {
             GameObject aux = (GameObject) Instantiate(victoryIcon, victoriesContainer, false);
             if (vmanager.get_player_victories(playerID) > i) {
                 aux.GetComponent<Image>().color = playerColor;
             }
             else {
-                aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.5f);
+                aux.GetComponent<Image>().color = HushPuppy.getColorWithOpacity(aux.GetComponent<Image>().color, 0.7f);
             }
         }
+    }
+
+    public void get_victory() { StartCoroutine(get_victory_()); }
+    IEnumerator get_victory_() {
+        animator.SetTrigger("popup");
+        yield return new WaitForSeconds(0.5f);
+
+        GameObject victory_icon = victoriesContainer.GetChild(vmanager.get_player_victories(playerID)).gameObject;
+        victory_icon.GetComponent<Image>().color = playerColor;
+        victory_icon.GetComponent<Animator>().SetTrigger("show");
     }
     #endregion
 

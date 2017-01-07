@@ -13,8 +13,7 @@ public class PlayerDatabase : MonoBehaviour {
     public List<PlayerInstance> players = new List<PlayerInstance>();
     List<string> joystick_names = new List<string>();
 
-    [SerializeField] 
-    List<Color> original_color_pool = new List<Color>();
+    public List<Color> original_color_pool = new List<Color>();
     List<Color> current_color_pool = new List<Color>();
 
     [SerializeField]
@@ -67,7 +66,7 @@ public class PlayerDatabase : MonoBehaviour {
             if (Input.GetButtonDown("Fire1_J" + i.ToString()) && !joysticks_ingame.Contains(i)) {
                 //player joins the game
 
-                string generated_ID_name = "Player #" + Random.Range(0, 200);
+                string generated_ID_name = generate_name();
                 PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
                                                 i,
                                                 currentID,
@@ -85,12 +84,16 @@ public class PlayerDatabase : MonoBehaviour {
                 currentID++;
 
             } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
-                //get another color
+                //get another color and name
                 int player_ID = get_player_entry_ID(i);
                 Color aux = get_another_random_color(players[player_ID].color);
+                string new_name = generate_name();
                 players[player_ID].color = aux;
+                players[player_ID].name = new_name;
+                
                 spawner.setPlayer(player_ID, players[player_ID]);
-
+                playerTexts.GetChild(player_ID).GetComponentInChildren<Text>().text = new_name + " has entered the game." +
+                "\n <color=grey> (" + joystick_names[i] + ") </color>";
             } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
                 //player is ready
                 int player_ID = get_player_entry_ID(i);
@@ -101,8 +104,8 @@ public class PlayerDatabase : MonoBehaviour {
 
     int ready = 0;
     void toggleReady(int player_ID) {
-        bool value = playerTexts.GetChild(player_ID).GetChild(2).gameObject.activeSelf;
-        playerTexts.GetChild(player_ID).GetChild(2).gameObject.SetActive(!value);
+        bool value = playerTexts.GetChild(player_ID).GetChild(3).gameObject.activeSelf;
+        playerTexts.GetChild(player_ID).GetChild(3).gameObject.SetActive(!value);
 
         if (value) ready--;
         else ready++;
@@ -145,5 +148,31 @@ public class PlayerDatabase : MonoBehaviour {
     }
 
     #endregion
+    #endregion
+
+    #region names
+    string generate_name() {
+         return "Player #" + Random.Range(0, 500);
+    }
+
+    public void generate_new_names() {
+        for (int i = 0; i < players.Count; i++) {
+            players[i].name = generate_name();
+        }
+    }
+    #endregion
+
+    #region player database access
+    public Player get_player_by_ID(int ID) {
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+            Player player = (Player) HushPuppy.safeComponent(go, "Player");
+            if (player.ID == ID) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
     #endregion
 }

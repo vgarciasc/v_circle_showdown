@@ -40,11 +40,12 @@ public class Player : MonoBehaviour, ISmashable {
     public bool isTriangle;
     
     #region EVENTS
-    public delegate void DeathDelegate();
-    public event DeathDelegate death_event,
-                            bomb_event;
-    public delegate void IdentifiedDeathDelegate(PlayerInstance instance);
-    public event IdentifiedDeathDelegate id_death_event;
+    public delegate void VoidDelegate();
+    public event VoidDelegate death_event,
+                            bomb_event,
+                            victory_event;
+    public delegate void IdentifiedVoidDelegate(PlayerInstance instance);
+    public event IdentifiedVoidDelegate id_death_event;
     public delegate void BombTriangleEvent(Vector3 bomb_position);
     public event BombTriangleEvent bomb_triangle_event;
     public delegate void ItemDelegate(ItemData item_data);
@@ -322,7 +323,7 @@ public class Player : MonoBehaviour, ISmashable {
         anim.SetTrigger("explode");
     }
 
-    IEnumerator slowmo(float duration) {
+    static IEnumerator slowmo(float duration) {
         float timescale = 1f;
         float slow = 0.2f;
 
@@ -331,7 +332,9 @@ public class Player : MonoBehaviour, ISmashable {
 
         int aux = 20;
         for (int i = 0; i < aux; i++) {
-            Time.timeScale += (timescale - slow) / aux;
+            if (Time.timeScale < timescale) {
+                Time.timeScale += (timescale - slow) / aux;
+            }
             yield return new WaitForEndOfFrame();
         }
         
@@ -658,6 +661,14 @@ public class Player : MonoBehaviour, ISmashable {
             }
             for (int i = 0; i < 5; i++)
                 yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
+
+    #region victory_event
+    public void get_victory() {
+        if (victory_event != null) {
+            victory_event();
         }
     }
     #endregion

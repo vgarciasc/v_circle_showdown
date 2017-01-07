@@ -23,8 +23,11 @@ public class GameOver : MonoBehaviour {
     GameObject press_start;
     [SerializeField]
     GameOverWinnerStats gowstats; 
+    [SerializeField]
+    ParticleSystem confetti;
 
     bool can_end_scene = false; 
+    PlayerInstance player_winner;
 
     void Start () {
         vmanager = VictoriesManager.getVictoriesManager();
@@ -42,19 +45,18 @@ public class GameOver : MonoBehaviour {
 	
     bool end_scene_called = false;
 	void Update () {
-		for (int i = 0; i < 4; i++) {
-			if (Input.GetButtonDown("Submit_J" + i)) {
-                if (!end_scene_called && can_end_scene) {
-                    end_scene_called = true;
-                    StartCoroutine(end_scene());
-                }
-			}
-		}
+        if (player_winner != null && 
+            Input.GetButtonDown("Submit_J" + player_winner.joystickNum)) {
+            if (!end_scene_called && can_end_scene) {
+                end_scene_called = true;
+                StartCoroutine(end_scene());
+            }
+        }
 	}
 
     bool can_spawn_next_stats = true;
     IEnumerator set_win(int winner_ID) {
-        PlayerInstance player_winner = pdatabase.players[winner_ID];
+        player_winner = pdatabase.players[winner_ID];
         player_winner_surrogate.setPlayer(player_winner);
         player_winner_surrogate.gameObject.SetActive(true);
 
@@ -93,9 +95,13 @@ public class GameOver : MonoBehaviour {
     }
 
     IEnumerator end_scene() {
+        if (confetti.isPlaying) {
+            confetti.Stop();
+        }
+
         press_start.SetActive(false);
         smash_platform.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        yield return new WaitForSeconds(2.0f);
-        SceneLoader.getSceneLoader().LoadScene("LevelSelect");
+        yield return new WaitForSeconds(4.0f);
+        SceneLoader.getSceneLoader().GameOverLevelSelect();
     }
 }

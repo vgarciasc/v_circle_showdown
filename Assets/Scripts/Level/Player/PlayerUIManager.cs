@@ -25,6 +25,7 @@ public class PlayerUIManager : MonoBehaviour {
 		player.death_event += on_player_death;
 		player.get_item_event += on_item_get;
 		player.use_item_event += on_item_use;
+		player.victory_event += get_victory;
 		startUI();
 	}
 
@@ -90,5 +91,9 @@ public class PlayerUIManager : MonoBehaviour {
 
 			yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
 		}
+	}
+
+	void get_victory() {
+		status.get_victory();
 	}
 }

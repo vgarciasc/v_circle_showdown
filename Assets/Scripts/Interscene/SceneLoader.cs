@@ -33,4 +33,9 @@ public class SceneLoader : MonoBehaviour {
         SceneManager.LoadScene("LevelSelect");
         VictoriesManager.getVictoriesManager().reset_victories();
     }
+
+    public void GameOverLevelSelect() {
+        PlayerDatabase.getPlayerDatabase().generate_new_names();
+        LevelSelect();
+    }
 }

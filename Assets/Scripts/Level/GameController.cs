@@ -27,7 +27,15 @@ public class GameController : MonoBehaviour {
     public void checkGameOver() { StartCoroutine(checkGameOver_()); }
     IEnumerator checkGameOver_() {
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
-        get_next_scene(vmanager.get_match_winner());
+        int match_winner = vmanager.get_match_winner();
+        if (match_winner != -1) {
+            Player winning_player = pdatabase.get_player_by_ID(match_winner);
+            winning_player.get_victory();
+
+            yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
+        }
+
+        get_next_scene(match_winner);
     }
 
     void get_next_scene(int match_winner) {

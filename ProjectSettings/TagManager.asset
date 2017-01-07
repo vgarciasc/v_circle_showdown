@@ -21,6 +21,7 @@ TagManager:
   - BombExplosion
   - PauseMenu
   - Soccerball
+  - FakePlayer
   layers:
   - Default
   - TransparentFX

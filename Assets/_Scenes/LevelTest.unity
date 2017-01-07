@@ -1726,65 +1726,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011707734896, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: playerPrefab
-      value: 
-      objectReference: {fileID: 1000014042269632, guid: e46618075af821c4a88524598abc2754,
-        type: 2}
-    - target: {fileID: 4000010221766498, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 8.54
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000010221766498, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -8.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: itemSpawnInterval
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[3].color.r
-      value: 0.41911763
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[3].color.g
-      value: 0.343923
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[3].color.b
-      value: 0.23113105
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[4].color.r
-      value: 0.8313726
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[4].color.g
-      value: 0.7254902
-      objectReference: {fileID: 0}
-    - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: colors.Array.data[4].color.b
-      value: 0.45882356
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: levelItems.Array.data[0].probability
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000014119894334, guid: df92dd8f690042449a77daa2ec7ea7b8,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -290.73
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}
   m_IsPrefabParent: 0
@@ -1801,7 +1742,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -4.946597
+      value: -5.08
       objectReference: {fileID: 0}
     - target: {fileID: 4000013999159758, guid: 663d239c849a0a04da7709406d47f008, type: 2}
       propertyPath: m_LocalPosition.z

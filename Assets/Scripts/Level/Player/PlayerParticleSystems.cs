@@ -15,6 +15,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	TrailRenderer tr;
 
 	public float trail_length_modifier = 1f;
+	bool heal_tr_bug = false;
 
 	void Start() {
 		player = (Player) HushPuppy.safeComponent(this.gameObject, "Player");
@@ -37,6 +38,10 @@ public class PlayerParticleSystems : MonoBehaviour {
 	float min;
 
 	void Update() {
+		if (heal_tr_bug) {
+			tr.enabled = true;
+			heal_tr_bug = false;
+		}
 		set_trail_renderer_width();
 		float aux = Mathf.Abs(trail_length_modifier * player.GetComponent<Rigidbody2D>().velocity.magnitude) / 200;
 		tr.time = Mathf.Pow(aux, 2);
@@ -45,14 +50,10 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void death() {
-        float scale = this.transform.localScale.x * 0.15f + 0.15f;
-        explosion.gameObject.transform.localScale = new Vector3(scale, scale, scale);
         explosion.gameObject.SetActive(true);
 	}
 
 	void heal_explosion_start() {
-        float scale = this.transform.localScale.x * 0.15f + 0.15f;
-        heal.gameObject.transform.localScale = new Vector3(scale, scale, scale);
         heal.gameObject.SetActive(true);
 	}
 
@@ -64,10 +65,8 @@ public class PlayerParticleSystems : MonoBehaviour {
         heal.gameObject.SetActive(false);
 
 		//bug da unity?
-		set_trail_renderer_width();
-		tr.time = 5;
-		tr.time = 0;	
-		set_trail_renderer_width();
+		tr.enabled = false;
+		heal_tr_bug = true;
 	}
 
 	#region charge

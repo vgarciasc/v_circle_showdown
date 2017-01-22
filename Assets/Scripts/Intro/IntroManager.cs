@@ -19,7 +19,7 @@ public class IntroManager : MonoBehaviour {
 	void Start () {
 		text.Add("congratulations.");
 		text.Add("you have been diagnosed with the Mad Circle disease.");
-		text.Add("per the Great Circle King's orders, you will be sent to confinement.");
+		text.Add("as the Circle King commanded, you have been sentenced to confinement.");
 		text.Add("eliminate your friends and make this easier for us.");
 
 		StartCoroutine(start_text());
@@ -42,6 +42,11 @@ public class IntroManager : MonoBehaviour {
 	}
 
 	IEnumerator start_text() {
+		blackscreen.enabled = true;
+		yield return new WaitForSeconds(0.5f);
+		HushPuppy.fadeImgOut(blackscreen.gameObject, 1f);
+		yield return new WaitForSeconds(1.5f);
+
 		Coroutine display;
 
 		for (int i = 0; i < text.Count; i++) {

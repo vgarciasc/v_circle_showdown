@@ -31,7 +31,7 @@ public class PlayerSpawner : MonoBehaviour {
     public void spawnAllPlayers() {
         for (int i = 0; i < playerDatabase.players.Count; i++) {
             spawnPlayer(playerDatabase.players[i],
-                        playerSpawnLocations.getLocationByIndex(i));
+                        playerSpawnLocations.getRandomUnusedLocation());
         }
     }
 
@@ -58,7 +58,9 @@ public class PlayerSpawner : MonoBehaviour {
     void startDefaultGame() {
         PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", Color.grey);
         PlayerInstance aux2 = new PlayerInstance("_J1", 1, 1, "rasputin", Color.white);
-        spawnPlayer(aux, playerSpawnLocations.getDefaultLocation());
-        spawnPlayer(aux2, playerSpawnLocations.getDefaultLocation());
+        PlayerInstance aux3 = new PlayerInstance("_J2", 2, 2, "destructor", Color.magenta);
+        spawnPlayer(aux, playerSpawnLocations.getRandomUnusedLocation());
+        spawnPlayer(aux2, playerSpawnLocations.getRandomUnusedLocation());
+        spawnPlayer(aux3, playerSpawnLocations.getRandomUnusedLocation());
     }
 }

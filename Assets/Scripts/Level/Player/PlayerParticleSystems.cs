@@ -25,6 +25,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 
 		player.death_event += death;
 		player.charge_event += chargeParticles;
+		player.visible_event += toggle_visible;
 		item_user.healStart += heal_explosion_start;
 		item_user.healEnd += heal_explosion_end;
 		
@@ -32,11 +33,9 @@ public class PlayerParticleSystems : MonoBehaviour {
 		full_charge.startColor = player.color - new Color(0.15f, 0.15f, 0.15f);
 		full_charge.startColor = HushPuppy.getColorWithOpacity(full_charge.startColor, 0.3f);
 		init_trail_renderer_color(player.color);
+		tr.enabled = false;
 	}
 	
-	float max;
-	float min;
-
 	void Update() {
 		if (heal_tr_bug) {
 			tr.enabled = true;
@@ -105,5 +104,10 @@ public class PlayerParticleSystems : MonoBehaviour {
 	void set_trail_renderer_width() {
 		tr.startWidth = player.transform.localScale.x - 0.2f;
 		tr.endWidth = player.transform.localScale.x - 0.6f;
+	}
+
+	//save last state of trail renderer
+	void toggle_visible(bool value) {
+		tr.enabled = value;
 	}
 }

@@ -80,14 +80,16 @@ public class PlayerUIManager : MonoBehaviour {
 		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
 		float timeLeft = player.originalData.maxSecondsOutOfScreen;
 		while (SceneManager.GetActiveScene().name != "GameOver") {
-			if (this.GetComponent<SpriteRenderer>().isVisible) {
-				timeLeft = player.originalData.maxSecondsOutOfScreen;
-				status.setTime(false);
-			} else {
-				status.setTime(timeLeft--);
-			}
+			if (player.should_be_visible) {
+				if (this.GetComponent<SpriteRenderer>().isVisible) {
+					timeLeft = player.originalData.maxSecondsOutOfScreen;
+					status.setTime(false);
+				} else {
+					status.setTime(timeLeft--);
+				}
 
-			if (timeLeft < 0) player.timeOut();
+				if (timeLeft < 0) player.timeOut();
+			}
 
 			yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1f);
 		}

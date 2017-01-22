@@ -34,8 +34,7 @@ public class GameController : MonoBehaviour {
 
             yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
         }
-
-        get_next_scene(match_winner);
+            get_next_scene(match_winner);
     }
 
     void get_next_scene(int match_winner) {

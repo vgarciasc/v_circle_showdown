@@ -63,7 +63,7 @@ public class GameOver : MonoBehaviour {
         player_congratulations.text = player_winner.name.ToUpper() + 
                                       " \"WON THE GAME\".";
         
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
 
         // playerSprite.color = player_winner.color;
         // vmanager.reset_victories();

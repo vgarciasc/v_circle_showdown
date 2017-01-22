@@ -72,6 +72,7 @@ public class PlayerItemUser : MonoBehaviour {
         Coroutine blink = StartCoroutine(player.start_blink());
 		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
         StopCoroutine(blink);
+        player.end_blink();
         player.toggleTriangle(false);
     }
 

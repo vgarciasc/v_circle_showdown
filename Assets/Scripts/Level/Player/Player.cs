@@ -44,6 +44,8 @@ public class Player : MonoBehaviour, ISmashable {
     public event VoidDelegate death_event,
                             bomb_event,
                             victory_event;
+    public delegate void VisibleDelegate(bool value);
+    public event VisibleDelegate visible_event;
     public delegate void IdentifiedVoidDelegate(PlayerInstance instance);
     public event IdentifiedVoidDelegate id_death_event;
     public delegate void BombTriangleEvent(Vector3 bomb_position);
@@ -83,7 +85,8 @@ public class Player : MonoBehaviour, ISmashable {
     bool invincible = false,
         is_dead = false,
         almostExploding = false;
-    public bool is_on_ground = false;
+    public bool is_on_ground = false,
+                should_be_visible = true;
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -193,6 +196,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     public void toggle_block_all_input(bool value) {
+        blockCharge = value;
         blockInput = value;
     }
     #endregion
@@ -366,6 +370,16 @@ public class Player : MonoBehaviour, ISmashable {
 
     void reset_charge_indicator() {
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
+    }
+
+    public void toggle_visibility(bool value) {
+        if (visible_event != null) {
+            visible_event(value);
+        }
+
+        should_be_visible = value;
+        this.GetComponent<SpriteRenderer>().enabled = value;
+        spriteBackground.GetComponent<SpriteRenderer>().enabled = value;
     }
     #endregion
 
@@ -662,6 +676,10 @@ public class Player : MonoBehaviour, ISmashable {
             for (int i = 0; i < 5; i++)
                 yield return new WaitForEndOfFrame();
         }
+    }
+
+    public void end_blink() {
+        reset_colors();
     }
     #endregion
 

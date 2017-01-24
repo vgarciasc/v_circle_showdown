@@ -28,17 +28,20 @@ public class GameController : MonoBehaviour {
     IEnumerator checkGameOver_() {
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
         int match_winner = vmanager.get_match_winner();
-        if (match_winner != -1) {
+        if (match_winner >= 0) {
             Player winning_player = pdatabase.get_player_by_ID(match_winner);
             winning_player.get_victory();
 
             yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
-        }
             get_next_scene(match_winner);
+        }
+        else if (match_winner == -2) { //empate
+            get_next_scene(match_winner);
+        }
     }
 
     void get_next_scene(int match_winner) {
-        if (match_winner == -1) { //empate
+        if (match_winner == -2) { //empate
             SceneLoader.getSceneLoader().ResetLevel();
             return;
         }

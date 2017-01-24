@@ -47,10 +47,10 @@ public class VictoriesManager : MonoBehaviour {
         if (go.Length == 1) { //apenas um jogador vivo (vitorioso)
             return go[0].GetComponent<Player>().ID;
         } else if (go.Length == 0) { //nenhum jogador vivo (empate)
-            return -1;
+            return -2;
         }
 
-		return -1; //-1 significa empate
+		return -1;
 	}
 
 	public int get_game_winner() {

@@ -33,6 +33,8 @@ public class PlayerSpawner : MonoBehaviour {
             spawnPlayer(playerDatabase.players[i],
                         playerSpawnLocations.getRandomUnusedLocation());
         }
+        // PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", Color.grey);
+        // spawnPlayer(aux, playerSpawnLocations.getRandomUnusedLocation());
     }
 
     public Player spawnPlayer(PlayerInstance data, Vector3 location) {

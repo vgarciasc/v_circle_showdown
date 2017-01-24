@@ -29,6 +29,8 @@ public class Player : MonoBehaviour, ISmashable {
     GameObject chargeIndicator;
     [SerializeField]
     GameObject explosionRing;
+    [SerializeField]
+    GameObject aimbotTarget;
 
     public GameObject cannonPosition;
     [HideInInspector]
@@ -86,7 +88,8 @@ public class Player : MonoBehaviour, ISmashable {
         is_dead = false,
         almostExploding = false;
     public bool is_on_ground = false,
-                should_be_visible = true;
+                should_be_visible = true,
+                aimbot_active = false;
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -130,6 +133,7 @@ public class Player : MonoBehaviour, ISmashable {
     void Update() {
         //DEBUG
         forceField.SetActive(false);
+        aimbot();
 
         handleInput();
     }
@@ -205,7 +209,7 @@ public class Player : MonoBehaviour, ISmashable {
     public void OnCollisionEnter2D(Collision2D target) {
         if (target.gameObject.tag == "Spikes")
             hitSpikes();
-            
+
         if (target.gameObject.tag == "Charger")
             hitCharger(target.gameObject.GetComponent<Rigidbody2D>().velocity);
 
@@ -690,4 +694,48 @@ public class Player : MonoBehaviour, ISmashable {
         }
     }
     #endregion
+
+    #region aimbot
+    void aimbot() {
+        if (!aimbot_active) return;
+        int closest_player_index = -1;
+        Vector2 closest_player_distance = new Vector2(100, 100);
+
+        GameObject[] players = Player.getAllPlayers();
+        if (players.Length <= 1) return;
+
+        for (int i = 0; i < players.Length; i++) {
+            Vector2 aux = players[i].transform.position - this.transform.position;
+            if (aux.magnitude < closest_player_distance.magnitude &&
+                aux.magnitude != 0) { //careful, can target itself
+                closest_player_distance = aux;
+                closest_player_index = i;
+            }
+        }
+
+        players[closest_player_index].GetComponent<Player>().receive_aimbot(this);
+
+        for (int i = 0; i < players.Length; i++) {
+            if (i != closest_player_index) {
+                players[i].GetComponent<Player>().end_aimbot();
+            }
+        }
+
+        this.transform.up = closest_player_distance;
+    }
+
+    void receive_aimbot(Player targeter) {
+        aimbotTarget.SetActive(true);
+        aimbotTarget.transform.rotation = Quaternion.identity;
+        aimbotTarget.GetComponent<SpriteRenderer>().color = targeter.instance.color;
+    }
+
+    public void end_aimbot() {
+        aimbotTarget.SetActive(false);
+    }
+    #endregion
+
+    public static GameObject[] getAllPlayers() {
+        return GameObject.FindGameObjectsWithTag("Player");
+    }
 }

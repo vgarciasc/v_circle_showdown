@@ -5,7 +5,9 @@ using System.Collections;
 public class VictorySlider : MonoBehaviour {
     VictoriesManager vmanager;
     [SerializeField]
-    Text victoriesIndicator;
+    Text victoriesIndicatorNumber;
+    [SerializeField]
+    Text victoriesIndicatorText;
 
     void Awake() {
         vmanager = VictoriesManager.getVictoriesManager();
@@ -20,6 +22,12 @@ public class VictorySlider : MonoBehaviour {
     }
 
     void setText(int vic) {
-        victoriesIndicator.text = "vitórias necessárias: " + vic;
+        victoriesIndicatorNumber.text = vic.ToString();
+        if (vic > 1) {
+            victoriesIndicatorText.text = "ROUNDS";
+        }
+        else {
+            victoriesIndicatorText.text = "ROUND";
+        }
     }
 }

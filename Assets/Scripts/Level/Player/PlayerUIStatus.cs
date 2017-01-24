@@ -90,6 +90,9 @@ public class PlayerUIStatus : MonoBehaviour {
 
     #region Item Hsneanigans
     public void showItem(ItemData item) {
+        if (carriedItem.enabled) {
+            return;
+        }
         carriedItem.enabled = true;
         carriedItem.sprite = item.sprite;
         animator.SetTrigger("get_item");

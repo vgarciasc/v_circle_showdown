@@ -13,13 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxVelocity: 20
   maxSecondsOutOfScreen: 3
-  maxTackleBuildup: 100
-  tackleWeight: 0.5
-  maxSize: 7
+  maxChargeBuildup: 100
+  chargeWeight: 0.5
+  maxSize: 8
   minSize: 0.6
   mass: 0.5
   scale: {x: 1, y: 1, z: 1}
-  tackleForce: 80
+  chargeForce: 50
   jumpForce: 450
   speed: 0.3
   hitSizeIncrement: 0.2

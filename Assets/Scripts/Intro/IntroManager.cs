@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class IntroManager : MonoBehaviour {
 	public Text intro_text;
+	public Text skip_text;
 	public Image intro_image;
 	public Image blackscreen;
 	
@@ -14,7 +15,8 @@ public class IntroManager : MonoBehaviour {
 	List<string> text = new List<string>();
 	bool player_pressed = false,
 		end_text = false,
-		text_can_end = false;
+		text_can_end = false,
+		skip_pressed_one_time = false;
 
 	void Start () {
 		text.Add("congratulations.");
@@ -23,12 +25,19 @@ public class IntroManager : MonoBehaviour {
 		text.Add("eliminate your friends and make this easier for us.");
 
 		StartCoroutine(start_text());
+		skip_text.text = "press start to skip";
 	}
 	
 	void Update () {
 		for (int i = 0; i < 4; i++) {
 			if (Input.GetButtonDown("Submit_J" + i)) {
-				StartCoroutine(next_scene());
+				if (!skip_pressed_one_time) {
+					skip_pressed_one_time = true;
+					skip_text.text = "press start again to confirm";
+				}
+				else {
+					StartCoroutine(next_scene());
+				}
 			}
 			if (Input.GetButtonDown("Fire1_J" + i)) {
 				player_pressed = true;

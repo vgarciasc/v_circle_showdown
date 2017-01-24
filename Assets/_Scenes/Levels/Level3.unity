@@ -1877,7 +1877,7 @@ Prefab:
     - target: {fileID: 114000012129722050, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
       propertyPath: itemSpawnInterval
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114503151650999794, guid: df92dd8f690042449a77daa2ec7ea7b8,
         type: 2}
@@ -1928,6 +1928,86 @@ Prefab:
         type: 2}
       propertyPath: levelItems.Array.data[0].probability
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010041807320, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 6.0054383
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010041807320, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.5419664
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010041807320, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.134735
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010041807320, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.4536714
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013862204568, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.365046
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013862204568, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.4129476
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013862204568, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.2967348
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013862204568, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.4818737
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010728263600, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.371071
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010728263600, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.40888736
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010728263600, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: -8.129208
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010728263600, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.35684657
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010082625684, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 1.6455278
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010082625684, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.4623186
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010082625684, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.481976
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000010082625684, guid: df92dd8f690042449a77daa2ec7ea7b8,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.44873014
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: df92dd8f690042449a77daa2ec7ea7b8, type: 2}

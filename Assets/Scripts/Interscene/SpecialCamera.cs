@@ -67,12 +67,31 @@ public class SpecialCamera : MonoBehaviour {
 
         for (int i = 0; i < 10; i++) {
             yield return new WaitForEndOfFrame();
-            this.transform.localPosition = new Vector3(originalPos.x + Mathf.Pow(-1, Random.Range(0, 2)) * Random.Range(power / 4, power / 2),
-                                                       originalPos.y + Mathf.Pow(-1, Random.Range(0, 2)) * Random.Range(power / 4, power / 2),
+            float x = getScreenShakeDistance(power);
+            float y = getScreenShakeDistance(power);
+
+            this.transform.localPosition = new Vector3(originalPos.x + x,
+                                                       originalPos.y + y,
                                                        originalPos.z);
         }
 
         this.transform.localPosition = originalPos;
+    }
+
+    float getScreenShakeDistance(float power) {
+        float power_aux = power;
+        int count = 0;
+        while (true) {
+            count++;
+            float aux = Mathf.Pow(-1, Random.Range(0, 2)) * Random.Range(power_aux / 4, power_aux / 2);
+            if (Mathf.Abs(aux) > 0.1f) {
+                return aux;
+            }
+            if (count > 5) {
+                count = 0;
+                power_aux += 0.25f;
+            }
+        }
     }
     #endregion
 }

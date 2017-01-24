@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Teleportable : MonoBehaviour {
-    void OnTriggerStay2D(Collider2D coll) {
+    void OnTriggerEnter2D(Collider2D coll) {
         GameObject target = coll.gameObject;
 
         if (target.tag == "Portal")

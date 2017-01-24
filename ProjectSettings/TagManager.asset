@@ -22,6 +22,7 @@ TagManager:
   - PauseMenu
   - Soccerball
   - FakePlayer
+  - Skidrow
   layers:
   - Default
   - TransparentFX

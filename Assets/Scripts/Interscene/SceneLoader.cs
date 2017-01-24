@@ -30,7 +30,7 @@ public class SceneLoader : MonoBehaviour {
     }
 
     public void LevelSelect() {
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("LevelSelect 1");
         VictoriesManager.getVictoriesManager().reset_victories();
     }
 

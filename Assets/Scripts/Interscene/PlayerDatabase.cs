@@ -110,7 +110,7 @@ public class PlayerDatabase : MonoBehaviour {
         if (value) ready--;
         else ready++;
 
-        if (ready >= players.Count)
+        if (ready >= players.Count && players.Count > 1)
             goLevelSelect();
     }
 

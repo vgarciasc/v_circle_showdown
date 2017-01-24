@@ -652,9 +652,11 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: ddf6515044606694796d4e84a1df264c, type: 2}
     probability: 4
   - item: {fileID: 11400000, guid: c0bee9c33b60ce143882356d74a617c3, type: 2}
-    probability: 4
+    probability: 3
   - item: {fileID: 11400000, guid: 1d4830a8d8c983e439bdebd50772fd10, type: 2}
     probability: 2
+  - item: {fileID: 11400000, guid: f1da6e4eba027eb47aaf85e310c03a73, type: 2}
+    probability: 3
   itemSpawnInterval: 7
 --- !u!114 &114000012497651550
 MonoBehaviour:

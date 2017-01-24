@@ -15,9 +15,11 @@ public class PlayerParticleSystems : MonoBehaviour {
 	TrailRenderer tr;
 
 	public float trail_length_modifier = 1f;
-	bool heal_tr_bug = false;
 
-	void Start() {
+	bool heal_trail_renderer_bug = false;
+	Coroutine trail_coroutine;
+
+	public void Start() {
 		player = (Player) HushPuppy.safeComponent(this.gameObject, "Player");
 		animator = (Animator) HushPuppy.safeComponent(this.gameObject, "Animator");
 		item_user = (PlayerItemUser) HushPuppy.safeComponent(this.gameObject, "PlayerItemUser");
@@ -36,16 +38,14 @@ public class PlayerParticleSystems : MonoBehaviour {
 		tr.enabled = false;
 	}
 	
-	void Update() {
-		if (heal_tr_bug) {
-			tr.enabled = true;
-			heal_tr_bug = false;
-		}
-		set_trail_renderer_width();
+	void FixedUpdate() {
 		float aux = Mathf.Abs(trail_length_modifier * player.GetComponent<Rigidbody2D>().velocity.magnitude) / 200;
 		tr.time = Mathf.Pow(aux, 2);
-		// tr.startColor = HushPuppy.getColorWithOpacity(player.color,
-		// 											player.velocityHitMagnitude());
+		set_trail_renderer_width();
+		if (heal_trail_renderer_bug && aux > 0.125f) {
+			tr.enabled = true;
+			heal_trail_renderer_bug = false;
+		}
 	}
 
 	void death() {
@@ -53,6 +53,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void heal_explosion_start() {
+		tr.enabled = false;
         heal.gameObject.SetActive(true);
 	}
 
@@ -62,10 +63,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(heal.startLifetime);
         heal.gameObject.SetActive(false);
-
-		//bug da unity?
-		tr.enabled = false;
-		heal_tr_bug = true;
+		heal_trail_renderer_bug = true;
 	}
 
 	#region charge
@@ -79,7 +77,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 	#endregion
 
-	void init_trail_renderer_color(Color target) {
+	public void init_trail_renderer_color(Color target) {
 		Gradient g;
 		GradientColorKey[] gck;
 		GradientAlphaKey[] gak;
@@ -102,6 +100,8 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void set_trail_renderer_width() {
+		if (heal_trail_renderer_bug) return;
+		
 		tr.startWidth = player.transform.localScale.x - 0.2f;
 		tr.endWidth = player.transform.localScale.x - 0.6f;
 	}

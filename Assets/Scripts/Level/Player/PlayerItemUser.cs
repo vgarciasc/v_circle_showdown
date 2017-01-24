@@ -48,6 +48,10 @@ public class PlayerItemUser : MonoBehaviour {
                 //coffee();
                 use_coffee(item_data);
                 break;
+            case ItemType.AIMBOT:
+                //aimbot();
+                use_aimbot(item_data);
+                break;
             default:
                 break;
         }
@@ -133,5 +137,19 @@ public class PlayerItemUser : MonoBehaviour {
         player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
         player.data.speed /= 3;
         player.data.chargeForce /= 3;        
+    }
+
+    //aimbot
+    void use_aimbot(ItemData data) { StartCoroutine(use_aimbot_(data)); }
+    IEnumerator use_aimbot_(ItemData data) {
+        player.aimbot_active = true;
+
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
+
+        player.aimbot_active = false;
+        GameObject[] players = Player.getAllPlayers();
+        for (int i = 0; i < players.Length; i++) {
+            players[i].GetComponent<Player>().end_aimbot();
+        }
     }
 }

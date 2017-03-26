@@ -45,8 +45,7 @@ public class Player : MonoBehaviour, ISmashable {
     public delegate void VoidDelegate();
     public event VoidDelegate death_event,
                             bomb_event,
-                            victory_event,
-                            jump_event;
+                            victory_event;
     public delegate void VisibleDelegate(bool value);
     public event VisibleDelegate visible_event;
     public delegate void IdentifiedVoidDelegate(PlayerInstance instance);
@@ -193,9 +192,6 @@ public class Player : MonoBehaviour, ISmashable {
     void jump() {
         if (blockInput) return;
         rb.AddForce(new Vector2(0, data.jumpForce));
-        if (jump_event != null) {
-            jump_event();
-        }
     }
 
     void move(float movement) {

@@ -716,7 +716,6 @@ public class Player : MonoBehaviour, ISmashable {
             int framesToWait = (int) (Mathf.Pow((timeOut - Time.time) * 2f, 1.7f));
             framesToWait = (int) Mathf.Clamp(framesToWait, 3f, framesToWait);
             
-            Debug.Log(framesToWait);
             yield return HushPuppy.WaitForEndOfFrames(framesToWait);
         }
     }

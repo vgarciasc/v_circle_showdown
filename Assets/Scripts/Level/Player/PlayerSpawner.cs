@@ -61,17 +61,45 @@ public class PlayerSpawner : MonoBehaviour {
         PlayerColor p_color = new PlayerColor();
         p_color.gradient = null;
         
+        p_color = new PlayerColor();
         p_color.color = Color.grey;
+        p_color.gradient = getDefaultGradient(p_color.color);
         PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", p_color);
 
+        p_color = new PlayerColor();
         p_color.color = Color.white;
+        p_color.gradient = getDefaultGradient(p_color.color);
         PlayerInstance aux2 = new PlayerInstance("_J1", 1, 1, "rasputin", p_color);
 
+        p_color = new PlayerColor();
         p_color.color = Color.magenta;
+        p_color.gradient = getDefaultGradient(p_color.color);
         PlayerInstance aux3 = new PlayerInstance("_J2", 2, 2, "destructor", p_color);
 
         spawnPlayer(aux, playerSpawnLocations.getRandomUnusedLocation());
         spawnPlayer(aux2, playerSpawnLocations.getRandomUnusedLocation());
         spawnPlayer(aux3, playerSpawnLocations.getRandomUnusedLocation());
+    }
+
+    Gradient getDefaultGradient(Color color) {
+        Gradient g;
+		GradientColorKey[] gck;
+		GradientAlphaKey[] gak;
+		g = new Gradient();
+		
+		gck = new GradientColorKey[2];
+		gck[0].color = color;
+		gck[0].time = 0f;
+		gck[1].color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f);
+		gck[0].time = 1f;
+
+		gak = new GradientAlphaKey[2];
+		gak[0].alpha = 1f;
+		gak[0].time = 0f;
+		gak[1].alpha = 1f;
+		gak[1].time = 1f;
+
+		g.SetKeys(gck, gak);
+        return g;
     }
 }

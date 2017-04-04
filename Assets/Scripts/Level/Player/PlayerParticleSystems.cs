@@ -33,15 +33,25 @@ public class PlayerParticleSystems : MonoBehaviour {
 		item_user = (PlayerItemUser) HushPuppy.safeComponent(this.gameObject, "PlayerItemUser");
 		tr = (TrailRenderer) HushPuppy.safeComponent(this.gameObject, "TrailRenderer");
 
+		//EVENTS
 		player.death_event += death;
 		player.charge_event += chargeParticles;
 		player.visible_event += toggle_visible;
+		player.get_item_event += get_item_effect;
+		
 		item_user.healStart += heal_explosion_start;
 		item_user.healEnd += heal_explosion_end;
+		
 		item_user.mushroom += play_mushroom_trail;
-		player.get_item_event += get_item_effect;
+		
 		item_user.coffee_start += start_coffee_trail;
+		item_user.coffee_start += end_particle_trail;
+		item_user.coffee_end += start_particle_trail;
 		item_user.coffee_end += end_coffee_trail;
+
+		item_user.triangle_start += end_particle_trail;
+		item_user.triangle_end += start_particle_trail;
+		//\EVENTS
 
 		explosion.startColor = player.palette.color + new Color(0.3f, 0.3f, 0.3f);
 		full_charge.startColor = player.palette.color - new Color(0.15f, 0.15f, 0.15f);
@@ -57,7 +67,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 			0.6f);
 
 		init_trail_renderer_color(player.palette.color);
-		init_particle_trail_color(player.palette.color);
+		StartCoroutine(init_particle_trail_color(player.palette.color));
 		tr.enabled = false;
 	}
 	
@@ -150,102 +160,27 @@ public class PlayerParticleSystems : MonoBehaviour {
 		coffee_item_using_trail.Stop();
 	}
 
-	void init_particle_trail_color(Color color) {
-		float strongest, second_strongest, least_strong;
-		float or_strongest, or_second_strongest, or_least_strong;
+	bool particle_trail_active = true;
 
-		if (color.r > (color.g + color.b) / 2f) {
-			strongest = color.r;
-			if (color.g > color.b) {
-				second_strongest = color.g;
-				least_strong = color.b;
-			}
-			else {
-				second_strongest = color.b;
-				least_strong = color.g;
-			}
-		}
-		if (color.g > (color.r + color.b) / 2f) {
-			strongest = color.g;
-			if (color.r > color.b) {
-				second_strongest = color.r;
-				least_strong = color.b;
-			}
-			else {
-				second_strongest = color.b;
-				least_strong = color.r;
-			}
-			
-		}
-		else /*if (color.b > (color.r + color.g) / 2f)*/ {
-			strongest = color.b;
-			if (color.r > color.g) {
-				second_strongest = color.r;
-				least_strong = color.g;
-			}
-			else {
-				second_strongest = color.g;
-				least_strong = color.r;
-			}
-		}
-
-		or_least_strong = least_strong;
-		or_second_strongest = second_strongest;
-		or_strongest = strongest;
-
-		strongest -= 0.4f;
-		least_strong -= 0.1f;
-		second_strongest -= 0.1f;
-
-		Color aux = new Color(color.r, color.g, color.b);
-		if (aux.r == or_strongest) {
-			aux.r = strongest;
-		}
-		if (aux.g == or_strongest) {
-			aux.g = strongest;
-		}
-		if (aux.b == or_strongest) {
-			aux.b = strongest;
-		}
-		if (aux.r == or_least_strong) {
-			aux.r = least_strong;
-		}
-		if (aux.g == or_least_strong) {
-			aux.g = least_strong;
-		}
-		if (aux.b == or_least_strong) {
-			aux.b = least_strong;
-		}
-		if (aux.r == or_second_strongest) {
-			aux.r = second_strongest;
-		}
-		if (aux.g == or_second_strongest) {
-			aux.g = second_strongest;
-		}
-		if (aux.b == or_second_strongest) {
-			aux.b = second_strongest;
-		}
-
-		Gradient g;
-        GradientColorKey[] gck;
-        GradientAlphaKey[] gak;
-
-        g = new Gradient();
-        gck = new GradientColorKey[2];
-        gck[0].color = color;
-        gck[0].time = 0.0F;
-        gck[1].color = aux;
-        gck[1].time = 1.0F;
-
-        gak = new GradientAlphaKey[2];
-        gak[0].alpha = 1.0F;
-        gak[0].time = 0.0F;
-        gak[1].alpha = 1.0F;
-        gak[1].time = 1.0F;
-
-        g.SetKeys(gck, gak);
-
+	IEnumerator init_particle_trail_color(Color color) {
         var aux2 = player_particle_trail.main;
 		aux2.startColor = player.palette.gradient;
+
+		end_particle_trail();
+
+		//just in the start of the level, gambiarra
+		yield return new WaitForSeconds(2.0f);
+
+		start_particle_trail();
+	}
+
+	void start_particle_trail() {
+		particle_trail_active = true;
+		player_particle_trail.Play();
+	}
+	
+	void end_particle_trail() {
+		particle_trail_active = false;
+		player_particle_trail.Stop();
 	}
 }

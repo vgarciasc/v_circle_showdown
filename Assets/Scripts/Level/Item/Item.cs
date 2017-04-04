@@ -12,6 +12,10 @@ public class Item : MonoBehaviour {
     GameObject sprite;
     [SerializeField]
     GameObject sprite_outline;
+    [SerializeField]
+    ParticleSystem psystem_idle;
+    [SerializeField]
+    ParticleSystem psystem_destroy;
 
     [Header("Mystery Box")]
     [SerializeField]
@@ -56,6 +60,8 @@ public class Item : MonoBehaviour {
     }
 
     public void destroy() {
+        psystem_destroy.Play();
+        psystem_idle.Stop();
         itemSpawner.setItemInGame(false);
         animator.SetTrigger("destroy");
         this.GetComponentInChildren<BoxCollider2D>().enabled = false;

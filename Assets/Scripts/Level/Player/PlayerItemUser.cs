@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerItemUser : MonoBehaviour {
     public delegate void useItem();
-    public event useItem triangle,
+    public event useItem triangle_start,
+                        triangle_end,
                         ghost,
                         bomb,
                         mushroom,
@@ -30,7 +31,6 @@ public class PlayerItemUser : MonoBehaviour {
                 use_heal(item_data);
                 break;
             case ItemType.TRIANGLE:
-                //triangle();
                 use_triangle(item_data);
                 break;
             case ItemType.GHOST:
@@ -74,6 +74,9 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_triangle(ItemData data) { StartCoroutine(use_triangle_(data)); }
     IEnumerator use_triangle_(ItemData data) {
         player.toggleTriangle(true);
+        if (triangle_start != null) {
+            triangle_start();
+        }
         
         Coroutine blink = StartCoroutine(player.start_blink(Time.time + data.cooldown));
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 0.5f);
@@ -82,6 +85,9 @@ public class PlayerItemUser : MonoBehaviour {
         StopCoroutine(blink);
         player.end_blink();
         player.toggleTriangle(false);
+        if (triangle_end != null) {
+            triangle_end();
+        }
     }
 
     //fantasma

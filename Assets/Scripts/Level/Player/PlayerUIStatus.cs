@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class PlayerUIStatus : MonoBehaviour {
     [Header("References")]
@@ -8,8 +9,6 @@ public class PlayerUIStatus : MonoBehaviour {
     Image redCross;
     [SerializeField]
     Image carriedItem;
-    [SerializeField]
-    Text time;
     [SerializeField]
     Transform victoriesContainer;
 
@@ -33,7 +32,6 @@ public class PlayerUIStatus : MonoBehaviour {
 
     public void reset() {
         redCross.enabled = false;
-        setTime(false);
         unshowItem();
     }
 
@@ -43,7 +41,9 @@ public class PlayerUIStatus : MonoBehaviour {
         this.playerName = playerName;
         this.animator = GetComponentInParent<Animator>();
 
-        this.GetComponentsInChildren<Text>()[0].text = playerName.ToString();
+        this.GetComponentsInChildren<TextMeshProUGUI>()[0].text = "<color=#" + 
+            HushPuppy.ColorToHex(playerColor) + ">" +
+            playerName.ToString() + "</color>";
         this.GetComponentsInChildren<Image>()[1].color = playerColor;
         if (pdatabase != null) setVictories();
     }
@@ -64,7 +64,7 @@ public class PlayerUIStatus : MonoBehaviour {
     public void get_victory() { StartCoroutine(get_victory_()); }
     IEnumerator get_victory_() {
         animator.SetTrigger("popup");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.15f);
 
         GameObject victory_icon = victoriesContainer.GetChild(vmanager.get_player_victories(playerID)).gameObject;
         victory_icon.GetComponent<Image>().color = playerColor;
@@ -72,25 +72,14 @@ public class PlayerUIStatus : MonoBehaviour {
     }
     #endregion
 
-    #region Time Shenanigans
-    public void setTime(float time) {
-        this.time.enabled = true;
-        this.time.text = time.ToString();
-    }
-
-    public void setTime(bool value) {
-        this.time.enabled = value; }
-    #endregion
-
     public void playerKilled() {
         unshowItem();
         redCross.enabled = true;
-        setTime(false);
     }
 
     #region Item Hsneanigans
     public void showItem(ItemData item) {
-        if (carriedItem.enabled) {
+        if (carriedItem.sprite.name == item.sprite.name) {
             return;
         }
         carriedItem.enabled = true;

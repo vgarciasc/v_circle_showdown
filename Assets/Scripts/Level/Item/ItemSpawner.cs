@@ -83,6 +83,7 @@ public class ItemSpawner : MonoBehaviour {
         Vector3 bomb_scale = new Vector3(player.localScale.x,
                                         player.localScale.x,
                                         player.localScale.x);
+        bomb.transform.GetComponent<Rigidbody2D>().angularVelocity = 600f;
         bomb.setBomb(player.up, bomb_scale, power);
     }
     #endregion
@@ -92,7 +93,10 @@ public class ItemSpawner : MonoBehaviour {
         MushroomCloud mush = Instantiate(mushroomCloudPrefab).GetComponent<MushroomCloud>();
         mush.transform.position = player.position;
 
-        mush.setMushroomCloud(duration, player.localScale);
+        mush.setMushroomCloud(duration,
+            player.localScale,
+            player.GetComponentInChildren<Player>().palette.color,
+            player.GetComponentInChildren<Player>().ID);
     }
     #endregion
 }

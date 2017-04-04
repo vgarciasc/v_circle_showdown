@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameOverPlayerStats : MonoBehaviour {
 	[SerializeField]
 	Image player_image;
 	[SerializeField]
-	Text player_name;
+	TextMeshProUGUI player_name;
 	[SerializeField]
 	Transform victories;
 	[SerializeField]
@@ -23,7 +24,7 @@ public class GameOverPlayerStats : MonoBehaviour {
 			GameObject icon = Instantiate(victory_icon, victories, false);
 			Color color_aux;
 			if (i < victory_count) {
-				color_aux = player.color;
+				color_aux = player.palette.color;
 			}
 			else {
 				color_aux = Color.white;
@@ -33,7 +34,7 @@ public class GameOverPlayerStats : MonoBehaviour {
 			icon.GetComponent<Image>().color = color_aux;
 		}
 
-		player_image.GetComponent<Image>().color = player.color;
+		player_image.GetComponent<Image>().color = player.palette.color;
 		player_name.text = player.name;
 	}
 

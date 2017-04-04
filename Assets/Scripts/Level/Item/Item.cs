@@ -10,6 +10,8 @@ public class Item : MonoBehaviour {
     GameObject blackhole;
     [SerializeField]
     GameObject sprite;
+    [SerializeField]
+    GameObject sprite_outline;
 
     [Header("Mystery Box")]
     [SerializeField]
@@ -50,6 +52,7 @@ public class Item : MonoBehaviour {
         sprite.SetActive(true);
         mysteryBox.SetActive(false);
         sprite.GetComponent<SpriteRenderer>().sprite = data.sprite;
+        sprite_outline.GetComponent<SpriteRenderer>().sprite = data.sprite;
     }
 
     public void destroy() {

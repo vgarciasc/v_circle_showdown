@@ -16,7 +16,7 @@ public class GameOverWinnerStats : MonoBehaviour {
 			GameObject icon = Instantiate(victory_icon, victories, false);
 			Color color_aux;
 			if (i < victory_count) {
-				color_aux = player.color;
+				color_aux = player.palette.color;
 			}
 			else {
 				color_aux = Color.white;

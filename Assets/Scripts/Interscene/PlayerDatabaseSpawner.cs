@@ -26,7 +26,7 @@ public class PlayerDatabaseSpawner : MonoBehaviour {
 	}
 
 	public void setPlayer(int id, PlayerInstance instance) {
-		players[id].transform.GetChild(1).GetComponent<SpriteRenderer>().color = instance.color;
+		players[id].transform.GetChild(1).GetComponent<SpriteRenderer>().color = instance.palette.color;
 		players[id].GetComponent<Player>().setPlayer(instance);
 		players[id].GetComponent<PlayerParticleSystems>().Start();
 	}

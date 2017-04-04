@@ -23,6 +23,8 @@ public class PlayerOnSpawn : MonoBehaviour {
 
     #region On Spawn
     IEnumerator spawn_animation() {
+        StartCoroutine(circle_animation_color());
+
         player.toggle_visibility(false);
         player.toggle_block_all_input(true);
         RigidbodyConstraints2D rb_original_constraints = rb.constraints;
@@ -50,9 +52,22 @@ public class PlayerOnSpawn : MonoBehaviour {
     public void AnimEndSpawn() {
         end_spawn = true;
     }
+    
+    IEnumerator circle_animation_color() {
+        int iterations = 200;
+
+        for (int i = 0; i < iterations; i++) {
+            white_circle.GetComponent<SpriteRenderer>().color = Color.Lerp(player.palette.gradient.colorKeys[0].color,
+                player.palette.gradient.colorKeys[1].color,
+                i / iterations);
+
+            //1.5f is duration of animation (see other function above)
+            yield return new WaitForSeconds(1.5f / iterations);
+        }    
+    }
 
     void set_circle() {
-        white_circle.GetComponent<SpriteRenderer>().color = player.color + new Color(0.3f, 0.3f, 0.3f);
+        white_circle.GetComponent<SpriteRenderer>().color = player.palette.color + new Color(0.3f, 0.3f, 0.3f);
     }
     #endregion
 }

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
+using TMPro;
 
 public class GameOver : MonoBehaviour {
     VictoriesManager vmanager;
@@ -10,7 +11,7 @@ public class GameOver : MonoBehaviour {
 
     [Header("References")]
     [SerializeField]
-    Text player_congratulations;
+    TextMeshProUGUI player_congratulations;
     [SerializeField]
     Player player_winner_surrogate;
     [SerializeField]

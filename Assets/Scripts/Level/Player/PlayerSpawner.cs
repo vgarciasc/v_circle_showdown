@@ -58,9 +58,18 @@ public class PlayerSpawner : MonoBehaviour {
     }
 
     void startDefaultGame() {
-        PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", Color.grey);
-        PlayerInstance aux2 = new PlayerInstance("_J1", 1, 1, "rasputin", Color.white);
-        PlayerInstance aux3 = new PlayerInstance("_J2", 2, 2, "destructor", Color.magenta);
+        PlayerColor p_color = new PlayerColor();
+        p_color.gradient = null;
+        
+        p_color.color = Color.grey;
+        PlayerInstance aux = new PlayerInstance("_J0", 0, 0, "vinizinho", p_color);
+
+        p_color.color = Color.white;
+        PlayerInstance aux2 = new PlayerInstance("_J1", 1, 1, "rasputin", p_color);
+
+        p_color.color = Color.magenta;
+        PlayerInstance aux3 = new PlayerInstance("_J2", 2, 2, "destructor", p_color);
+
         spawnPlayer(aux, playerSpawnLocations.getRandomUnusedLocation());
         spawnPlayer(aux2, playerSpawnLocations.getRandomUnusedLocation());
         spawnPlayer(aux3, playerSpawnLocations.getRandomUnusedLocation());

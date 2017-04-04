@@ -28,7 +28,7 @@ public class FakePlayer : MonoBehaviour {
 			return Color.grey;
 		}
 
-		List<Color> possible_colors = pdatabase.original_color_pool;
+		List<Color> possible_colors = new List<Color>();
 		possible_colors.AddRange(new List<Color> {Color.grey, Color.white});
 		Color random;
 

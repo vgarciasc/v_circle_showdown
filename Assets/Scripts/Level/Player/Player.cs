@@ -12,13 +12,15 @@ public class Player : MonoBehaviour, ISmashable {
     [SerializeField]
     GameObject triangleSpikes;
     [SerializeField]
-    Sprite circleBorder;
+    Sprite circleBorderSprite;
+    [SerializeField]
+    GameObject circleBorder;
     [SerializeField]
     Sprite circleBorderAlmostExploding;
     [SerializeField]
     Sprite circleBackground;
     [SerializeField]
-    Sprite triangleBorder;
+    Sprite triangleBorderSprite;
     [SerializeField]
     Sprite triangleBackground;
     [SerializeField]
@@ -37,7 +39,7 @@ public class Player : MonoBehaviour, ISmashable {
     public PlayerData data; //playerdata to be modified by other classes
     public PlayerData originalData;
     public PlayerInstance instance;
-    public Color color;
+    public PlayerColor palette;
     public string playername;
     public bool isTriangle;
     
@@ -99,7 +101,7 @@ public class Player : MonoBehaviour, ISmashable {
     public void setPlayer(PlayerInstance instance) {
         this.ID = instance.playerID;
         this.joystick = instance.joystick;
-        this.color = instance.color;
+        this.palette = instance.palette;
         this.playername = instance.name;
         this.instance = instance;
         reset_colors();
@@ -116,7 +118,7 @@ public class Player : MonoBehaviour, ISmashable {
 
         /*Init functions*/
         createJoystickInput();
-        changeSprite(circleBorder, circleBackground);
+        changeSprite(circleBorderSprite, circleBackground);
         toggleTriangleDetection(false);
         reset_charge();
         StartCoroutine(handleAlmostMaxSize());
@@ -144,13 +146,13 @@ public class Player : MonoBehaviour, ISmashable {
 
     #region Spritefest
     void changeSprite(Sprite border, Sprite background) {
-        explosionRing.GetComponent<SpriteRenderer>().sprite = border;
-        GetComponent<SpriteRenderer>().sprite = border;
+        // explosionRing.GetComponent<SpriteRenderer>().sprite = border;
+        circleBorder.GetComponent<SpriteRenderer>().sprite = border;
         spriteBackground.GetComponent<SpriteRenderer>().sprite = background;
     }
 
     void changeBorderColor(Color cr) {
-        GetComponent<SpriteRenderer>().color = cr;
+        circleBorder.GetComponent<SpriteRenderer>().color = cr;
     }
     #endregion
 
@@ -196,7 +198,7 @@ public class Player : MonoBehaviour, ISmashable {
 
     void move(float movement) {
         if (blockInput) return;
-        rb.velocity += new Vector2(movement, 0);
+        rb.velocity += new Vector2(movement * Mathf.Pow((this.transform.localScale.x / data.scale.x), 0.4f), 0);
     }
 
     public void toggle_block_all_input(bool value) {
@@ -247,10 +249,14 @@ public class Player : MonoBehaviour, ISmashable {
                 getItem(target.gameObject.GetComponent<Item>());
                 break;
             case "Nebula":
-                changeSize(0.005f + 0.01f * chargeBuildup / 100f);
+                if (target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
+                    changeSize(0.005f + 0.01f * chargeBuildup / 100f);
+                }
                 break;
             case "Inverse Nebula":
-                changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
+                if (target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
+                    changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
+                }
                 break;
         }
     }
@@ -261,6 +267,7 @@ public class Player : MonoBehaviour, ISmashable {
 
     public void takeHit(float transferSize) {
         //Debug.Log("Transfer Size: " + transferSize);
+        shakeScreen(transferSize);
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(data.invincibleFrames));
     }
@@ -313,12 +320,17 @@ public class Player : MonoBehaviour, ISmashable {
     void killPlayer() {
         if (is_dead) return;
 
+        foreach (CircleCollider2D c in this.GetComponentsInChildren<CircleCollider2D>()) {
+            c.enabled = false;
+        }
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        if (players.Length == 2) {
+        if (/*players.Length == 2*/ true) {
             //this will be the last player to die
-            StartCoroutine(slowmo(2.0f));
+            StartCoroutine(slowmo(3.0f));
         }
         
+        end_receiving_aimbot();
         anim.enabled = true;
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
@@ -333,20 +345,23 @@ public class Player : MonoBehaviour, ISmashable {
 
     static IEnumerator slowmo(float duration) {
         float timescale = 1f;
-        float slow = 0.2f;
+        float slow = 0.1f;
 
         Time.timeScale = slow;
+        Time.fixedDeltaTime = 0.02F * Time.timeScale;
         yield return new WaitForSeconds(duration * slow);
 
         int aux = 20;
         for (int i = 0; i < aux; i++) {
             if (Time.timeScale < timescale) {
                 Time.timeScale += (timescale - slow) / aux;
+                Time.fixedDeltaTime = 0.02F * Time.timeScale;
             }
             yield return new WaitForEndOfFrame();
         }
         
         Time.timeScale = timescale;
+        Time.fixedDeltaTime = 0.02F * Time.timeScale;
     }
 
     bool isLookingAtObject(Transform target) {
@@ -366,14 +381,16 @@ public class Player : MonoBehaviour, ISmashable {
     #region Colors
     void reset_colors() {
         border_color = Color.black;
-        spriteBackground.GetComponent<SpriteRenderer>().color = color;
-        forceField.GetComponent<SpriteRenderer>().color = color;
-        this.GetComponent<SpriteRenderer>().color = border_color;
+        spriteBackground.GetComponent<SpriteRenderer>().color = palette.color;
+        forceField.GetComponent<SpriteRenderer>().color = palette.color;
+        circleBorder.GetComponent<SpriteRenderer>().color = border_color;
         reset_charge_indicator();    
     }
 
     void reset_charge_indicator() {
-        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(color.r - 0.4f, color.g - 0.4f, color.b - 0.4f, 0.5f);
+        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(palette.color.r - 0.4f,
+            palette.color.g - 0.4f,
+            palette.color.b - 0.4f, 0.5f);
     }
 
     public void toggle_visibility(bool value) {
@@ -382,7 +399,7 @@ public class Player : MonoBehaviour, ISmashable {
         }
 
         should_be_visible = value;
-        this.GetComponent<SpriteRenderer>().enabled = value;
+        circleBorder.GetComponent<SpriteRenderer>().enabled = value;
         spriteBackground.GetComponent<SpriteRenderer>().enabled = value;
     }
     #endregion
@@ -424,14 +441,25 @@ public class Player : MonoBehaviour, ISmashable {
         bool toggle = false;
         while (true) {
             changeBorderColor(border_color);
-            yield return new WaitUntil(() => almostExploding);
 
             toggle = !toggle;
-            if (toggle) changeBorderColor(border_color);
-            else changeBorderColor(HushPuppy.getColorWithOpacity(border_color, 0.5f));
+            if (almostExploding) {
+                if (toggle) {
+                    changeBorderColor(border_color);
+                }
+                else {
+                    changeBorderColor(new Color(palette.color.r - 0.7f,
+                        palette.color.g - 0.7f,
+                        palette.color.b - 0.7f));
+                }
 
-            for (int i = 0; i < 10; i++)
-                    yield return new WaitForEndOfFrame();
+                int framesToWait = (int) ((data.maxSize - transform.localScale.x) * 10);
+                framesToWait = Mathf.Clamp(framesToWait, 5, framesToWait);
+                yield return HushPuppy.WaitForEndOfFrames(framesToWait);
+            }
+            else {
+                yield return HushPuppy.WaitForEndOfFrames(10);
+            }
         }
     }
 
@@ -442,7 +470,7 @@ public class Player : MonoBehaviour, ISmashable {
             if (aux) {
                 changeSprite(circleBorderAlmostExploding, circleBackground);
             } else {
-                changeSprite(circleBorder, circleBackground);
+                changeSprite(circleBorderSprite, circleBackground);
             }
         }
 
@@ -622,9 +650,9 @@ public class Player : MonoBehaviour, ISmashable {
 
     public void toggleTriangle(bool value) {
         if (value)
-            changeSprite(triangleBorder, triangleBackground);
+            changeSprite(triangleBorderSprite, triangleBackground);
         else
-            changeSprite(circleBorder, circleBackground);
+            changeSprite(circleBorderSprite, circleBackground);
 
         isTriangle = !isTriangle;
         triangleSpikes.SetActive(value);
@@ -660,25 +688,36 @@ public class Player : MonoBehaviour, ISmashable {
         reset_charge();
     }
 
-    public IEnumerator start_blink() {
-        Color original = color;
-        Color original_border = this.GetComponent<SpriteRenderer>().color;
-        Color transparent = HushPuppy.getColorWithOpacity(color, 0.5f);
-        Color border_transparent = HushPuppy.getColorWithOpacity(original_border, 0.5f);
+    public IEnumerator start_blink(float timeOut) {
+        Color original = palette.color;
+        Color original_border = circleBorder.GetComponent<SpriteRenderer>().color;
+        Color transparent = HushPuppy.getColorWithOpacity(palette.color, 0.5f);
+        // Color border_transparent = HushPuppy.getColorWithOpacity(original_border, 0.3f);
+        Color border_transparent = new Color(palette.color.r - 0.5f,
+            palette.color.g - 0.5f,
+            palette.color.b - 0.5f);
 
         bool toggle = true;
         while (true) {
             toggle = !toggle;
             if (toggle) { 
-                spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
-                this.GetComponent<SpriteRenderer>().color = border_transparent; 
+                // spriteBackground.GetComponent<SpriteRenderer>().color = transparent;
+                circleBorder.GetComponent<SpriteRenderer>().color = border_transparent; 
             }
             else {
-                spriteBackground.GetComponent<SpriteRenderer>().color = original;
-                this.GetComponent<SpriteRenderer>().color = original_border;
+                // spriteBackground.GetComponent<SpriteRenderer>().color = original;
+                circleBorder.GetComponent<SpriteRenderer>().color = original_border;
             }
-            for (int i = 0; i < 5; i++)
-                yield return new WaitForEndOfFrame();
+            
+            // float timeToWait = ((timeOut - Time.time)) / 60f;
+            // Debug.Log(timeToWait);
+            // yield return new WaitForSeconds(timeToWait);
+
+            int framesToWait = (int) (Mathf.Pow((timeOut - Time.time) * 2f, 1.7f));
+            framesToWait = (int) Mathf.Clamp(framesToWait, 3f, framesToWait);
+            
+            Debug.Log(framesToWait);
+            yield return HushPuppy.WaitForEndOfFrames(framesToWait);
         }
     }
 
@@ -696,6 +735,67 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region aimbot
+
+    float aimbot_startTimestamp = 0f;
+    float aimbot_duration = 0f;
+    bool is_receiving_aimbot = false;
+    Coroutine aimbot_blinking = null;
+
+    public void start_emitting_aimbot(float duration) {
+        aimbot_duration = duration;
+        aimbot_startTimestamp = Time.time;
+        aimbot_active = true;
+    }
+    
+    public void end_emitting_aimbot() {
+        aimbot_active = false;
+    }
+
+    void start_receiving_aimbot(Player targeter, float startTimestamp, float duration) {
+        if (is_receiving_aimbot) {
+            return;
+        }
+
+        is_receiving_aimbot = true;
+        
+        aimbotTarget.transform.rotation = Quaternion.identity;
+        aimbotTarget.GetComponent<SpriteRenderer>().color = targeter.instance.palette.color;
+        
+        aimbot_blinking = StartCoroutine(start_blinking_aimbot(startTimestamp, duration));
+        aimbotTarget.SetActive(true);
+    }
+
+    public void end_receiving_aimbot() {
+        is_receiving_aimbot = false;
+
+        if (aimbot_blinking != null) {
+            StopCoroutine(aimbot_blinking);
+            aimbot_blinking = null;
+        }
+
+        aimbotTarget.SetActive(false);
+    }
+
+    IEnumerator start_blinking_aimbot(float startTime, float duration) {
+        bool toggle = false;
+        
+        while (true) {
+            bool blinking = (Time.time - startTime) > ((1f/2f) * duration);
+
+            if (blinking) {
+                toggle = !toggle;
+                aimbotTarget.SetActive(toggle);
+                int framesToWait = (int) (2 * ((startTime + duration) - Time.time));
+                framesToWait = Mathf.Clamp(framesToWait, 3, framesToWait);
+
+                yield return HushPuppy.WaitForEndOfFrames(framesToWait);
+            }
+            else {
+                yield return HushPuppy.WaitForEndOfFrames(10);
+            }
+        }
+    }
+
     void aimbot() {
         if (!aimbot_active) return;
         int closest_player_index = -1;
@@ -713,25 +813,17 @@ public class Player : MonoBehaviour, ISmashable {
             }
         }
 
-        players[closest_player_index].GetComponent<Player>().receive_aimbot(this);
+        players[closest_player_index].GetComponent<Player>().start_receiving_aimbot(this,
+            aimbot_startTimestamp,
+            aimbot_duration);
 
         for (int i = 0; i < players.Length; i++) {
             if (i != closest_player_index) {
-                players[i].GetComponent<Player>().end_aimbot();
+                players[i].GetComponent<Player>().end_receiving_aimbot();
             }
         }
 
         this.transform.up = closest_player_distance;
-    }
-
-    void receive_aimbot(Player targeter) {
-        aimbotTarget.SetActive(true);
-        aimbotTarget.transform.rotation = Quaternion.identity;
-        aimbotTarget.GetComponent<SpriteRenderer>().color = targeter.instance.color;
-    }
-
-    public void end_aimbot() {
-        aimbotTarget.SetActive(false);
     }
     #endregion
 

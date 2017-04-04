@@ -2,6 +2,13 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using TMPro;
+
+[System.Serializable]
+public class PlayerColor : System.Object {
+    public Color color;
+    public Gradient gradient;
+}
 
 public class PlayerDatabase : MonoBehaviour {
     int currentID = 0;
@@ -13,8 +20,8 @@ public class PlayerDatabase : MonoBehaviour {
     public List<PlayerInstance> players = new List<PlayerInstance>();
     List<string> joystick_names = new List<string>();
 
-    public List<Color> original_color_pool = new List<Color>();
-    List<Color> current_color_pool = new List<Color>();
+    public List<PlayerColor> original_colors_pool = new List<PlayerColor>();
+    List<PlayerColor> current_colors_pool = new List<PlayerColor>();
 
     [SerializeField]
     Transform playerTexts; //textos que ficam ativos quando o joystick entra em jogo
@@ -45,7 +52,7 @@ public class PlayerDatabase : MonoBehaviour {
         joystick_names.AddRange(Input.GetJoystickNames());
     }
 
-    int get_player_entry_ID(int joystickNum) {
+    public int get_player_entry_ID(int joystickNum) {
         for (int j = 0; j < players.Count; j++)
             if (players[j].joystickNum == joystickNum)
                 return j;
@@ -67,33 +74,39 @@ public class PlayerDatabase : MonoBehaviour {
                 //player joins the game
 
                 string generated_ID_name = generate_name();
+                PlayerColor generated_color = get_first_random_color();
+
                 PlayerInstance aux = new PlayerInstance("_J" + i.ToString(),
                                                 i,
                                                 currentID,
                                                 generated_ID_name,
-                                                get_first_random_color());
+                                                generated_color);
                 players.Add(aux);
                 joysticks_ingame.Add(i);
             
                 spawner.setPlayer(currentID, aux);
                 spawner.activatePlayer(currentID);
                 playerTexts.GetChild(currentID).gameObject.SetActive(true);
-                playerTexts.GetChild(currentID).GetComponentInChildren<Text>().text = generated_ID_name + " has entered the game." +
-                "\n <color=grey> (" + joystick_names[i] + ") </color>";
+                playerTexts.GetChild(currentID).GetComponentInChildren<TextMeshProUGUI>().text = "<b>" + 
+                    "<color=#" + HushPuppy.ColorToHex((Color32) generated_color.color) + ">" + 
+                    generated_ID_name + "</color></b> has entered the game." +
+                    "\n <color=#555555> (" + joystick_names[i] + ") </color>";
 
                 currentID++;
 
             } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
                 //get another color and name
                 int player_ID = get_player_entry_ID(i);
-                Color aux = get_another_random_color(players[player_ID].color);
+                PlayerColor aux = get_another_random_color(players[player_ID].palette);
                 string new_name = generate_name();
-                players[player_ID].color = aux;
+                players[player_ID].palette = aux;
                 players[player_ID].name = new_name;
                 
                 spawner.setPlayer(player_ID, players[player_ID]);
-                playerTexts.GetChild(player_ID).GetComponentInChildren<Text>().text = new_name + " has entered the game." +
-                "\n <color=grey> (" + joystick_names[i] + ") </color>";
+                playerTexts.GetChild(player_ID).GetComponentInChildren<TextMeshProUGUI>().text = "<b>" + 
+                    "<color=#" + HushPuppy.ColorToHex((Color32) aux.color) + ">" + 
+                    new_name + "</color></b> has entered the game." +
+                    "\n <color=#555555> (" + joystick_names[i] + ") </color>";
             } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
                 //player is ready
                 int player_ID = get_player_entry_ID(i);
@@ -123,27 +136,27 @@ public class PlayerDatabase : MonoBehaviour {
 
     #region Random Color Generator
     void reset_available_colors() {
-        current_color_pool.AddRange(original_color_pool);
+        current_colors_pool.AddRange(original_colors_pool);
     }
 
-    Color get_first_random_color() {
-        int i = Random.Range(0, current_color_pool.Count);
-        Color output = current_color_pool[i];
-        current_color_pool.Remove(output);
+    PlayerColor get_first_random_color() {
+        int i = Random.Range(0, current_colors_pool.Count);
+        PlayerColor output = current_colors_pool[i];
+        current_colors_pool.Remove(output);
 
         //pool of colors is empty. fill it with all original colors (may repeat colors)
-        if (current_color_pool.Count == 0) {
+        if (current_colors_pool.Count == 0) {
             reset_available_colors();
         }
 
         return output;
     }
 
-    Color get_another_random_color(Color current_color) {
-        int i = Random.Range(0, current_color_pool.Count);
-        Color output = current_color_pool[i];
-        current_color_pool.Remove(output);
-        current_color_pool.Add(current_color);
+    PlayerColor get_another_random_color(PlayerColor current_color) {
+        int i = Random.Range(0, current_colors_pool.Count);
+        PlayerColor output = current_colors_pool[i];
+        current_colors_pool.Remove(output);
+        current_colors_pool.Add(current_color);
         return output;
     }
 

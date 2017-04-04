@@ -5,9 +5,18 @@ public class MushroomCloud : MonoBehaviour {
     [SerializeField]
     ParticleSystem partSystem;
 
-    public void setMushroomCloud(float duration, Vector3 scale) {
-        StartCoroutine(kill(duration));
+    public int playerID;
 
+    public void setMushroomCloud(float duration, Vector3 scale, Color cloud_color, int playerID) {
+        StartCoroutine(kill(duration));
+    
+        this.playerID = playerID;
+        ParticleSystem.MainModule aux = partSystem.main;
+        aux.startColor = new Color(cloud_color.r + 0.2f, 
+            cloud_color.g + 0.2f,
+            cloud_color.b + 0.2f,
+            1f);
+        
         float modifier = scale.x;
         float maxScale = 2f;
         if (scale.x > maxScale) modifier = maxScale;

@@ -7,7 +7,8 @@ public class PlayerItemUser : MonoBehaviour {
                         ghost,
                         bomb,
                         mushroom,
-                        coffee;
+                        coffee_start,
+                        coffee_end;
     public event useItem healStart, healEnd;
 
 	ItemSpawner item_spawner;
@@ -41,11 +42,12 @@ public class PlayerItemUser : MonoBehaviour {
                 use_bomb();
                 break;
             case ItemType.MUSHROOM:
-                //mushroom();
+                if (mushroom != null) {
+                    mushroom();
+                }
                 use_mushroom(item_data);
                 break;
             case ItemType.COFFEE:
-                //coffee();
                 use_coffee(item_data);
                 break;
             case ItemType.AIMBOT:
@@ -72,9 +74,11 @@ public class PlayerItemUser : MonoBehaviour {
 	void use_triangle(ItemData data) { StartCoroutine(use_triangle_(data)); }
     IEnumerator use_triangle_(ItemData data) {
         player.toggleTriangle(true);
-        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 3 / 5f);
-        Coroutine blink = StartCoroutine(player.start_blink());
-		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 2 / 5f);
+        
+        Coroutine blink = StartCoroutine(player.start_blink(Time.time + data.cooldown));
+        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 0.5f);
+		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 0.5f);
+
         StopCoroutine(blink);
         player.end_blink();
         player.toggleTriangle(false);
@@ -122,19 +126,30 @@ public class PlayerItemUser : MonoBehaviour {
 
     //cogumelo
     void use_mushroom(ItemData data) {
+        this.transform.GetComponentInChildren<Rigidbody2D>().velocity += new Vector2(this.transform.up.x,
+            this.transform.up.y) * (player.chargeBuildup + 1f);
         item_spawner.createMushroomCloud(this.transform, data.cooldown);
+        player.reset_charge();
     }
     
     //cafe
     void use_coffee(ItemData data) { StartCoroutine(use_coffee_(data)); }
     IEnumerator use_coffee_(ItemData data) {
+        if (coffee_start != null) {
+            coffee_start();
+        }
+
         player.data.speed *= 3;
         player.data.chargeForce *= 3;
-        player.GetComponent<PlayerParticleSystems>().trail_length_modifier *= 20;
+        // player.GetComponent<PlayerParticleSystems>().trail_length_modifier *= 20;
 
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
 
-        player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
+        if (coffee_end != null) {
+            coffee_end();
+        }
+
+        // player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
         player.data.speed /= 3;
         player.data.chargeForce /= 3;        
     }
@@ -142,14 +157,14 @@ public class PlayerItemUser : MonoBehaviour {
     //aimbot
     void use_aimbot(ItemData data) { StartCoroutine(use_aimbot_(data)); }
     IEnumerator use_aimbot_(ItemData data) {
-        player.aimbot_active = true;
+        player.start_emitting_aimbot(data.cooldown);
 
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown);
 
-        player.aimbot_active = false;
+        player.end_emitting_aimbot();
         GameObject[] players = Player.getAllPlayers();
         for (int i = 0; i < players.Length; i++) {
-            players[i].GetComponent<Player>().end_aimbot();
+            players[i].GetComponent<Player>().end_receiving_aimbot();
         }
     }
 }

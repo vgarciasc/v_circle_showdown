@@ -28,7 +28,7 @@ public class Bomb : MonoBehaviour, ISmashable {
         this.GetComponent<Rigidbody2D>().velocity = direction * 30f * (charge + 50) / 100f;
         this.transform.localScale = scale;
         if (this.transform.localScale.x > 2f)
-            this.transform.localScale = new Vector3(2f, 2f);
+            this.transform.localScale = new Vector3(2f, 2f, 2f);
     }
 
     IEnumerator deathCount() {
@@ -61,6 +61,9 @@ public class Bomb : MonoBehaviour, ISmashable {
         alreadyExploded = true;
         screenShake();
         explosion.SetActive(true);
+        this.GetComponentInChildren<SpriteRenderer>().enabled = false;
+        this.GetComponentsInChildren<ParticleSystem>()[0].Play();
+        this.GetComponentsInChildren<ParticleSystem>()[1].Play();
         animator.SetTrigger("explode");
     }
 

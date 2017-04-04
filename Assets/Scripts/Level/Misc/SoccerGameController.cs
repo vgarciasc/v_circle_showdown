@@ -82,13 +82,13 @@ public class SoccerGameController : MonoBehaviour {
 		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 		for (int i = 0; i < players.Length; i++) {
 			sendPlayer(players[i].GetComponent<Player>(), team_markers[i % 2]);
-			goals[i % 2].colors.Add(players[i].GetComponent<Player>().color);
+			goals[i % 2].colors.Add(players[i].GetComponent<Player>().palette.color);
 		}
 	}
 
 	void sendPlayer(Player player, Transform team_marker) {
 		GameObject aux = Instantiate(soccerPlayerTeamMarker, team_marker, false);
-		aux.GetComponent<Image>().color = player.color;
+		aux.GetComponent<Image>().color = player.palette.color;
 		player.id_death_event += respawnPlayer;
 	}
 

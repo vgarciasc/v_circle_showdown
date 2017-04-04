@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class PlayerUIMarker : MonoBehaviour{
     RectTransform canvasRt;
     Vector3 originalScale;
     enum Border { None, Right, Left, Top, Bottom };
 
+    TextMeshProUGUI time;
+
     void Awake() {
+        time = this.GetComponentInChildren<TextMeshProUGUI>();
         originalScale = this.transform.localScale;
     }
 
@@ -18,6 +22,7 @@ public class PlayerUIMarker : MonoBehaviour{
     public void playerKilled_() { StartCoroutine(playerKilled()); }
     IEnumerator playerKilled() {
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(1.0f);
+        setTime(false);
         HushPuppy.fadeImgOut(this.gameObject, 0.5f);
     }
 
@@ -87,6 +92,7 @@ public class PlayerUIMarker : MonoBehaviour{
                 break;
             case Border.None:
                 toggleMarker(false);
+                setTime(false);
                 break;
         }
     }
@@ -94,4 +100,14 @@ public class PlayerUIMarker : MonoBehaviour{
     void toggleMarker(bool value) {
         this.GetComponent<Image>().enabled = value;
     }
+
+    #region Time Shenanigans
+    public void setTime(float time) {
+        this.time.enabled = true;
+        this.time.text = time.ToString();
+    }
+
+    public void setTime(bool value) {
+        this.time.enabled = value; }
+    #endregion
 }

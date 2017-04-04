@@ -18,7 +18,7 @@ public class PlayerUIManager : MonoBehaviour {
 	void Start() {
 		player = (Player) HushPuppy.safeComponent(this.gameObject, "Player");
 
-		this.player_color = player.color;
+		this.player_color = player.palette.color;
 		this.player_ID = player.ID;
 		this.player_name = player.playername;
 		
@@ -81,11 +81,11 @@ public class PlayerUIManager : MonoBehaviour {
 		float timeLeft = player.originalData.maxSecondsOutOfScreen;
 		while (SceneManager.GetActiveScene().name != "GameOver") {
 			if (player.should_be_visible) {
-				if (this.GetComponent<SpriteRenderer>().isVisible) {
+				if (this.GetComponentInChildren<SpriteRenderer>().isVisible) {
 					timeLeft = player.originalData.maxSecondsOutOfScreen;
-					status.setTime(false);
+					marker.setTime(false);
 				} else {
-					status.setTime(timeLeft--);
+					marker.setTime(timeLeft--);
 				}
 
 				if (timeLeft < 0) player.timeOut();

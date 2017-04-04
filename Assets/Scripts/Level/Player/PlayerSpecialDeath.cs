@@ -24,7 +24,7 @@ public class PlayerSpecialDeath : MonoBehaviour {
 			GameObject aux = (GameObject) Instantiate(mini_triangle);
 			aux.transform.localScale = this.transform.localScale / 2f;
 			aux.transform.position = this.transform.position;
-			aux.GetComponent<SpriteRenderer>().color = player.color;
+			aux.GetComponent<SpriteRenderer>().color = player.palette.color;
 			aux.GetComponent<Rigidbody2D>().AddForce(initial_direction * 20, ForceMode2D.Impulse);
 		}
 	}

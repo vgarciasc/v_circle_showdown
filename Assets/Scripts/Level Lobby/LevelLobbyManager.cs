@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [System.Serializable]
 public class Map {
@@ -35,7 +36,7 @@ public class LevelLobbyManager : MonoBehaviour {
 	[SerializeField]
 	Image mapPreviewRight;
 	[SerializeField]
-	Text mapName;
+	TextMeshProUGUI mapName;
 
 	[SerializeField]
 	List<Map> maps;
@@ -60,7 +61,7 @@ public class LevelLobbyManager : MonoBehaviour {
 										false);
 			playerSelections.Add(aux.transform);
 			playersConfirmed.Add(false);
-			playerSelections[i].GetComponentsInChildren<Image>()[1].color = pdatabase.players[i].color;
+			playerSelections[i].GetComponentsInChildren<Image>()[1].color = pdatabase.players[i].palette.color;
 			playerSelections[i].GetComponentsInChildren<Image>()[0].color = disabledColor;
 		}
 
@@ -88,21 +89,23 @@ public class LevelLobbyManager : MonoBehaviour {
 			}
 
 			if (Input.GetButtonDown("Submit_J" + i)) {
-				toggle_player_confirmed(i);
+				StartCoroutine(toggle_player_confirmed(pdatabase.get_player_entry_ID(i)));
 			}
 		}
 	}
 	
-	void toggle_player_confirmed(int player_index) {
+	IEnumerator toggle_player_confirmed(int player_index) {
 		if (!playersConfirmed[player_index]) {
 			playerSelections[player_index].GetComponentsInChildren<Image>()[0].color = enabledColor;
 			playerSelections[player_index].GetComponent<Animator>().SetBool("active", true);
+			yield return new WaitForSeconds(0.5f);
 			numberOfPlayersConfirmed++;
 
 		}	
 		else {
 			playerSelections[player_index].GetComponentsInChildren<Image>()[0].color = disabledColor;
 			playerSelections[player_index].GetComponent<Animator>().SetBool("active", false);
+			yield return new WaitForSeconds(0.5f);
 			numberOfPlayersConfirmed--;
 
 		}

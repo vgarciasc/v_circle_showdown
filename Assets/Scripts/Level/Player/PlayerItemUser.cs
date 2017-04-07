@@ -71,23 +71,41 @@ public class PlayerItemUser : MonoBehaviour {
 	}
 
     //triangulo
-	void use_triangle(ItemData data) { StartCoroutine(use_triangle_(data)); }
+	Coroutine triangle_coroutine;
+    Coroutine player_triangle_blink_coroutine;
+    
+    void use_triangle(ItemData data) {
+        if (triangle_coroutine != null) {
+            StopCoroutine(triangle_coroutine);
+        }
+        
+        triangle_coroutine = StartCoroutine(use_triangle_(data));
+    }
+
     IEnumerator use_triangle_(ItemData data) {
         player.toggleTriangle(true);
         if (triangle_start != null) {
             triangle_start();
         }
         
-        Coroutine blink = StartCoroutine(player.start_blink(Time.time + data.cooldown));
+        if (player_triangle_blink_coroutine != null) {
+            StopCoroutine(player_triangle_blink_coroutine);
+        }
+
+        player_triangle_blink_coroutine = StartCoroutine(player.start_blink(Time.time + data.cooldown));
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 0.5f);
 		yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(data.cooldown * 0.5f);
 
-        StopCoroutine(blink);
+        StopCoroutine(player_triangle_blink_coroutine);
+        player_triangle_blink_coroutine = null;
+
         player.end_blink();
         player.toggleTriangle(false);
         if (triangle_end != null) {
             triangle_end();
         }
+
+        triangle_coroutine = null;
     }
 
     //fantasma

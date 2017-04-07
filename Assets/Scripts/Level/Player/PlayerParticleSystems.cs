@@ -215,7 +215,9 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void end_trail_renderer() {
-		Destroy(current_trail.gameObject);
-		current_trail = null;
+		if (current_trail != null) {
+			Destroy(current_trail.gameObject);
+			current_trail = null;
+		}
 	}
 }

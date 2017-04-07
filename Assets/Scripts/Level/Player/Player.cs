@@ -652,8 +652,6 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void useItem(ItemData itemData) {
-        Debug.Log("currentItem: " + currentItem);
-        Debug.Log("itemData: " + itemData);
         if (itemData == null) return;
 
         use_item_event(itemData);

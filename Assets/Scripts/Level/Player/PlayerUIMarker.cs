@@ -103,6 +103,11 @@ public class PlayerUIMarker : MonoBehaviour{
 
     #region Time Shenanigans
     public void setTime(float time) {
+        if (time < 0f) {
+            setTime(false);
+            return;
+        }
+
         this.time.enabled = true;
         this.time.text = time.ToString();
     }

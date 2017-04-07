@@ -9,6 +9,11 @@ public class SpawnLocations : MonoBehaviour {
     List<Transform> locations = new List<Transform>();
     List<Transform> unusedLocations = new List<Transform>();
 
+    [SerializeField]
+    List<Transform> hardLocations = new List<Transform>();
+    [SerializeField]
+    bool useHardLocations = false;
+
     void Start () {
         getLocations();
         resetUnusedLocations();
@@ -28,6 +33,10 @@ public class SpawnLocations : MonoBehaviour {
 
     #region Public Interface
     public Vector3 getRandomLocation() {
+        if (useHardLocations) {
+            return hardLocations[Random.Range(0, hardLocations.Count)].position;
+        }
+
         return locations[Random.Range(0, locations.Count)].position;
     }
 

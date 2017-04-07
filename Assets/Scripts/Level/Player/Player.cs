@@ -66,7 +66,6 @@ public class Player : MonoBehaviour, ISmashable {
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
-    TrailRenderer trenderer;
 
     /*Reset variables*/
     Color border_color;
@@ -114,7 +113,6 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
-        trenderer = GetComponent<TrailRenderer>();
 
         /*Init functions*/
         createJoystickInput();
@@ -189,6 +187,13 @@ public class Player : MonoBehaviour, ISmashable {
             release_charge(1f);
         if (Input.GetButtonDown(jsFire2))
             useItem(currentItem);
+
+        if (Input.GetButtonDown(jsFire3)) {
+            this.rb.angularDrag = 2f;
+        }
+        if (Input.GetButtonUp(jsFire3)) {
+            this.rb.angularDrag = 0.5f;
+        }
     }
 
     void jump() {
@@ -249,7 +254,8 @@ public class Player : MonoBehaviour, ISmashable {
                 getItem(target.gameObject.GetComponent<Item>());
                 break;
             case "Nebula":
-                if (target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
+                if (target.gameObject.GetComponentInParent<MushroomCloud>() == null ||
+                    target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
                     changeSize(0.005f + 0.01f * chargeBuildup / 100f);
                 }
                 break;
@@ -320,6 +326,7 @@ public class Player : MonoBehaviour, ISmashable {
     void killPlayer() {
         if (is_dead) return;
 
+        end_receiving_aimbot();
         foreach (CircleCollider2D c in this.GetComponentsInChildren<CircleCollider2D>()) {
             c.enabled = false;
         }
@@ -330,7 +337,6 @@ public class Player : MonoBehaviour, ISmashable {
             StartCoroutine(slowmo(3.0f));
         }
         
-        end_receiving_aimbot();
         anim.enabled = true;
         circleCollider.enabled = false;
         triangleCollider.enabled = false;
@@ -631,6 +637,10 @@ public class Player : MonoBehaviour, ISmashable {
 
     #region Item
     void getItem(Item item) {
+        if (item.data == null) {
+            return;
+        }
+
         if (item.data.type == ItemType.BLACK_HOLE) {
             item.activateBlackHole();
             return;
@@ -642,6 +652,8 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void useItem(ItemData itemData) {
+        Debug.Log("currentItem: " + currentItem);
+        Debug.Log("itemData: " + itemData);
         if (itemData == null) return;
 
         use_item_event(itemData);
@@ -662,7 +674,6 @@ public class Player : MonoBehaviour, ISmashable {
         toggleChargeIndicator(!value);
         toggleTriangleDetection(value);
         circleCollider.enabled = !value;
-        trenderer.enabled = !value;
         triangleCollider.enabled = value;
         reset_charge();
     }
@@ -741,6 +752,13 @@ public class Player : MonoBehaviour, ISmashable {
     Coroutine aimbot_blinking = null;
 
     public void start_emitting_aimbot(float duration) {
+        if (aimbot_active) {
+            GameObject[] players = Player.getAllPlayers();
+            for (int i = 0; i < players.Length; i++) {
+                players[i].GetComponent<Player>().end_receiving_aimbot();
+            }
+        }
+
         aimbot_duration = duration;
         aimbot_startTimestamp = Time.time;
         aimbot_active = true;
@@ -751,7 +769,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void start_receiving_aimbot(Player targeter, float startTimestamp, float duration) {
-        if (is_receiving_aimbot) {
+        if (is_receiving_aimbot || is_dead) {
             return;
         }
 
@@ -766,13 +784,12 @@ public class Player : MonoBehaviour, ISmashable {
 
     public void end_receiving_aimbot() {
         is_receiving_aimbot = false;
+        aimbotTarget.SetActive(false);
 
         if (aimbot_blinking != null) {
             StopCoroutine(aimbot_blinking);
             aimbot_blinking = null;
         }
-
-        aimbotTarget.SetActive(false);
     }
 
     IEnumerator start_blinking_aimbot(float startTime, float duration) {

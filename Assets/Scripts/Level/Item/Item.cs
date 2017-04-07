@@ -60,6 +60,8 @@ public class Item : MonoBehaviour {
     }
 
     public void destroy() {
+        this.data = null;
+
         psystem_destroy.Play();
         psystem_idle.Stop();
         itemSpawner.setItemInGame(false);

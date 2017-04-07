@@ -16,6 +16,8 @@ public class SceneLoader : MonoBehaviour {
     }
 
     public void LoadLevel(string ID) {
+        ShowdownPanelAnimation.EnteringNewLevel();
+        
         string level_name = "Level" + ID;
         SceneManager.LoadScene(level_name);
         VictoriesManager.getVictoriesManager().reset_victories();

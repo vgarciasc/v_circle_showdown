@@ -79,7 +79,8 @@ public class PlayerUIStatus : MonoBehaviour {
 
     #region Item Hsneanigans
     public void showItem(ItemData item) {
-        if (carriedItem.sprite.name == item.sprite.name) {
+        if (carriedItem.enabled &&
+            carriedItem.sprite.name == item.sprite.name) {
             return;
         }
         carriedItem.enabled = true;

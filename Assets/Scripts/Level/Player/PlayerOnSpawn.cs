@@ -23,13 +23,15 @@ public class PlayerOnSpawn : MonoBehaviour {
 
     #region On Spawn
     IEnumerator spawn_animation() {
-        StartCoroutine(circle_animation_color());
+
+        // StartCoroutine(circle_animation_color());
 
         player.toggle_visibility(false);
         player.toggle_block_all_input(true);
         RigidbodyConstraints2D rb_original_constraints = rb.constraints;
         
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        yield return new WaitUntil(() => !ShowdownPanelAnimation.playerMustWaitUntilSpawn);
         yield return new WaitForSeconds(0.5f);
 
         Vector3 max_scale = white_circle.localScale;
@@ -54,15 +56,18 @@ public class PlayerOnSpawn : MonoBehaviour {
     }
     
     IEnumerator circle_animation_color() {
-        int iterations = 200;
+        int iterations = 10;
 
         for (int i = 0; i < iterations; i++) {
-            white_circle.GetComponent<SpriteRenderer>().color = Color.Lerp(player.palette.gradient.colorKeys[0].color,
-                player.palette.gradient.colorKeys[1].color,
-                i / iterations);
+            white_circle.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white,
+                Color.black,
+                i / (float) iterations);
 
+            if (player.ID == 0) {
+                Debug.Log("Cor: " + white_circle.GetComponent<SpriteRenderer>().color);
+            }
             //1.5f is duration of animation (see other function above)
-            yield return new WaitForSeconds(1.5f / iterations);
+            yield return HushPuppy.WaitForEndOfFrames((int) (0.5f * 30f / iterations));
         }    
     }
 

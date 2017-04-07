@@ -51,10 +51,33 @@ public class GameController : MonoBehaviour {
 
         if (game_winner == -1) {
             //jogador ganhou partida mas nao o jogo
-            SceneLoader.getSceneLoader().ResetLevel();
+            StartCoroutine(wait_transition_reset_level());
         } else {
             //jogador ganhou o jogo
-            SceneLoader.getSceneLoader().GameOver();
+            StartCoroutine(wait_transition_game_over(game_winner));
         }
+    }
+
+    IEnumerator wait_transition_reset_level() {
+        ScreenTransitionAnimation screenTransition = ScreenTransitionAnimation.getScreenTransitionAnimation();
+        
+        ScreenTransitionAnimation.palette = Color.black;
+        screenTransition.start_animation();
+
+        yield return new WaitUntil(() => screenTransition.transition_show_ended);
+
+        SceneLoader.getSceneLoader().ResetLevel();
+    }
+
+    IEnumerator wait_transition_game_over(int game_winner_ID) {
+        Color aux = PlayerDatabase.getPlayerDatabase().players[game_winner_ID].palette.color;
+        ScreenTransitionAnimation screenTransition = ScreenTransitionAnimation.getScreenTransitionAnimation();
+
+        ScreenTransitionAnimation.palette = aux;
+        screenTransition.start_animation();
+
+        yield return new WaitUntil(() => screenTransition.transition_show_ended);
+
+        SceneLoader.getSceneLoader().GameOver();
     }
 }

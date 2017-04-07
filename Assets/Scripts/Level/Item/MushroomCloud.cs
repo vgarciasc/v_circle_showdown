@@ -12,9 +12,9 @@ public class MushroomCloud : MonoBehaviour {
     
         this.playerID = playerID;
         ParticleSystem.MainModule aux = partSystem.main;
-        aux.startColor = new Color(cloud_color.r + 0.2f, 
-            cloud_color.g + 0.2f,
-            cloud_color.b + 0.2f,
+        aux.startColor = new Color(cloud_color.r - 0.3f, 
+            cloud_color.g - 0.3f,
+            cloud_color.b - 0.34f,
             1f);
         
         float modifier = scale.x;

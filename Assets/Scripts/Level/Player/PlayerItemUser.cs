@@ -161,7 +161,16 @@ public class PlayerItemUser : MonoBehaviour {
     }
 
     //aimbot
-    void use_aimbot(ItemData data) { StartCoroutine(use_aimbot_(data)); }
+    Coroutine aimbot_coroutine = null;
+
+    void use_aimbot(ItemData data) {
+        if (aimbot_coroutine != null) {
+            StopCoroutine(aimbot_coroutine);
+        }
+
+        aimbot_coroutine = StartCoroutine(use_aimbot_(data));
+    }
+
     IEnumerator use_aimbot_(ItemData data) {
         player.start_emitting_aimbot(data.cooldown);
 
@@ -172,5 +181,7 @@ public class PlayerItemUser : MonoBehaviour {
         for (int i = 0; i < players.Length; i++) {
             players[i].GetComponent<Player>().end_receiving_aimbot();
         }
+
+        aimbot_coroutine = null;
     }
 }

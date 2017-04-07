@@ -252,7 +252,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011800157578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.4376042, y: -7.5526943, z: 0}
+  m_LocalPosition: {x: 19.36, y: -7.5526943, z: 0}
   m_LocalScale: {x: 1.5468069, y: 1.5468069, z: 3.0936139}
   m_Children:
   - {fileID: 4180522890757152}
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ecc368ad0b0984889653d1e1a66f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: c0bee9c33b60ce143882356d74a617c3, type: 2}
+  data: {fileID: 11400000, guid: 1d4830a8d8c983e439bdebd50772fd10, type: 2}
   blackhole: {fileID: 1000011593831764, guid: 584e127e0e08b5a4a86a4cbcab9bae6f, type: 2}
   sprite: {fileID: 1529151332722908}
   sprite_outline: {fileID: 1000013290575004}
@@ -466,7 +466,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -770540015
+  randomSeed: -1375011530
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3061,7 +3061,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1017786484664954}
   serializedVersion: 5
-  lengthInSec: 0.5
+  lengthInSec: 0.25
   speed: 1
   looping: 0
   prewarm: 0
@@ -3109,7 +3109,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1614574576
+  randomSeed: -1514479765
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3552,7 +3552,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 100
+      scalar: 150
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5693,7 +5693,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 4
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5743,7 +5743,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 4
+  m_SortingOrder: -1
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5861,7 +5861,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0
@@ -5931,7 +5931,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0

@@ -8,8 +8,9 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 	Transform container;
 
 	public bool transition_show_ended = false;
+	public bool transition_unshow_ended = false;
 
-	public static Color palette = Color.black;
+	static Color temporary_color;
 
 	public static ScreenTransitionAnimation getScreenTransitionAnimation() {
 		return (ScreenTransitionAnimation) HushPuppy.safeFindComponent("ScreenAnimation", "ScreenTransitionAnimation");
@@ -18,12 +19,16 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 	void Start () {
 		container = this.transform.GetChild(0);
 		container.gameObject.SetActive(true);
-		set_color(palette);
+		set_color(temporary_color);
 
 		StartCoroutine(unshow());
 	}
 
 	void set_color(Color color) {
+		if (color == Color.clear) {
+			return;
+		}
+
 		foreach (Transform t in container) {
 			Color aux1 = new Color(t.GetComponent<Image>().color.r,
 				t.GetComponent<Image>().color.g,
@@ -33,10 +38,13 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 				aux1.b + color.b * 0.15f);
 			t.GetComponent<Image>().color = aux2;
 		}
+
+		temporary_color = Color.clear;
 	}
 
-	public void start_animation() {
+	public void start_animation(Color palette) {
 		set_color(palette);
+		temporary_color = palette;
 		StartCoroutine(show());
 	}	
 
@@ -56,6 +64,8 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 	}
 
 	IEnumerator unshow() {
+		transition_unshow_ended = false;
+
 		yield return new WaitForSeconds(0.25f);
 
 		foreach (Transform t in container) {
@@ -64,6 +74,7 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 		}
 
 		yield return new WaitForSeconds(0.8f);
+		transition_unshow_ended = true;
 
 		foreach (Transform t in container) {
 			t.localScale = Vector3.zero;

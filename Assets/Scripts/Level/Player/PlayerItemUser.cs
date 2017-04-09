@@ -9,7 +9,8 @@ public class PlayerItemUser : MonoBehaviour {
                         bomb,
                         mushroom,
                         coffee_start,
-                        coffee_end;
+                        coffee_end,
+                        double_coffee;
     public event useItem healStart, healEnd;
 
 	ItemSpawner item_spawner;
@@ -53,6 +54,9 @@ public class PlayerItemUser : MonoBehaviour {
             case ItemType.AIMBOT:
                 //aimbot();
                 use_aimbot(item_data);
+                break;
+            case ItemType.HEALBOMB:
+                use_healbomb(item_data);
                 break;
             default:
                 break;
@@ -156,13 +160,20 @@ public class PlayerItemUser : MonoBehaviour {
         player.reset_charge();
     }
     
+    bool using_coffee = false;
+
     //cafe
     void use_coffee(ItemData data) { StartCoroutine(use_coffee_(data)); }
     IEnumerator use_coffee_(ItemData data) {
+        if (using_coffee && double_coffee != null) {
+            double_coffee();
+        }
+
         if (coffee_start != null) {
             coffee_start();
         }
 
+        using_coffee = true;
         player.data.speed *= 3;
         player.data.chargeForce *= 3;
         // player.GetComponent<PlayerParticleSystems>().trail_length_modifier *= 20;
@@ -174,6 +185,7 @@ public class PlayerItemUser : MonoBehaviour {
         }
 
         // player.GetComponent<PlayerParticleSystems>().trail_length_modifier /= 20;
+        using_coffee = false;
         player.data.speed /= 3;
         player.data.chargeForce /= 3;        
     }
@@ -201,5 +213,13 @@ public class PlayerItemUser : MonoBehaviour {
         }
 
         aimbot_coroutine = null;
+    }
+
+    //healbomb
+    void use_healbomb(ItemData data) {
+        item_spawner.createHealbomb(this.transform,
+							player.cannonPosition.transform,
+							player.chargeBuildup);
+        player.reset_charge();
     }
 }

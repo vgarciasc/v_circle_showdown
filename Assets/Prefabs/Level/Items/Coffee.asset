@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Name: Coffee
   m_EditorClassIdentifier: 
   cooldown: 10
-  sprite: {fileID: 21300000, guid: 19177dd5e16124a43b241f932204577b, type: 3}
+  sprite: {fileID: 21300000, guid: 3f8a476d710bbb341a02e91a66e07f7e, type: 3}
   type: 8

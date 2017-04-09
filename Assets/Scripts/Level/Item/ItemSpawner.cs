@@ -11,6 +11,8 @@ public class ItemSpawner : MonoBehaviour {
     [SerializeField]
     GameObject bombPrefab;
     [SerializeField]
+    GameObject healbombPrefab;
+    [SerializeField]
     GameObject mushroomCloudPrefab;
 
     [Header("Level Specifications")]
@@ -78,6 +80,19 @@ public class ItemSpawner : MonoBehaviour {
     #region Bomb
     public void createBomb(Transform player, Transform cannon, float power) {
         Bomb bomb = Instantiate(bombPrefab).GetComponent<Bomb>();
+        bomb.transform.position = cannon.position;
+
+        Vector3 bomb_scale = new Vector3(player.localScale.x,
+                                        player.localScale.x,
+                                        player.localScale.x);
+        bomb.transform.GetComponent<Rigidbody2D>().angularVelocity = 600f;
+        bomb.setBomb(player.up, bomb_scale, power);
+    }
+    #endregion
+
+    #region Heal Bomb
+    public void createHealbomb(Transform player, Transform cannon, float power) {
+        Healbomb bomb = Instantiate(healbombPrefab).GetComponent<Healbomb>();
         bomb.transform.position = cannon.position;
 
         Vector3 bomb_scale = new Vector3(player.localScale.x,

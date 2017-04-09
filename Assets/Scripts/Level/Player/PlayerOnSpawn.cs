@@ -31,8 +31,8 @@ public class PlayerOnSpawn : MonoBehaviour {
         RigidbodyConstraints2D rb_original_constraints = rb.constraints;
         
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        yield return new WaitUntil(() => !ShowdownPanelAnimation.playerMustWaitUntilSpawn);
         yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(() => !ShowdownPanelAnimation.shouldPlayAnimation);
 
         Vector3 max_scale = white_circle.localScale;
         white_circle.localScale = Vector3.zero;

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Name: Herbalife
   m_EditorClassIdentifier: 
   cooldown: 5
-  sprite: {fileID: 21300000, guid: 34fd016b491acc448b94858d097f445d, type: 3}
+  sprite: {fileID: 21300000, guid: b00da4fc1cefdfc47833e146d6ecf0e6, type: 3}
   type: 2

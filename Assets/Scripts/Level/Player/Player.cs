@@ -47,7 +47,8 @@ public class Player : MonoBehaviour, ISmashable {
     public delegate void VoidDelegate();
     public event VoidDelegate death_event,
                             bomb_event,
-                            victory_event;
+                            victory_event,
+                            jump_event;
     public delegate void VisibleDelegate(bool value);
     public event VisibleDelegate visible_event;
     public delegate void IdentifiedVoidDelegate(PlayerInstance instance);
@@ -72,7 +73,9 @@ public class Player : MonoBehaviour, ISmashable {
 
     /*Joystick Input*/
     string jsHorizontal,
+        jsHorizontalRight,
         jsVertical,
+        jsVerticalRight,
         jsFire1,
         jsFire2,
         jsFire3,
@@ -122,6 +125,7 @@ public class Player : MonoBehaviour, ISmashable {
         StartCoroutine(handleAlmostMaxSize());
         StartCoroutine(grow());
         initPlayerData();
+        initDelegates();
     }
 
     void FixedUpdate() {
@@ -140,6 +144,10 @@ public class Player : MonoBehaviour, ISmashable {
 
     void initPlayerData() {
         data = (PlayerData) Instantiate(originalData);
+    }
+
+    void initDelegates() {
+        this.GetComponent<PlayerItemUser>().double_coffee += killPlayer;
     }
 
     #region Spritefest
@@ -165,8 +173,12 @@ public class Player : MonoBehaviour, ISmashable {
         jsFire2 = "Fire2" + joystick;
         jsFire3 = "Fire3" + joystick;
         jsHorizontal = "Horizontal" + joystick;
+        jsHorizontalRight = "Horizontal2" + joystick;
         jsVertical = "Vertical" + joystick;
+        jsVerticalRight = "Vertical2" + joystick;
     }
+
+    bool alternate_input = false;
 
     void handleInput() {
         if (Input.GetKeyDown(KeyCode.K))
@@ -191,14 +203,47 @@ public class Player : MonoBehaviour, ISmashable {
         if (Input.GetButtonDown(jsFire3)) {
             this.rb.angularDrag = 2f;
         }
-        if (Input.GetButtonUp(jsFire3)) {
-            this.rb.angularDrag = 0.5f;
+
+        if (Input.GetKeyDown(KeyCode.Equals)) {
+            alternate_input = !alternate_input;
+        }
+
+        if (alternate_input) {
+            float h_mov2, v_mov2;
+            h_mov2 = Input.GetAxis(jsHorizontalRight);
+            v_mov2 = Input.GetAxis(jsVerticalRight);
+
+            if (joystick == "_J0") {
+                h_mov2 = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position).x;
+                v_mov2 = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position).y;            
+            }
+
+            if (joystick == "_J0") {
+                if (Input.GetButton("Fire1")) {
+                    increaseChargeBuildup();
+                }
+                if (Input.GetButtonUp("Fire1")) {
+                    release_charge(1f);
+                }
+                if (Input.GetButton("Fire2")) {
+                    useItem(currentItem);
+                }
+            }
+
+            if (Mathf.Abs(h_mov2 + v_mov2) > 0) {
+                this.transform.up = new Vector2(h_mov2, v_mov2);
+                rb.angularVelocity = 0f;
+            }
         }
     }
 
     void jump() {
         if (blockInput) return;
         rb.AddForce(new Vector2(0, data.jumpForce));
+
+        if (jump_event != null) {
+            jump_event();
+        }
     }
 
     void move(float movement) {
@@ -260,9 +305,7 @@ public class Player : MonoBehaviour, ISmashable {
                 }
                 break;
             case "Inverse Nebula":
-                if (target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
-                    changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
-                }
+                changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
                 break;
         }
     }
@@ -513,7 +556,7 @@ public class Player : MonoBehaviour, ISmashable {
         if (chargeBuildup >= data.maxChargeBuildup) {
             chargeBuildup = data.maxChargeBuildup;
             if (pulse == null) {
-                //pulse = StartCoroutine(pulsate_charge());
+                pulse = StartCoroutine(pulsate_charge());
             }
             return;
         }
@@ -555,17 +598,17 @@ public class Player : MonoBehaviour, ISmashable {
         Color initial_color = chargeIndicator.GetComponent<SpriteRenderer>().color;
         int i = 0;
         while (true) {
-            Vector3 vec = initial;
+            // Vector3 vec = initial;
 
-            float multiplier = (- Mathf.Cos((i/20f * Mathf.PI) / 2) + 1) / 8f;
+            // float multiplier = (- Mathf.Cos((i/20f * Mathf.PI) / 2) + 1) / 8f;
             Color col = Color.Lerp(initial_color,
-                                    Color.white, 
+                                    new Color(initial_color.r, initial_color.g, initial_color.b, 0.3f), 
                                     (- Mathf.Cos((i/5f * Mathf.PI) / 2) + 1) / 4f);
 
-            vec += new Vector3(multiplier, multiplier, multiplier);
+            // vec += new Vector3(multiplier, multiplier, multiplier);
 
             chargeIndicator.GetComponent<SpriteRenderer>().color = col;
-            chargeIndicator.transform.localScale = vec;
+            // chargeIndicator.transform.localScale = vec;
             i++;
             yield return new WaitForEndOfFrame();
         }

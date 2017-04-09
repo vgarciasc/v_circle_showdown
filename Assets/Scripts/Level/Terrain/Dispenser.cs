@@ -34,6 +34,10 @@ public class Dispenser : MonoBehaviour {
                 dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
             }
         }
+
+        if (target.gameObject.tag == "Bomb" && !pressed) {
+            dispenseObject(Vector3.Magnitude(target.gameObject.GetComponent<Rigidbody2D>().velocity));
+        }        
     }
 
     void Update() {
@@ -67,6 +71,12 @@ public class Dispenser : MonoBehaviour {
     void OnTriggerExit2D(Collider2D target) {
         if (target.gameObject.tag == "Player") {
             playerIsPressing[target.gameObject.GetComponentInChildren<Player>().ID] = false;
+            if (!cooldownOn) {
+                toggleButton(true);
+            }
+        }
+
+        if (target.gameObject.tag == "Bomb") {
             if (!cooldownOn) {
                 toggleButton(true);
             }

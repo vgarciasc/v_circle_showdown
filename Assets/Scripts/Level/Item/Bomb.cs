@@ -58,6 +58,10 @@ public class Bomb : MonoBehaviour, ISmashable {
     void explode() {
         if (alreadyExploded) return;
 
+        foreach (CircleCollider2D cc in this.GetComponentsInChildren<CircleCollider2D>()) {
+            cc.enabled = false;
+        }
+        
         alreadyExploded = true;
         screenShake();
         explosion.SetActive(true);

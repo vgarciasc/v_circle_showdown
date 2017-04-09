@@ -27,6 +27,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	TrailRenderer current_trail;
 
 	public float trail_length_modifier = 1f;
+	bool player_is_dead = false;
 
 	Coroutine trail_coroutine;
 
@@ -94,21 +95,19 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void death() {
-        explosion.gameObject.SetActive(true);
+		player_is_dead = true;
+        explosion.Play();
+		end_trail_renderer();
 	}
 
 	void heal_explosion_start() {
 		end_trail_renderer();		
-        heal.gameObject.SetActive(true);
+        heal.Play();
 	}
 
-	void heal_explosion_end() { StartCoroutine(heal_explosion_end_()); }
-	IEnumerator heal_explosion_end_() {
+	void heal_explosion_end() {
 		start_trail_renderer();
         heal.Stop();
-
-        yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(heal.startLifetime);
-        heal.gameObject.SetActive(false);
 	}
 
 	#region charge
@@ -174,6 +173,10 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void start_coffee_trail() {
+		if (player_is_dead) {
+			return;
+		}
+
 		coffee_item_using_trail.Play();
 	}
 	

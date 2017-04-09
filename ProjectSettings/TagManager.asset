@@ -24,6 +24,7 @@ TagManager:
   - FakePlayer
   - Skidrow
   - ScreenAnimation
+  - Bomb
   layers:
   - Default
   - TransparentFX

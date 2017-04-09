@@ -61,8 +61,7 @@ public class GameController : MonoBehaviour {
     IEnumerator wait_transition_reset_level() {
         ScreenTransitionAnimation screenTransition = ScreenTransitionAnimation.getScreenTransitionAnimation();
         
-        ScreenTransitionAnimation.palette = Color.black;
-        screenTransition.start_animation();
+        screenTransition.start_animation(Color.clear);
 
         yield return new WaitUntil(() => screenTransition.transition_show_ended);
 
@@ -73,8 +72,7 @@ public class GameController : MonoBehaviour {
         Color aux = PlayerDatabase.getPlayerDatabase().players[game_winner_ID].palette.color;
         ScreenTransitionAnimation screenTransition = ScreenTransitionAnimation.getScreenTransitionAnimation();
 
-        ScreenTransitionAnimation.palette = aux;
-        screenTransition.start_animation();
+        screenTransition.start_animation(aux);
 
         yield return new WaitUntil(() => screenTransition.transition_show_ended);
 

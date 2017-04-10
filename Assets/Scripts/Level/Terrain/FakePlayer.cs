@@ -10,41 +10,75 @@ public class FakePlayer : MonoBehaviour {
 	[SerializeField]
 	SpriteRenderer background;
 	[SerializeField]
+	ParticleSystem particleTrail;
+	[SerializeField]
+	GameObject chargeIndicator;
+	[SerializeField]
 	bool canJump = false;
 
 	Transform current_target;
 	Rigidbody2D rb;
+	PlayerColor palette;
+
+	float chargeBuildup = 0f;
+
+	bool charging = false;
 
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
+		particleTrail.Stop();
 
-		background.color = generate_random_color();
-		StartCoroutine(try_reach_target());
+		palette = generate_random_color();
+		init_colors();
+
+		// StartCoroutine(try_reach_target());
+		StartCoroutine(simulate_player());
 	}
 
-	Color generate_random_color() {
+	PlayerColor generate_random_color() {
 		PlayerDatabase pdatabase = PlayerDatabase.getPlayerDatabase();
-		if (pdatabase == null) {
-			return Color.grey;
-		}
+		List<PlayerColor> possible_colors = new List<PlayerColor>();
+		possible_colors.AddRange(pdatabase.original_colors_pool);
 
-		List<Color> possible_colors = new List<Color>();
-		possible_colors.AddRange(new List<Color> {Color.grey, Color.white});
-		Color random;
+		PlayerColor random;
 
 		random = possible_colors[Random.Range(0, possible_colors.Count)];
-		// List<Color> colors = new List<Color>() {Color.red, Color.green, Color.magenta,
-		// 										Color.cyan, Color.blue, Color.yellow};
-												
-		// random = colors[Random.Range(0, colors.Count)];
-		// float random_r, random_g, random_b;
-        // float saturation = Random.Range(0.2f, 0.4f);
-        // random_r = random.r += (saturation * -Mathf.Sign(random.r - 0.5f));
-        // random_g = random.g += (saturation * -Mathf.Sign(random.g - 0.5f));
-        // random_b = random.b += (saturation * -Mathf.Sign(random.b - 0.5f));
-		// random = new Color(random_r, random_g, random_b, 1);
 
 		return random;
+	}
+
+	void Update() {
+		if (charging) {
+			chargeBuildup = Mathf.Clamp(chargeBuildup + 1, 0f, 100f);
+		}
+
+		manage_charge();
+	}
+
+	void init_colors() {
+		background.color = palette.color;
+		chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(palette.color.r - 0.4f,
+			palette.color.g - 0.4f,
+			palette.color.b - 0.4f,
+			0.5f);
+
+        var aux = particleTrail.main;
+		aux.startColor = palette.gradient;
+
+		particleTrail.Play();
+	}
+
+	void manage_charge() {
+        float perc = chargeBuildup / data.maxChargeBuildup;
+        perc /= 1f;
+
+		float multiplier = Mathf.Sin(perc * Mathf.PI / 2);
+
+        chargeIndicator.transform.localScale = new Vector3(multiplier, multiplier, multiplier);
+        Color aux = chargeIndicator.GetComponent<SpriteRenderer>().color;
+        chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(aux.r, aux.g, aux.b, multiplier);
+
+        rb.mass = data.mass + data.chargeWeight * perc;
 	}
 
 	#region simulate player movements
@@ -78,6 +112,38 @@ public class FakePlayer : MonoBehaviour {
 		}
 	}
 
+	IEnumerator simulate_player() {
+		while (true) {
+			int movement = Random.Range(0, 4);
+
+			switch (movement) {
+				case 0:
+					jump();
+					break;
+				case 1:
+					move(Random.Range(-50f, 50f));
+					break;
+				case 2:
+					start_charge();
+					break;
+				default:
+					break;
+			}
+
+			int charge = Random.Range(0, 10);
+
+			switch (charge) {
+				case 0:
+					end_charge();
+					break;
+				default:
+					break;
+			}
+
+			yield return new WaitForSeconds(Random.Range(0.15f, 0.3f));
+		}
+	}
+
 	void jump() {
         rb.AddForce(new Vector2(0, data.jumpForce));
     }
@@ -85,5 +151,18 @@ public class FakePlayer : MonoBehaviour {
 	void move(float movement) {
         rb.velocity += new Vector2(movement / 5f, 0);
     }
+
+	void start_charge() {
+		charging = true;
+	}
+
+	void end_charge() {
+		charging = false;
+		
+        float perc = chargeBuildup / data.maxChargeBuildup;
+        Vector2 direction = this.transform.up * data.chargeForce * perc;
+        rb.velocity += direction;
+        chargeBuildup = 0f;
+	}
 	#endregion
 }

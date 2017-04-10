@@ -19,8 +19,17 @@ public class SceneLoader : MonoBehaviour {
         ShowdownPanelAnimation.EnteringNewLevel();
         
         string level_name = "Level" + ID;
-        SceneManager.LoadScene(level_name);
         VictoriesManager.getVictoriesManager().reset_victories();
+
+        StartCoroutine(delayThenLoad(level_name));
+    }
+
+    IEnumerator delayThenLoad(string name) {
+        LevelSoundManager.getLevelSoundManager().fadeOut(1f);
+
+        yield return new WaitForSeconds(1f);
+
+        SceneManager.LoadScene(name);
     }
 
     public void ResetLevel() {
@@ -28,12 +37,16 @@ public class SceneLoader : MonoBehaviour {
     }
 
     public void GameOver() {
-        SceneManager.LoadScene("GameOver v2");
+        StartCoroutine(delayThenLoad("GameOver v2"));
     }
 
     public void LevelSelect() {
         SceneManager.LoadScene("LevelSelect 1");
         VictoriesManager.getVictoriesManager().reset_victories();
+    }
+
+    public void PlayerSelect() {
+        SceneManager.LoadScene("PlayerSelect");
     }
 
     public void GameOverLevelSelect() {

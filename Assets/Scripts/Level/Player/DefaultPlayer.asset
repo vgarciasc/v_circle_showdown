@@ -15,7 +15,7 @@ MonoBehaviour:
   maxSecondsOutOfScreen: 3
   maxChargeBuildup: 100
   chargeWeight: 0.5
-  maxSize: 8
+  maxSize: 10
   minSize: 0.6
   mass: 0.5
   scale: {x: 1, y: 1, z: 1}

@@ -59,7 +59,10 @@ public class Player : MonoBehaviour, ISmashable {
     public event ItemDelegate get_item_event, 
                             use_item_event;    
     public delegate void ChargeDelegate(int currentCharge);
-    public event ChargeDelegate charge_event;
+    public event ChargeDelegate charge_event,
+                                release_charge_event;
+    public delegate void PlayerHitDelegate(float magnitude);
+    public event PlayerHitDelegate player_hit_event;
     #endregion
 
     Rigidbody2D rb;
@@ -315,7 +318,10 @@ public class Player : MonoBehaviour, ISmashable {
     void shakeScreen(float hitStrength) { scamera.screenShake_(hitStrength); }
 
     public void takeHit(float transferSize) {
-        //Debug.Log("Transfer Size: " + transferSize);
+        if (player_hit_event != null) {
+            player_hit_event(transferSize);
+        }
+
         shakeScreen(transferSize);
         changeSize(transferSize);
         StartCoroutine(temporaryInvincibility(data.invincibleFrames));
@@ -615,6 +621,10 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void release_charge(float power) {
+        if (release_charge_event != null) {
+            release_charge_event((int) chargeBuildup);
+        }
+        
         float perc = chargeBuildup / data.maxChargeBuildup;
         Vector2 direction = this.transform.up * data.chargeForce * perc * power;
         rb.velocity += direction;

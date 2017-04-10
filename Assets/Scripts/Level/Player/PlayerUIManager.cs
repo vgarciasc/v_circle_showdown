@@ -40,7 +40,7 @@ public class PlayerUIManager : MonoBehaviour {
         status = Instantiate(playerStatusPrefab).GetComponent<PlayerUIStatus>();
         status.name = player_name + " Status";
         status.transform.SetParent(playerUI_container.transform.GetChild(0), false);
-        status.setUI(player_name, player_ID, player_color);
+        status.setUI(player, player_name, player_ID, player_color);
 
         marker = Instantiate(playerMarkerPrefab).GetComponent<PlayerUIMarker>();
         marker.name = player_name + " Marker";

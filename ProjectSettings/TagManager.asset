@@ -25,6 +25,7 @@ TagManager:
   - Skidrow
   - ScreenAnimation
   - Bomb
+  - SoundManager
   layers:
   - Default
   - TransparentFX

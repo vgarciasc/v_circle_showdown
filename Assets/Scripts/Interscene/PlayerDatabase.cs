@@ -16,6 +16,8 @@ public class PlayerDatabase : MonoBehaviour {
     PlayerDatabaseSpawner spawner;
     VictoriesManager vmanager;
 
+    public bool titleScreen = false;
+
     List<int> joysticks_ingame = new List<int>();
     public List<PlayerInstance> players = new List<PlayerInstance>();
     List<string> joystick_names = new List<string>();
@@ -31,6 +33,10 @@ public class PlayerDatabase : MonoBehaviour {
     }
 
     void Start() {
+        if (titleScreen) {
+            return;
+        }
+
         deleteNewerCopies();
         reset_available_colors();
         spawner = GetComponent<PlayerDatabaseSpawner>();
@@ -43,7 +49,7 @@ public class PlayerDatabase : MonoBehaviour {
     }
     
 	void Update () {
-        if (!hasSeenAGame) handleInput();
+        if (!hasSeenAGame && !titleScreen) handleInput();
 	}
 
     #region Joysticks

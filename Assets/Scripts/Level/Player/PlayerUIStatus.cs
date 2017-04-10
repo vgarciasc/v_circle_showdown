@@ -16,6 +16,7 @@ public class PlayerUIStatus : MonoBehaviour {
     [SerializeField]
     GameObject victoryIcon;
 
+    Player player;
     Animator animator;
     Coroutine countCoroutine;
     PlayerDatabase pdatabase;
@@ -35,7 +36,8 @@ public class PlayerUIStatus : MonoBehaviour {
         unshowItem();
     }
 
-    public void setUI(string playerName, int playerID, Color playerColor) {
+    public void setUI(Player player, string playerName, int playerID, Color playerColor) {
+        this.player = player;
         this.playerColor = playerColor;
         this.playerID = playerID;
         this.playerName = playerName;
@@ -66,6 +68,7 @@ public class PlayerUIStatus : MonoBehaviour {
         animator.SetTrigger("popup");
         yield return new WaitForSeconds(0.15f);
 
+        player.GetComponent<PlayerSoundManager>().victory_get_effect();
         GameObject victory_icon = victoriesContainer.GetChild(vmanager.get_player_victories(playerID)).gameObject;
         victory_icon.GetComponent<Image>().color = playerColor;
         victory_icon.GetComponent<Animator>().SetTrigger("show");

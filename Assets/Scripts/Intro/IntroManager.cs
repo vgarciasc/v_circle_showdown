@@ -104,6 +104,6 @@ public class IntroManager : MonoBehaviour {
 
 		animator.SetTrigger("exit");
 		yield return new WaitForSeconds(1.5f);
-		SceneManager.LoadScene("TitleScreen");
+		SceneManager.LoadScene("TitleScreen 2");
 	}
 }

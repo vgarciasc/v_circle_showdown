@@ -12,12 +12,17 @@ public class Bomb : MonoBehaviour, ISmashable {
 
     Animator animator;
     Coroutine blinkCoroutine;
+    AudioSource audioPlayer;
+
+    [SerializeField]
+    AudioClip sfx_explode;
 
     float intensity;
     bool alreadyExploded = false;
 
 	void Start () {
         animator = this.GetComponent<Animator>();
+        audioPlayer = this.GetComponent<AudioSource>();
 
         blinkCoroutine = StartCoroutine(blink());
         StartCoroutine(deathCount());
@@ -65,6 +70,7 @@ public class Bomb : MonoBehaviour, ISmashable {
         alreadyExploded = true;
         screenShake();
         explosion.SetActive(true);
+        audioPlayer.PlayOneShot(sfx_explode);
         this.GetComponentInChildren<SpriteRenderer>().enabled = false;
         this.GetComponentsInChildren<ParticleSystem>()[0].Play();
         this.GetComponentsInChildren<ParticleSystem>()[1].Play();

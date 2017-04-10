@@ -252,7 +252,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011800157578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.4376042, y: -7.5526943, z: 0}
+  m_LocalPosition: {x: -6.4526334, y: 0.73716855, z: 0}
   m_LocalScale: {x: 1.5468069, y: 1.5468069, z: 1.546807}
   m_Children:
   - {fileID: 4180522890757152}
@@ -466,7 +466,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1779094566
+  randomSeed: 304190428
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3109,7 +3109,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -1514479765
+  randomSeed: -57924480
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -5743,7 +5743,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 24
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5861,7 +5861,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 26
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0
@@ -5931,7 +5931,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 31
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0

@@ -16,6 +16,8 @@ public class TitleScreenDeluxe : MonoBehaviour {
 	GameObject whiteScreen;
 	[SerializeField]
 	AudioClip startGameSoundEffect;
+	[SerializeField]
+	GameObject credits;
 
 	List<GameObject> prisons = new List<GameObject>();
 
@@ -47,6 +49,10 @@ public class TitleScreenDeluxe : MonoBehaviour {
 		for (int i = 0; i < 4; i++) {
 			if (Input.GetButtonDown("Submit_J" + i) && !gameStarted) {
 				StartCoroutine(startGame());
+			}
+
+			if (Input.GetButtonDown("Fire2_J" + i) && !gameStarted) {
+				toggleCredits();
 			}
 		}
 	}
@@ -104,5 +110,9 @@ public class TitleScreenDeluxe : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 
 		SceneManager.LoadScene("PlayerSelect");
+	}
+
+	void toggleCredits() {
+		credits.SetActive(!credits.activeSelf);
 	}
 }

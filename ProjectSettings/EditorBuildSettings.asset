@@ -8,15 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Intro.unity
   - enabled: 1
-    path: Assets/_Scenes/TitleScreen.unity
-  - enabled: 1
-    path: Assets/_Scenes/GameOver.unity
+    path: Assets/_Scenes/TitleScreen 2.unity
   - enabled: 1
     path: Assets/_Scenes/PlayerSelect.unity
-  - enabled: 1
-    path: Assets/_Scenes/LevelSelect.unity
-  - enabled: 1
-    path: Assets/_Scenes/LevelSoccer.unity
   - enabled: 1
     path: Assets/_Scenes/GameOver v2.unity
   - enabled: 1
@@ -30,14 +24,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Levels/Level4.unity
   - enabled: 1
-    path: Assets/_Scenes/TitleScreen 2.unity
-  - enabled: 1
     path: Assets/_Scenes/Levels/Level5.unity
   - enabled: 1
     path: Assets/_Scenes/Levels/Level6.unity
   - enabled: 1
     path: Assets/_Scenes/Levels/Level7.unity
-  - enabled: 1
-    path: Assets/_Scenes/Levels/Level8.unity
   - enabled: 1
     path: Assets/_Scenes/Levels/LevelTest.unity

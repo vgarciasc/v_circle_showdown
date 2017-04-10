@@ -50,6 +50,10 @@ public class Item : MonoBehaviour {
         } else {
             //sprite.transform.Rotate(new Vector3(0f, 0f, 0.3f));
         }
+
+        if (this.data == null) {
+            psystem_idle.Stop();
+        }
     }
 
     void setItemSprite() {

@@ -16,9 +16,23 @@ public class SceneLoader : MonoBehaviour {
     }
 
     public void LoadLevel(string ID) {
-        ShowdownPanelAnimation.EnteringNewLevel();
+        if (ID == "Random") {
+            LoadRandomLevel();
+            return;
+        }
         
+        ShowdownPanelAnimation.EnteringNewLevel();
+
         string level_name = "Level" + ID;
+        VictoriesManager.getVictoriesManager().reset_victories();
+
+        StartCoroutine(delayThenLoad(level_name));
+    }
+
+    public void LoadRandomLevel() {
+        ShowdownPanelAnimation.EnteringNewLevel();
+
+        string level_name = "Level" + Random.Range(0, 7);
         VictoriesManager.getVictoriesManager().reset_victories();
 
         StartCoroutine(delayThenLoad(level_name));

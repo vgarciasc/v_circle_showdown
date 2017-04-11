@@ -64,6 +64,8 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 	}
 
 	IEnumerator unshow() {
+		Time.timeScale = 1f;
+		
 		transition_unshow_ended = false;
 
 		yield return new WaitForSeconds(0.25f);
@@ -79,5 +81,7 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 		foreach (Transform t in container) {
 			t.localScale = Vector3.zero;
 		}
+
+		Time.timeScale = 1f;
 	}
 }

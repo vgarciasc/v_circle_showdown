@@ -5,8 +5,13 @@ using UnityEngine;
 public class ShowdownPanelAnimation : MonoBehaviour {
 
 	public static bool shouldPlayAnimation = false;
+	public bool playingAnimation = false;
 
 	float original_timescale = 1f;
+
+	public static ShowdownPanelAnimation getShowdownPanelAnimation() {
+		return (ShowdownPanelAnimation) HushPuppy.safeFindComponent("ScreenAnimation", "ShowdownPanelAnimation");
+	}
 
 	void Awake() {
 		if (shouldPlayAnimation) {
@@ -18,6 +23,7 @@ public class ShowdownPanelAnimation : MonoBehaviour {
 	}
 
 	IEnumerator init() {
+		playingAnimation = true;
 		this.GetComponent<Animator>().enabled = false;
 
 		yield return new WaitUntil(() => ScreenTransitionAnimation.getScreenTransitionAnimation().transition_unshow_ended);
@@ -33,6 +39,7 @@ public class ShowdownPanelAnimation : MonoBehaviour {
 		shouldPlayAnimation = false;
 		Time.timeScale = original_timescale;
 		Time.fixedDeltaTime = 0.02F * Time.timeScale;
+		playingAnimation = false;
 	}
 
 	public static void EnteringNewLevel() {

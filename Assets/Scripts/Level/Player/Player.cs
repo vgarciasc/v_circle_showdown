@@ -304,7 +304,7 @@ public class Player : MonoBehaviour, ISmashable {
             case "Nebula":
                 if (target.gameObject.GetComponentInParent<MushroomCloud>() == null ||
                     target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
-                    changeSize(0.005f + 0.01f * chargeBuildup / 100f);
+                    changeSize(0.01f + 0.01f * chargeBuildup / 100f);
                 }
                 break;
             case "Inverse Nebula":
@@ -537,6 +537,7 @@ public class Player : MonoBehaviour, ISmashable {
     public void reset_charge() {
         chargeBuildup = 0f;
         rb.mass = data.mass;
+        rb.angularDrag = 1f;
     }
 
     void toggleChargeIndicator(bool value) {
@@ -755,9 +756,9 @@ public class Player : MonoBehaviour, ISmashable {
         Color original_border = circleBorder.GetComponent<SpriteRenderer>().color;
         Color transparent = HushPuppy.getColorWithOpacity(palette.color, 0.5f);
         // Color border_transparent = HushPuppy.getColorWithOpacity(original_border, 0.3f);
-        Color border_transparent = new Color(palette.color.r - 0.5f,
-            palette.color.g - 0.5f,
-            palette.color.b - 0.5f);
+        Color border_transparent = new Color(palette.color.r - 0.3f,
+            palette.color.g - 0.3f,
+            palette.color.b - 0.3f);
 
         bool toggle = true;
         while (true) {

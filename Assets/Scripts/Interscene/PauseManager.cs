@@ -6,8 +6,15 @@ public class PauseManager : MonoBehaviour {
 	public GameObject pauseMenu;
 	bool pause;
 	public bool thisScreenCanPause = true;
+	public bool canPauseNow = true;
 
 	Transform root;
+
+	public static PauseManager getPauseManager() {
+		PauseManager pause;
+		pause = (PauseManager) HushPuppy.safeFindComponent("GameController", "PauseManager");
+		return pause;
+	}
 
 	void Start() {
 		root = this.transform;
@@ -16,8 +23,50 @@ public class PauseManager : MonoBehaviour {
 		}
 	}
 
+	ShowdownPanelAnimation showd;
+	ScreenTransitionAnimation screent;
+
+	void Awake() {
+		init_showd();
+		init_screent();
+	}
+
+	void init_showd() {
+		GameObject aux = GameObject.FindGameObjectWithTag("ScreenAnimation");
+		if (aux == null) {
+			Debug.Log("Showdown Panel Animation does not exist in this scene.");
+			showd = null;
+			return;
+		}
+
+		showd = aux.GetComponentInChildren<ShowdownPanelAnimation>();
+	}
+
+	void init_screent() {
+		GameObject aux = GameObject.FindGameObjectWithTag("ScreenAnimation");
+		if (aux == null) {
+			Debug.Log("Screen Transition Animation does not exist in this scene.");
+			screent = null;
+			return;
+		}
+
+		screent = aux.GetComponentInChildren<ScreenTransitionAnimation>();
+	}
+
 	void Update () {
-		if (thisScreenCanPause) {
+		// if (showd != null) {
+		// 	canPauseNow = !showd.playingAnimation;
+		// } else if (showd == null) {
+		// 	canPauseNow = true;
+		// }
+
+		if (showd != null && screent != null) {
+			Debug.Log("!showd.playingAnimation: " + !showd.playingAnimation);
+			Debug.Log("!screent.inside_transition: " + !screent.inside_transition);
+			canPauseNow = (!showd.playingAnimation && !screent.inside_transition);
+		}
+
+		if (thisScreenCanPause && canPauseNow) {
 			for (int i = 0; i < 4; i++) {
 				if (Input.GetButtonDown("Submit_J" + i)) {
 					pauseGame();
@@ -51,9 +100,7 @@ public class PauseManager : MonoBehaviour {
         }
     }
 
-	public static PauseManager getPauseManager() {
-		PauseManager pause;
-		pause = (PauseManager) HushPuppy.safeFindComponent("GameController", "PauseManager");
-		return pause;
+	public void setCanPauseNow(bool value) {
+		canPauseNow = value;
 	}
 }

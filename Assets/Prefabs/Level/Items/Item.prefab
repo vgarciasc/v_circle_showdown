@@ -252,7 +252,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011800157578}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.4526334, y: 0.73716855, z: 0}
+  m_LocalPosition: {x: -1.6, y: 0.6516923, z: 0}
   m_LocalScale: {x: 1.5468069, y: 1.5468069, z: 1.546807}
   m_Children:
   - {fileID: 4180522890757152}
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ecc368ad0b0984889653d1e1a66f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: f1da6e4eba027eb47aaf85e310c03a73, type: 2}
+  data: {fileID: 11400000, guid: 2f843cd64639df749b43b5a80f1e3a50, type: 2}
   blackhole: {fileID: 1000011593831764, guid: 584e127e0e08b5a4a86a4cbcab9bae6f, type: 2}
   sprite: {fileID: 1529151332722908}
   sprite_outline: {fileID: 1000013290575004}
@@ -466,7 +466,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 304190428
+  randomSeed: 706141250
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3109,7 +3109,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -57924480
+  randomSeed: -1163524604
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -5693,7 +5693,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 12
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5743,7 +5743,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 24
+  m_SortingOrder: 11
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -5861,7 +5861,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 26
+  m_SortingOrder: 12
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0
@@ -5931,7 +5931,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 31
+  m_SortingOrder: 13
   m_Sprite: {fileID: 21300000, guid: 707d03b7388e2104593276264fcab331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.766}
   m_FlipX: 0

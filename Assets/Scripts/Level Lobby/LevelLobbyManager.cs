@@ -25,6 +25,7 @@ public class LevelLobbyManager : MonoBehaviour {
 	GameObject playerSelectionUIContainer;
 
 	int numberOfPlayersConfirmed = 0;
+	bool canSpawnItems = false;
 
 	List<Transform> playerSelections;
 	List<bool> playersConfirmed;
@@ -47,6 +48,8 @@ public class LevelLobbyManager : MonoBehaviour {
 	Image mapPreviewRightRight;
 	[SerializeField]
 	TextMeshProUGUI mapName;
+	[SerializeField]
+	GameObject toggleSpawnItemCircle;
 
 	[SerializeField]
 	List<Map> maps;
@@ -57,6 +60,8 @@ public class LevelLobbyManager : MonoBehaviour {
 	int current_map_index = 0;
 
 	PlayerDatabase pdatabase;
+
+	bool enteringLevel = false;
 
 	void Start() {
 		pdatabase = PlayerDatabase.getPlayerDatabase();
@@ -79,6 +84,8 @@ public class LevelLobbyManager : MonoBehaviour {
 		mapPreview.gameObject.SetActive(true);
 		mapPreviewGhost = Instantiate(mapPreview.gameObject, HushPuppy.safeFind("Canvas").transform, false);
 		mapPreview.gameObject.SetActive(false);
+
+		toggleSpawnItems(true);
 	}
 
 	bool in_cooldown = false;
@@ -111,8 +118,12 @@ public class LevelLobbyManager : MonoBehaviour {
 				}
 			}
 
-			if (Input.GetButtonDown("Submit_J" + i)) {
+			if (Input.GetButtonDown("Submit_J" + i) && !enteringLevel) {
 				StartCoroutine(toggle_player_confirmed(pdatabase.get_player_entry_ID(i)));
+			}
+
+			if (Input.GetButtonDown("Fire2_J" + i) && !enteringLevel) {
+				toggleSpawnItems(!canSpawnItems);
 			}
 		}
 	}
@@ -142,6 +153,7 @@ public class LevelLobbyManager : MonoBehaviour {
 		playersConfirmed[player_index] = !playersConfirmed[player_index];
 
 		if (numberOfPlayersConfirmed == pdatabase.players.Count) {
+			enteringLevel = true;
 			SceneLoader.getSceneLoader().LoadLevel(maps[current_map_index].sceneName);
 		}
 	}
@@ -223,5 +235,12 @@ public class LevelLobbyManager : MonoBehaviour {
 
 		disable_all_player_confirmed();
 		StartCoroutine(handle_cooldown());
+	}
+
+	void toggleSpawnItems(bool value) {
+		canSpawnItems = value;
+
+		PlayerPrefs.SetInt("SpawnItems", value? 1 : 0);
+		toggleSpawnItemCircle.SetActive(value);
 	}
 }

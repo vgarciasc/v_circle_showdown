@@ -36,7 +36,7 @@ public class ItemSpawner : MonoBehaviour {
         while (true) {
             yield return new WaitUntil(() => !itemInGame);
             yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(itemSpawnInterval);
-            if (!itemInGame)
+            if (!itemInGame && PlayerPrefs.GetInt("SpawnItems") == 1)
                 spawnItem(itemSpawnLocations.getRandomLocation());
         }
     }

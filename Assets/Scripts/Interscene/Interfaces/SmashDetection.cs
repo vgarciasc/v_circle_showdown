@@ -33,8 +33,10 @@ public class SmashDetection : MonoBehaviour {
     }
 
     IEnumerator waitAndSee() {
-        for (int i = 0; i < 5; i++)
-            yield return new WaitForEndOfFrame();
-        if (colliding) toSmash.smashedDetected();
+        for (int i = 0; i < 10; i++)
+            yield return new WaitForFixedUpdate();
+        if (colliding) {
+            toSmash.smashedDetected();
+        }
     }
 }

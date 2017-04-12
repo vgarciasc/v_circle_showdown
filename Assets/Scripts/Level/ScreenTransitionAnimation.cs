@@ -9,6 +9,7 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 
 	public bool transition_show_ended = false;
 	public bool transition_unshow_ended = false;
+	public bool inside_transition = false;
 
 	static Color temporary_color;
 
@@ -46,9 +47,10 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 		set_color(palette);
 		temporary_color = palette;
 		StartCoroutine(show());
-	}	
+	}
 
 	IEnumerator show() {
+		inside_transition = true;
 		transition_show_ended = false;
 		
 		Vector3 original_scale = this.transform.GetChild(0).localScale;
@@ -61,11 +63,12 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 
 		yield return new WaitForSeconds(0.25f);
 		transition_show_ended = true;
+		inside_transition = false;
 	}
 
 	IEnumerator unshow() {
+		inside_transition = true;
 		Time.timeScale = 1f;
-		
 		transition_unshow_ended = false;
 
 		yield return new WaitForSeconds(0.25f);
@@ -83,5 +86,6 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 		}
 
 		Time.timeScale = 1f;
+		inside_transition = false;
 	}
 }

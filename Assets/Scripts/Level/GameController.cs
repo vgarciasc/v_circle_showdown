@@ -24,7 +24,12 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void checkGameOver() { StartCoroutine(checkGameOver_()); }
+    bool got_victory = false;
+
+    public void checkGameOver() {
+        StartCoroutine(checkGameOver_());
+    }
+
     IEnumerator checkGameOver_() {
         yield return PauseManager.getPauseManager().WaitForSecondsInterruptable(2.0f);
         int match_winner = vmanager.get_match_winner();
@@ -41,11 +46,16 @@ public class GameController : MonoBehaviour {
     }
 
     void get_next_scene(int match_winner) {
+        if (got_victory) {
+            return;
+        }
+        
         if (match_winner == -2) { //empate
             SceneLoader.getSceneLoader().ResetLevel();
             return;
         }
 
+        got_victory = true;
         vmanager.give_victory(match_winner);
         int game_winner = vmanager.get_game_winner();
 

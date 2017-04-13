@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4179190518681468}
   - component: {fileID: 82504026589178506}
   - component: {fileID: 114060958168216860}
-  - component: {fileID: 114123967501416926}
   m_Layer: 0
   m_Name: Sound Manager
   m_TagString: SoundManager
@@ -190,15 +189,3 @@ MonoBehaviour:
     song: {fileID: 8300000, guid: ef36a76209e983b4e88ceb53ef8c9be2, type: 3}
     volume: 0.72
     loop: 1
---- !u!114 &114123967501416926
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1140095153424274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ed22d9bf12da6f468046b445a02b9a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  juke: []

@@ -22,7 +22,9 @@ public class SpawnLocations : MonoBehaviour {
     void getLocations() {
         locations.Clear();
         for (int i = 0; i < transform.childCount; i++)
-            locations.Add(transform.GetChild(i));
+           if (transform.GetChild(i).gameObject.activeSelf) {
+               locations.Add(transform.GetChild(i));
+           }
     }
 
     void resetUnusedLocations() {

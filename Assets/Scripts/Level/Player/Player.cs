@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class Player : MonoBehaviour, ISmashable {
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour, ISmashable {
     public bool is_on_ground = false,
                 should_be_visible = true,
                 aimbot_active = false;
+    List<int> inside_nebulas = new List<int>();
 
     /*Blockers*/
     bool blockGrowth = false,
@@ -141,6 +143,7 @@ public class Player : MonoBehaviour, ISmashable {
         //DEBUG
         forceField.SetActive(false);
         aimbot();
+        nebula();
 
         handleInput();
     }
@@ -280,6 +283,8 @@ public class Player : MonoBehaviour, ISmashable {
         }
     }
 
+    bool inside_generic_nebula = false;
+
     public void OnTriggerEnter2D(Collider2D target) {
         switch (target.gameObject.tag) {
             case "BombExplosion":
@@ -293,20 +298,40 @@ public class Player : MonoBehaviour, ISmashable {
             case "Spikes":
                 hitSpikes();
                 break;
+            case "Nebula":
+                if (target.gameObject.GetComponentInParent<MushroomCloud>() == null) {
+                    inside_generic_nebula = true;
+                }
+                else if (target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
+                    if (!inside_nebulas.Contains(target.gameObject.GetComponentInParent<MushroomCloud>().playerID)) {
+                        inside_nebulas.Add(target.gameObject.GetComponentInParent<MushroomCloud>().playerID);
+                    }
+                }
+                break;
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D target) {
+        switch (target.gameObject.tag) {
+            case "Nebula":
+                if (target.gameObject.GetComponentInParent<MushroomCloud>() == null) {
+                    inside_generic_nebula = false;
+                }
+                else if (inside_nebulas.Contains(target.gameObject.GetComponentInParent<MushroomCloud>().playerID)) {
+                    inside_nebulas.Remove(target.gameObject.GetComponentInParent<MushroomCloud>().playerID);
+                }
+                break;
         }
     }
 
     public void OnTriggerStay2D(Collider2D target) {
         switch (target.gameObject.tag) {
-            case "Item":
-                getItem(target.gameObject.GetComponent<Item>());
-                break;
-            case "Nebula":
-                if (target.gameObject.GetComponentInParent<MushroomCloud>() == null ||
-                    target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
-                    changeSize(0.01f + 0.01f * chargeBuildup / 100f);
-                }
-                break;
+            // case "Nebula":
+            //     if (target.gameObject.GetComponentInParent<MushroomCloud>() == null ||
+            //         target.gameObject.GetComponentInParent<MushroomCloud>().playerID != ID) {
+            //         changeSize(0.01f + 0.01f * chargeBuildup / 100f);
+            //     }
+            //     break;
             case "Inverse Nebula":
                 changeSize(-0.005f - 0.01f * chargeBuildup / 100f);
                 break;
@@ -376,14 +401,37 @@ public class Player : MonoBehaviour, ISmashable {
         if (is_dead) return;
 
         end_receiving_aimbot();
+        end_emitting_aimbot();
+        
+        GameObject[] players = Player.getAllPlayers();
+        for (int i = 0; i < players.Length; i++) {
+            players[i].GetComponent<Player>().end_receiving_aimbot();
+        }
+
         foreach (CircleCollider2D c in this.GetComponentsInChildren<CircleCollider2D>()) {
             c.enabled = false;
         }
 
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         if (/*players.Length == 2*/ true) {
             //this will be the last player to die
-            StartCoroutine(slowmo(3.0f));
+            ScreenTransitionAnimation screent;
+            GameObject aux = GameObject.FindGameObjectWithTag("ScreenAnimation");
+            if (aux == null) {
+                Debug.Log("Screen Transition Animation does not exist in this scene.");
+                screent = null;
+                return;
+            }
+
+            screent = aux.GetComponentInChildren<ScreenTransitionAnimation>();
+            if (screent == null) {
+                StartCoroutine(slowmo(3.0f));
+            }
+            else {
+                if (!screent.inside_transition) {
+                    StartCoroutine(slowmo(3.0f));
+                }
+            }
+            
         }
         
         anim.enabled = true;
@@ -892,6 +940,16 @@ public class Player : MonoBehaviour, ISmashable {
         }
 
         this.transform.up = closest_player_distance;
+    }
+
+    void nebula() {
+        if (inside_generic_nebula) {
+            changeSize(0.01f + 0.01f * chargeBuildup / 100f);
+        }
+
+        if (inside_nebulas.Count > 0) {
+            changeSize(0.01f + 0.01f * chargeBuildup / 100f * inside_nebulas.Count);
+        }
     }
     #endregion
 

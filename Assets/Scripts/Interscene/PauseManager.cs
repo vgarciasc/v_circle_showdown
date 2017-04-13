@@ -61,8 +61,6 @@ public class PauseManager : MonoBehaviour {
 		// }
 
 		if (showd != null && screent != null) {
-			Debug.Log("!showd.playingAnimation: " + !showd.playingAnimation);
-			Debug.Log("!screent.inside_transition: " + !screent.inside_transition);
 			canPauseNow = (!showd.playingAnimation && !screent.inside_transition);
 		}
 

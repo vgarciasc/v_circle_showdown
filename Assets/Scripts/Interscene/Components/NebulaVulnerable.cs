@@ -19,7 +19,9 @@ public class NebulaVulnerable : MonoBehaviour {
     }
 
 	void changeSize(float ratio) {
-		if (this.transform.localScale.x > max_size) return;
+		if (this.transform.localScale.x > max_size) {
+            return;
+        }
 		this.transform.localScale += new Vector3(ratio, ratio, ratio);
 	}
 }

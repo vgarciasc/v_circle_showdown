@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 4000010719960858}
   - component: {fileID: 212000012546888772}
   - component: {fileID: 58000014206453290}
+  - component: {fileID: 50048213876184600}
   m_Layer: 0
   m_Name: Cloud Sprite
   m_TagString: Nebula
@@ -81,7 +82,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012538449796}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.708006, y: -0.9565829, z: 12.5}
+  m_LocalPosition: {x: 19.45, y: -4.855198, z: 12.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4000013224573134}
@@ -102,6 +103,26 @@ Transform:
   m_Father: {fileID: 4000012395464060}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50048213876184600
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013478729196}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!58 &58000014206453290
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -184,7 +205,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -10233078
+  randomSeed: -1042797698
   InitialModule:
     serializedVersion: 3
     enabled: 1

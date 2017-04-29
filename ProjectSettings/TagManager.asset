@@ -26,6 +26,7 @@ TagManager:
   - ScreenAnimation
   - Bomb
   - SoundManager
+  - Punchbag
   layers:
   - Default
   - TransparentFX

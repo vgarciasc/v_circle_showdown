@@ -66,9 +66,12 @@ public class Item : MonoBehaviour {
     public void destroy() {
         this.data = null;
 
+        if (itemSpawner != null) {
+            itemSpawner.setItemInGame(false);
+        }
+
         psystem_destroy.Play();
         psystem_idle.Stop();
-        itemSpawner.setItemInGame(false);
         animator.SetTrigger("destroy");
         this.GetComponentInChildren<BoxCollider2D>().enabled = false;
         // Destroy(this.gameObject);

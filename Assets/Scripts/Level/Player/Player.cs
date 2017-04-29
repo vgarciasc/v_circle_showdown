@@ -281,6 +281,15 @@ public class Player : MonoBehaviour, ISmashable {
             this.giveHit(data.hitSizeIncrement + hitStrength);
             enemy.takeHit(data.hitSizeIncrement + hitStrength);
         }
+
+        if (target.gameObject.tag == "Punchbag" && isLookingAtObject(target.transform)) {
+            Punchbag enemy = target.gameObject.GetComponent<Punchbag>();
+
+            float hitStrength = velocityHitMagnitude();
+            // shakeScreen(hitStrength);
+            
+            enemy.takeHit(data.hitSizeIncrement + hitStrength);
+        }
     }
 
     bool inside_generic_nebula = false;
@@ -490,7 +499,7 @@ public class Player : MonoBehaviour, ISmashable {
         reset_charge_indicator();    
     }
 
-    void reset_charge_indicator() {
+    public void reset_charge_indicator() {
         chargeIndicator.GetComponent<SpriteRenderer>().color = new Color(palette.color.r - 0.4f,
             palette.color.g - 0.4f,
             palette.color.b - 0.4f, 0.5f);
@@ -502,6 +511,7 @@ public class Player : MonoBehaviour, ISmashable {
         }
 
         should_be_visible = value;
+        chargeIndicator.GetComponent<SpriteRenderer>().enabled = value;
         circleBorder.GetComponent<SpriteRenderer>().enabled = value;
         spriteBackground.GetComponent<SpriteRenderer>().enabled = value;
     }

@@ -58,6 +58,9 @@ public class PlayerItemUser : MonoBehaviour {
             case ItemType.HEALBOMB:
                 use_healbomb(item_data);
                 break;
+            case ItemType.VR_HEADSET:
+                use_vr_headset(item_data);
+                break;
             default:
                 break;
         }
@@ -221,5 +224,10 @@ public class PlayerItemUser : MonoBehaviour {
 							player.cannonPosition.transform,
 							player.chargeBuildup);
         player.reset_charge();
+    }
+
+    //secret
+    void use_vr_headset(ItemData data) {
+        StartCoroutine(PlayerDatabase.getPlayerDatabase().setReady(player.ID));
     }
 }

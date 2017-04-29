@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 
 [System.Serializable]
@@ -100,9 +101,17 @@ public class PlayerDatabase : MonoBehaviour {
 
                 currentID++;
 
-            } else if (Input.GetButtonDown("Fire2_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
+            } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
                 //get another color and name
                 int player_ID = get_player_entry_ID(i);
+                if (getReady(player_ID)) {
+                    playerTexts.GetChild(player_ID).GetComponentInChildren<TextMeshProUGUI>().text = "<b>" + 
+                    "<color=#" + HushPuppy.ColorToHex((Color32) players[player_ID].palette.color) + ">" + 
+                    players[player_ID].name + "</color></b> has <i>entered</i> the game." +
+                    "\n <color=#555555> (" + joystick_names[i] + ") </color>";
+                    return;
+                }
+
                 PlayerColor aux = get_another_random_color(players[player_ID].palette);
                 string new_name = generate_name();
                 players[player_ID].palette = aux;
@@ -113,25 +122,37 @@ public class PlayerDatabase : MonoBehaviour {
                     "<color=#" + HushPuppy.ColorToHex((Color32) aux.color) + ">" + 
                     new_name + "</color></b> has entered the game." +
                     "\n <color=#555555> (" + joystick_names[i] + ") </color>";
-            } else if (Input.GetButtonDown("Submit_J" + i.ToString()) && joysticks_ingame.Contains(i)) {
-                //player is ready
-                int player_ID = get_player_entry_ID(i);
-                toggleReady(player_ID);
             }
         }
     }
 
     int ready = 0;
-    void toggleReady(int player_ID) {
-        bool value = playerTexts.GetChild(player_ID).GetChild(3).gameObject.activeSelf;
-        playerTexts.GetChild(player_ID).GetChild(3).gameObject.SetActive(!value);
+    List<bool> readyPlayers = new List<bool>(){false, false, false, false};
+    public void toggleReady(int player_ID) {
+        // bool value = playerTexts.GetChild(player_ID).GetChild(3).gameObject.activeSelf;
+        // playerTexts.GetChild(player_ID).GetChild(3).gameObject.SetActive(!value);
 
-        if (value) ready--;
-        else ready++;
+        // if (value) ready--;
+        // else ready++;
+
+        // if (ready >= players.Count && players.Count > 1)
+        //     goLevelSelect();
+    }
+
+    public IEnumerator setReady(int player_ID) {
+        playerTexts.GetChild(player_ID).GetComponent<Animator>().SetTrigger("activate");
+        readyPlayers[player_ID] = true;
+
+        ready++;
+        yield return new WaitForSeconds(1f);
 
         if (ready >= players.Count && players.Count > 1)
             goLevelSelect();
     }
+
+    bool getReady(int player_ID) {
+        return readyPlayers[player_ID];
+    } 
 
     void goLevelSelect() {
         hasSeenAGame = true;

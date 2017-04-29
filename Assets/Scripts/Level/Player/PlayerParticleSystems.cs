@@ -87,6 +87,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 
 			full_charge.startColor = palette.color - new Color(0.15f, 0.15f, 0.15f);
 			full_charge.startColor = HushPuppy.getColorWithOpacity(full_charge.startColor, 0.3f);
+			player.reset_charge_indicator();
 		}
 	}
 	
@@ -162,6 +163,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	void toggle_visible(bool value) {
 		is_visible = value;
 		current_trail.enabled = value;
+		player_particle_trail.gameObject.SetActive(value);
 	}
 
 	void get_item_effect(ItemData item) {

@@ -66,6 +66,8 @@ public class Bomb : MonoBehaviour, ISmashable {
         foreach (CircleCollider2D cc in this.GetComponentsInChildren<CircleCollider2D>()) {
             cc.enabled = false;
         }
+
+        this.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         
         alreadyExploded = true;
         screenShake();

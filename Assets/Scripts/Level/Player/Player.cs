@@ -71,6 +71,7 @@ public class Player : MonoBehaviour, ISmashable {
     SpecialCamera scamera;
     PolygonCollider2D triangleCollider;
     CircleCollider2D circleCollider;
+	PlayerItemUser itemUser;
 
     /*Reset variables*/
     Color border_color;
@@ -121,6 +122,7 @@ public class Player : MonoBehaviour, ISmashable {
         scamera = Camera.main.GetComponent<SpecialCamera>();
         triangleCollider = GetComponent<PolygonCollider2D>();
         circleCollider = GetComponent<CircleCollider2D>();
+		itemUser = GetComponent<PlayerItemUser> ();
 
         /*Init functions*/
         createJoystickInput();
@@ -153,7 +155,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void initDelegates() {
-        this.GetComponent<PlayerItemUser>().double_coffee += killPlayer;
+		itemUser.double_coffee += killPlayer;
     }
 
     #region Spritefest
@@ -163,7 +165,7 @@ public class Player : MonoBehaviour, ISmashable {
         spriteBackground.GetComponent<SpriteRenderer>().sprite = background;
     }
 
-    void changeBorderColor(Color cr) {
+    public void changeBorderColor(Color cr) {
         circleBorder.GetComponent<SpriteRenderer>().color = cr;
     }
     #endregion
@@ -491,7 +493,7 @@ public class Player : MonoBehaviour, ISmashable {
     #endregion
 
     #region Colors
-    void reset_colors() {
+    public void reset_colors() {
         border_color = Color.black;
         spriteBackground.GetComponent<SpriteRenderer>().color = palette.color;
         forceField.GetComponent<SpriteRenderer>().color = palette.color;
@@ -546,7 +548,7 @@ public class Player : MonoBehaviour, ISmashable {
         if (this.transform.localScale.x < data.minSize) {
             /*this.transform.localScale = new Vector2(minSize, minSize);*/
             Debug.Log(playername + " is too small.");
-            // killPlayer();
+            killPlayer();
         }
     }
 

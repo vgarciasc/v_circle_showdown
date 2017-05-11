@@ -14,6 +14,9 @@ public class Jukebox : System.Object {
 }
 
 public class LevelSoundManager : MonoBehaviour {
+	[SerializeField]
+	AudioClip victory_get;
+
 	AudioSource audioPlayer;
 	static bool isPlaying = false;
 	
@@ -64,6 +67,10 @@ public class LevelSoundManager : MonoBehaviour {
 		audioPlayer.Play();
 	}
 
+	void PlayOneShot(AudioClip clip) {
+		audioPlayer.PlayOneShot (clip);
+	}
+
 	void deactivateSoundManager() {
 		isPlaying = false;
 
@@ -76,5 +83,9 @@ public class LevelSoundManager : MonoBehaviour {
 			0f,
 			duration);
 		tween.SetEase(Ease.InCirc);
+	}
+
+	public void victory_sound() {
+		PlayOneShot (victory_get);
 	}
 }

@@ -102,7 +102,7 @@ public class PlayerParticleSystems : MonoBehaviour {
 	}
 
 	void heal_explosion_start() {
-		end_trail_renderer();		
+		end_trail_renderer();
         heal.Play();
 	}
 

@@ -68,7 +68,7 @@ public class PlayerUIStatus : MonoBehaviour {
         animator.SetTrigger("popup");
         yield return new WaitForSeconds(0.15f);
 
-        player.GetComponent<PlayerSoundManager>().victory_get_effect();
+		LevelSoundManager.getLevelSoundManager ().victory_sound ();
         GameObject victory_icon = victoriesContainer.GetChild(vmanager.get_player_victories(playerID)).gameObject;
         victory_icon.GetComponent<Image>().color = playerColor;
         victory_icon.GetComponent<Animator>().SetTrigger("show");

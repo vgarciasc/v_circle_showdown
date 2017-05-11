@@ -50,7 +50,15 @@ public class PlayerSoundManager : MonoBehaviour {
 	}
 
 	void death_effect() {
-		audioPlayer.PlayOneShot(explosion, 0.7f);
+		if (player.transform.localScale.x < player.data.minSize) {
+			var aux = audioPlayer.pitch;
+			audioPlayer.pitch = 1.5f;
+			audioPlayer.PlayOneShot(explosion, 0.7f);
+			audioPlayer.pitch = aux;
+		}
+		else {
+			audioPlayer.PlayOneShot(explosion, 0.7f);
+		}
 	}
 
 	void get_item_effect(ItemData data) {

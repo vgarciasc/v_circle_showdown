@@ -22,6 +22,8 @@ public class PlayerItemUser : MonoBehaviour {
 	void Start() {
 		player = (Player) HushPuppy.safeComponent(gameObject, "Player");
 		player.use_item_event += use_item;
+		player.player_hit_event += player_take_hit;
+
 		item_spawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
 		player_spawner = (PlayerSpawner) HushPuppy.safeFindComponent("GameController", "PlayerSpawner");
     }
@@ -66,15 +68,64 @@ public class PlayerItemUser : MonoBehaviour {
         }
 	}
 
+	Coroutine heal_current = null;
+
     //heal
-    void use_heal(ItemData data) { StartCoroutine(use_heal_(data)); }
+    void use_heal(ItemData data) { 
+		if (heal_current != null) {
+			if (healEnd != null) {
+				healEnd ();
+			}
+			StopCoroutine (heal_current);
+		}
+
+		heal_current = StartCoroutine(use_heal_(data));
+	}
+
     IEnumerator use_heal_(ItemData data) {
-        healStart();
-        while (transform.localScale.x > player.originalData.scale.x) {
-            player.changeSize(-0.05f);
+		if (healStart != null) {
+			healStart ();
+		}
+		float original_scale = transform.localScale.x;
+        heal_start((original_scale / 2f) / 3f);
+
+		while (transform.localScale.x > original_scale / 2f) {
+            player.changeSize(-0.02f);
             yield return HushPuppy.WaitForEndOfFrames(1);
         }
-        healEnd();
+		if (healEnd != null) {
+			healEnd ();
+		}
+
+        heal_end();
+		heal_current = null;
+	}
+
+	Coroutine current_heal_blink = null;
+    void heal_start(float time) {
+		player.changeBorderColor (new Color(0f, 0.6f, 0f));
+		if (current_heal_blink != null) {
+			StopCoroutine (current_heal_blink);
+		}
+		current_heal_blink = StartCoroutine (player.start_blink (Time.time + time));
+    }
+
+    void heal_end() {
+		player.reset_colors ();
+		if (current_heal_blink != null) {
+			StopCoroutine (current_heal_blink);
+			current_heal_blink = null;
+		}
+    }
+
+	void player_take_hit(float hit) {
+		if (heal_current != null) {
+            heal_end();
+			if (healEnd != null) {
+				healEnd ();
+			}
+			StopCoroutine (heal_current);
+		}
 	}
 
     //triangulo

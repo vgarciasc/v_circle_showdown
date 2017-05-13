@@ -64,6 +64,11 @@ public class Item : MonoBehaviour {
     }
 
     public void destroy() {
+        if (!idle_state) {
+            return;
+        }
+
+        idle_state = false;
         this.data = null;
 
         if (itemSpawner != null) {
@@ -91,5 +96,11 @@ public class Item : MonoBehaviour {
         mysteryBox.SetActive(true);
         box1 = mysteryBox.transform.GetChild(1);
         box2 = mysteryBox.transform.GetChild(2);
+    }
+
+    bool idle_state = false;
+
+    void idle() {
+        idle_state = true;
     }
 }

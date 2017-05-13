@@ -79,7 +79,6 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 		}
 
 		yield return new WaitForSeconds(0.8f);
-		transition_unshow_ended = true;
 
 		foreach (Transform t in container) {
 			t.localScale = Vector3.zero;
@@ -87,5 +86,6 @@ public class ScreenTransitionAnimation : MonoBehaviour {
 
 		Time.timeScale = 1f;
 		inside_transition = false;
+		transition_unshow_ended = true;
 	}
 }

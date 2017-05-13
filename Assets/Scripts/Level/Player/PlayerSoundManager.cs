@@ -25,6 +25,8 @@ public class PlayerSoundManager : MonoBehaviour {
 	AudioClip porrada;
 	[SerializeField]
 	AudioClip victory_get;
+	[SerializeField]
+	AudioSource audioPlayer_highPitch;
 
 	void Start () {
 		player = this.GetComponent<Player>();
@@ -52,9 +54,7 @@ public class PlayerSoundManager : MonoBehaviour {
 	void death_effect() {
 		if (player.transform.localScale.x < player.data.minSize) {
 			var aux = audioPlayer.pitch;
-			audioPlayer.pitch = 1.5f;
-			audioPlayer.PlayOneShot(explosion, 0.7f);
-			audioPlayer.pitch = aux;
+			audioPlayer_highPitch.PlayOneShot(explosion, 0.7f);
 		}
 		else {
 			audioPlayer.PlayOneShot(explosion, 0.7f);

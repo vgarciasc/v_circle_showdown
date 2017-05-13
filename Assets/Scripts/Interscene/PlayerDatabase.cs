@@ -141,9 +141,11 @@ public class PlayerDatabase : MonoBehaviour {
 
     public IEnumerator setReady(int player_ID) {
         playerTexts.GetChild(player_ID).GetComponent<Animator>().SetTrigger("activate");
-        readyPlayers[player_ID] = true;
 
-        ready++;
+        if (!readyPlayers[player_ID]) {
+            readyPlayers[player_ID] = true;
+            ready++;
+        }
         yield return new WaitForSeconds(1f);
 
         if (ready >= players.Count && players.Count > 1)

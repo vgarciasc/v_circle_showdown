@@ -29,10 +29,10 @@ public class ShowdownPanelAnimation : MonoBehaviour {
 		yield return new WaitUntil(() => ScreenTransitionAnimation.getScreenTransitionAnimation().transition_unshow_ended);
 
 		original_timescale = Time.timeScale;
-		Time.timeScale = 0.001f;
+		Time.timeScale = 0.1f;
 		Time.fixedDeltaTime = 0.02F * Time.timeScale;
+		this.GetComponentInChildren<Animator>().speed = 10f;
 		this.GetComponent<Animator>().enabled = true;
-		this.GetComponentInChildren<Animator>().speed = 1200f;
 	}
 
 	void AnimDestroy() {

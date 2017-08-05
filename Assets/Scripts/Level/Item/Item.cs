@@ -64,9 +64,9 @@ public class Item : MonoBehaviour {
     }
 
     public void destroy() {
-        if (!idle_state) {
-            return;
-        }
+        // if (!idle_state) {
+        //     return;
+        // }
 
         idle_state = false;
         this.data = null;

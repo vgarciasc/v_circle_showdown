@@ -53,6 +53,13 @@ public class GameOver : MonoBehaviour {
                 StartCoroutine(end_scene());
             }
         }
+
+        // if (Input.GetKeyDown(KeyCode.E)) {
+        //     if (!end_scene_called && can_end_scene) {
+        //         end_scene_called = true;
+        //         StartCoroutine(end_scene());
+        //     }
+        // }
 	}
 
     bool can_spawn_next_stats = true;

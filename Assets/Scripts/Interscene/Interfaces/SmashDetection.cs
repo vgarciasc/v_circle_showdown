@@ -3,6 +3,7 @@ using System.Collections;
 
 public class SmashDetection : MonoBehaviour {
     ISmashable toSmash;
+    [SerializeField]
     bool colliding;
 
     void Start() {

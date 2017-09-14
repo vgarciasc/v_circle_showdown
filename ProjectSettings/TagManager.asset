@@ -27,6 +27,7 @@ TagManager:
   - Bomb
   - SoundManager
   - Punchbag
+  - CoffeeOverdrive
   layers:
   - Default
   - TransparentFX

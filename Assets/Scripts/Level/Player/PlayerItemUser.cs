@@ -24,6 +24,8 @@ public class PlayerItemUser : MonoBehaviour {
 		player.use_item_event += use_item;
 		player.player_hit_event += player_take_hit;
 
+        double_coffee += CoffeeOverdrive.get_coffee_overdrive()._show;
+
 		item_spawner = (ItemSpawner) HushPuppy.safeFindComponent("GameController", "ItemSpawner");
 		player_spawner = (PlayerSpawner) HushPuppy.safeFindComponent("GameController", "PlayerSpawner");
     }

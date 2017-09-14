@@ -766,6 +766,7 @@ public class Player : MonoBehaviour, ISmashable {
     }
 
     void useItem(ItemData itemData) {
+        if (is_dead) return;
         if (itemData == null) return;
 
         use_item_event(itemData);
@@ -956,11 +957,11 @@ public class Player : MonoBehaviour, ISmashable {
 
     void nebula() {
         if (inside_generic_nebula) {
-            changeSize(0.01f + 0.01f * chargeBuildup / 100f);
+            changeSize((0.01f + 0.01f * chargeBuildup / 100f) * Time.timeScale);
         }
 
         if (inside_nebulas.Count > 0) {
-            changeSize(0.01f + 0.01f * chargeBuildup / 100f * inside_nebulas.Count);
+            changeSize((0.01f + 0.01f * chargeBuildup / 100f * inside_nebulas.Count) * Time.timeScale);
         }
     }
     #endregion

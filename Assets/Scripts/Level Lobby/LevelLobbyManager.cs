@@ -140,13 +140,11 @@ public class LevelLobbyManager : MonoBehaviour {
 		if (!playersConfirmed[player_index]) {
 			playerSelections[player_index].GetComponentsInChildren<Image>()[0].color = enabledColor;
 			playerSelections[player_index].GetComponent<Animator>().SetBool("active", true);
-			yield return new WaitForSeconds(0.5f);
 			numberOfPlayersConfirmed++;
 		}	
 		else {
 			playerSelections[player_index].GetComponentsInChildren<Image>()[0].color = disabledColor;
 			playerSelections[player_index].GetComponent<Animator>().SetBool("active", false);
-			yield return new WaitForSeconds(0.5f);
 			numberOfPlayersConfirmed--;
 		}
 
@@ -154,6 +152,7 @@ public class LevelLobbyManager : MonoBehaviour {
 
 		if (numberOfPlayersConfirmed == pdatabase.players.Count) {
 			enteringLevel = true;
+			yield return new WaitForSeconds(0.5f);
 			SceneLoader.getSceneLoader().LoadLevel(maps[current_map_index].sceneName);
 		}
 	}

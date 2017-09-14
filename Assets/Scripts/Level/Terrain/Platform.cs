@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class Platform : MonoBehaviour {
     [Header("> Movement")]
@@ -35,11 +36,35 @@ public class Platform : MonoBehaviour {
     [SerializeField]
     bool enableRumble = false;
 
+    SpriteRenderer sr;
+
     bool move = false,
         waiting = false;
 
     void Start() {
+        sr = this.GetComponent<SpriteRenderer>();
+
         StartCoroutine(beforeMoving());
+        // if (gameObject.tag == "Spikes") {
+        //     StartCoroutine(pulse());
+        // }
+    }
+
+    IEnumerator pulse() {
+        Color originalColor = sr.color;
+        int sign = 1;
+
+        while (true) {
+            sign *= -1;
+
+            sr.DOColor(
+                sr.color + sign * new Color(0.2f, 0.2f, 0.2f, 0f),
+                0.5f
+            );
+
+            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 
     void LateUpdate() {

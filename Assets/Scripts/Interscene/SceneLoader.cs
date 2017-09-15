@@ -59,6 +59,10 @@ public class SceneLoader : MonoBehaviour {
         VictoriesManager.getVictoriesManager().reset_victories();
     }
 
+    public void RestartGame() {
+        PlayerSelect();
+    }
+
     public void PlayerSelect() {
         SceneManager.LoadScene("PlayerSelect");
     }

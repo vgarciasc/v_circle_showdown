@@ -22,6 +22,9 @@ public class GameController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.L)) {
             SceneLoader.getSceneLoader().LevelSelect();
         }
+        if (Input.GetKeyDown(KeyCode.P)) {
+            SceneLoader.getSceneLoader().RestartGame();
+        }
     }
 
     bool got_victory = false;
